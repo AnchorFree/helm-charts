@@ -1,0 +1,8 @@
+image: "anchorfree/k8s-rumors:v0.3"
+env:
+- name: SECRET
+  value: example-secret
+- name: ORIGIN_NAMESPACE
+  value: default
+- name: DEST_NAMESPACES
+  value: "project1 project2"

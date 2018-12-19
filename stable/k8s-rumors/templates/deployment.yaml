@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+    spec:
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+      serviceAccountName: {{ .Release.Name }}-service-account
+      containers:
+
+      - name: k8s-rumors-ns-watcher
+        image: {{ .Values.image }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+      - name: k8s-rumors-secret-watcher
+        image: {{ .Values.image }}
+        command:
+        - /usr/local/bin/entrypoint.sh 
+        - secret
+        env:
+{{ toYaml .Values.env | indent 10 }}
