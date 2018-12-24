@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dex-k8s-authenticator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "dex-k8s-authenticator.name" . }}
+    helm.sh/chart: {{ include "dex-k8s-authenticator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "dex-k8s-authenticator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "dex-k8s-authenticator.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          - --config=config.yaml
+          ports:
+            - name: http
+              containerPort: {{ .Values.dexK8sAuthenticator.listen_port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ template "dex-k8s-authenticator.healthCheckPath" . }}
+              port: http
+          readinessProbe:
+            httpGet:
+              path: {{ template "dex-k8s-authenticator.healthCheckPath" . }}
+              port: http
+          volumeMounts:
+          - name: config
+            subPath: config.yaml
+            mountPath: /app/config.yaml
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: config
+        secret:
+          secretName: {{ template "dex-k8s-authenticator.fullname" . }}
