@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "dex-k8s-authenticator.fullname" . -}}
-{{- $ingressPaths := .Values.ingress.paths -}}
+  {{- $fullName := include "dex-k8s-authenticator.fullname" . -}}
+  {{- $ingressPaths := .Values.ingress.paths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -12,29 +12,29 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
+  {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-{{- if .Values.ingress.tls }}
+  {{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
+    {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .hosts }}
+        {{- range .hosts }}
         - {{ . | quote }}
       {{- end }}
       secretName: {{ .secretName }}
   {{- end }}
-{{- end }}
+  {{- end }}
   rules:
-  {{- range .Values.ingress.hosts }}
+    {{- range .Values.ingress.hosts }}
     - host: {{ . | quote }}
       http:
         paths:
-	{{- range $ingressPaths }}
+          {{- range $ingressPaths }}
           - path: {{ . }}
             backend:
               serviceName: {{ $fullName }}
               servicePort: http
-	{{- end }}
+          {{- end }}
+    {{- end }}
   {{- end }}
-{{- end }}

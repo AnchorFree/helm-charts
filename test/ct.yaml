@@ -1,5 +1,6 @@
 remote: k8s
 target-branch: master
+validate-maintainers: false
 chart-dirs:
   - stable
 excluded-charts:
