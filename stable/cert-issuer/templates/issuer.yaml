@@ -1,0 +1,26 @@
+{{- $fullName := include "cert-issuer.fullname" . -}}
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: {{ .Values.kind }}
+metadata:
+  name: {{ template "cert-issuer.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "cert-issuer.name" . }}
+    helm.sh/chart: {{ include "cert-issuer.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  acme:
+    server: {{ .Values.server }}
+    email: {{ .Values.email }}
+    privateKeySecretRef:
+    {{- if .Values.privateKeySecretRef }}
+      {{- toYaml .Values.privateKeySecretRef | nindent 6 }}
+    {{- else }}
+      name: {{ $fullName }}
+    {{- end -}}
+    {{- if .Values.dns01 }}
+    dns01:
+      {{- toYaml .Values.dns01 | nindent 6 }}
+    {{- else }}
+    http01: {}
+    {{- end }}

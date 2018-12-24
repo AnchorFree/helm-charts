@@ -1,0 +1,12 @@
+# Default values for cert-issuer.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+kind: Issuer
+server: "https://acme-v02.api.letsencrypt.org/directory"
+email: "user@example.com"
+privateKeySecretRef: {}
+dns01: {}
