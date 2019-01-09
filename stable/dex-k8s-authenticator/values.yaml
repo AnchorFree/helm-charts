@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: mintel/dex-k8s-authenticator
-  tag: 1.1.0
+  repository: anchorfree/dex-k8s-authenticator
+  tag: v1.4.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
