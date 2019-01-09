@@ -34,8 +34,8 @@ spec:
           {{- if .Values.oidc_starter.redirectURI }}
           - --redirect-uri={{ .Values.oidc_starter.redirectURI }}
           {{- end }}
-          {{- if .Values.oidc_starter.baseRedirectURI }}
-          - --base-redirect-uri={{ .Values.oidc_starter.baseRedirectURI }}
+          {{- if .Values.oidc_starter.webPathPrefix }}
+          - --base-redirect-uri={{ .Values.oidc_starter.webPathPrefix }}
           {{- end }}
           {{- if .Values.oidc_starter.debug }}
           - --debug

@@ -38,6 +38,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+servicemonitor:
+  enabled: false
+
 resources:
   limits:
     cpu: 16m
