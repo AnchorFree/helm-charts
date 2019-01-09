@@ -30,3 +30,18 @@ Create chart name and version as used by the chart label.
 {{- define "oidc-starter.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "-" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create healthcheck path dependent on web_path_prefix
+*/}}
+{{- define "oidc-starter.healthCheckPath" -}}
+{{- if .Values.healthCheckPath -}}
+  {{ .Values.healthCheckPath }}
+{{- else -}}
+  {{- if .Values.oidc_starter.webPathPrefix -}}
+    {{ .Values.oidc_starter.webPathPrefix | trimSuffix "/" }}/healthz
+  {{- else -}}
+    {{ "/healthz" }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

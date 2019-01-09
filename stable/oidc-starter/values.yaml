@@ -6,11 +6,12 @@ replicaCount: 1
 
 image:
   repository: anchorfree/oidc-starter
-  tag: 0.0.2
+  tag: v1.0.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
 fullnameOverride: ""
+healthCheckPath: ""
 
 oidc_starter:
   debug: true
@@ -18,7 +19,7 @@ oidc_starter:
   clientId: example-client-id
   clientSecret: ZXhhbXBsZS1hcHAtc2VjcmV0
   redirectURI: http://127.0.0.1:5555/callback
-  baseRedirectURI: /callback
+  webPathPrefix: /
 
 service:
   type: ClusterIP

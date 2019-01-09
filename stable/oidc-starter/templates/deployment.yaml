@@ -55,6 +55,14 @@ spec:
               secretKeyRef:
                 name: {{ include "oidc-starter.fullname" . }}
                 key: client-secret
+          livenessProbe:
+            httpGet:
+              path: {{ template "oidc-starter.healthCheckPath" . }}
+              port: http
+          readinessProbe:
+            httpGet:
+              path: {{ template "oidc-starter.healthCheckPath" . }}
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
