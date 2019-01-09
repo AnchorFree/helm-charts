@@ -35,10 +35,12 @@ spec:
             httpGet:
               path: {{ template "dex-k8s-authenticator.healthCheckPath" . }}
               port: http
+            initialDelaySeconds: 5
           readinessProbe:
             httpGet:
               path: {{ template "dex-k8s-authenticator.healthCheckPath" . }}
               port: http
+            initialDelaySeconds: 5
           volumeMounts:
           - name: config
             subPath: config.yaml
