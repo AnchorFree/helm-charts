@@ -1,0 +1,18 @@
+{{- if .Values.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "dex-k8s-authenticator.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "dex-k8s-authenticator.name" . }}
+    helm.sh/chart: {{ include "dex-k8s-authenticator.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "dex-k8s-authenticator.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  endpoints:
+    - port: http
+{{- end }}

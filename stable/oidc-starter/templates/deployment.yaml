@@ -23,8 +23,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-          - /bin/oidc-starter
+          args:
           - --listen=http://0.0.0.0:80
           - --client-id=$(CLIENT_ID)
           - --client-secret=$(CLIENT_SECRET)
@@ -34,8 +33,8 @@ spec:
           {{- if .Values.oidc_starter.redirectURI }}
           - --redirect-uri={{ .Values.oidc_starter.redirectURI }}
           {{- end }}
-          {{- if .Values.oidc_starter.baseRedirectURI }}
-          - --base-redirect-uri={{ .Values.oidc_starter.baseRedirectURI }}
+          {{- if .Values.oidc_starter.webPathPrefix }}
+          - --web-path-prefix={{ .Values.oidc_starter.webPathPrefix }}
           {{- end }}
           {{- if .Values.oidc_starter.debug }}
           - --debug
@@ -55,6 +54,16 @@ spec:
               secretKeyRef:
                 name: {{ include "oidc-starter.fullname" . }}
                 key: client-secret
+          livenessProbe:
+            httpGet:
+              path: {{ template "oidc-starter.healthCheckPath" . }}
+              port: http
+            initialDelaySeconds: 5
+          readinessProbe:
+            httpGet:
+              path: {{ template "oidc-starter.healthCheckPath" . }}
+              port: http
+            initialDelaySeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
