@@ -34,7 +34,7 @@ spec:
 {{ toYaml .Values.env | indent 10 }}
 {{ if eq .Values.acme "v2" }}
         - name: ACME_URL
-          value: {{ .Values.acme_v2_url }}
+          value: {{ .Values.acme_url }}
 {{ end }}
         volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 10 }}
