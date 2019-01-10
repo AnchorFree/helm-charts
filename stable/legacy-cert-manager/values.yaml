@@ -1,5 +1,6 @@
 replicas: 1
 acme: "v1"
+acme_v2_url: "https://acme-v02.api.letsencrypt.org/directory"
 port: "9375"
 image: "anchorfree/cert-manager:v0.0.3"
 image_v2: "anchorfree/cert-manager:v0.0.4"

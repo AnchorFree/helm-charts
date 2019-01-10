@@ -34,10 +34,10 @@ spec:
 {{ toYaml .Values.env | indent 10 }}
 {{ if eq .Values.acme "v2" }}
         - name: ACME_URL
-          value: "https://acme-v02.api.letsencrypt.org/directory"
+          value: {{ .Values.acme_v2_url }}
 {{ end }}
         volumeMounts:
-{{ toYaml .Values.volumeMounts | indent 10 }}        
+{{ toYaml .Values.volumeMounts | indent 10 }}
       restartPolicy: Always
       volumes:
 {{ toYaml .Values.volumes | indent 8 }}
