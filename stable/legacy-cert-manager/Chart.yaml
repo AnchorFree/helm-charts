@@ -3,3 +3,4 @@ appVersion: "1.0"
 description: Chart to create a deployment of legacy cert-manager for non k8s-projects
 name: legacy-cert-manager
 version: 1.0.0
+home: https://github.com/AnchorFree/docker-cert-manager/
