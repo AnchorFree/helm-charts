@@ -1,12 +1,8 @@
 replicas: 1
-
 acme: "v1"
-
 port: "9375"
-
 image: "anchorfree/cert-manager:v0.0.3"
 image_v2: "anchorfree/cert-manager:v0.0.4"
-
 env:
 - name: LEGO_PATH
   value: "/usr/local/bin/lego"
@@ -22,10 +18,7 @@ env:
   value: "s3://some-bucket"
 - name: DOMAINS_FILE
   value: "s3://some-bucket/domains/prod.txt"
-
 volumeMounts: []
 volumes: []
-
 nodeAffinity: {}
 tolerations: []
-
