@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+    spec:
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+      containers:
+
+      - name: legacy-cert-manager
+        image: {{ if eq .Values.acme "v2" }}{{ .Values.image_v2 }}{{ else }}{{ .Values.image }}{{ end }}
+        ports:
+        - containerPort: 9375
+        env:
+{{ toYaml .Values.env | indent 10 }}
+{{ if eq .Values.acme "v2" }}
+        - name: ACME_URL
+          value: {{ .Values.acme_v2_url }}
+{{ end }}
+        volumeMounts:
+{{ toYaml .Values.volumeMounts | indent 10 }}
+      restartPolicy: Always
+      volumes:
+{{ toYaml .Values.volumes | indent 8 }}

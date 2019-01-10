@@ -1,0 +1,25 @@
+replicas: 1
+acme: "v1"
+acme_v2_url: "https://acme-v02.api.letsencrypt.org/directory"
+port: "9375"
+image: "anchorfree/cert-manager:v0.0.3"
+image_v2: "anchorfree/cert-manager:v0.0.4"
+env:
+- name: LEGO_PATH
+  value: "/usr/local/bin/lego"
+- name: LETSENCRYPT_EMAIL
+  value: "uniq-email@per.account"
+- name: AWS_REGION
+  value: "us-east-1"
+- name: AWS_ACCESS_KEY_ID
+  value: "xxx"
+- name: AWS_SECRET_ACCESS_KEY
+  value: "xxx"
+- name: S3_BUCKET
+  value: "s3://some-bucket"
+- name: DOMAINS_FILE
+  value: "s3://some-bucket/domains/prod.txt"
+volumeMounts: []
+volumes: []
+nodeAffinity: {}
+tolerations: []
