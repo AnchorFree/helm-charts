@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: anchorfree/oidc-starter
-  tag: v1.0.0
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -20,6 +20,7 @@ oidc_starter:
   clientSecret: ZXhhbXBsZS1hcHAtc2VjcmV0
   redirectURI: http://127.0.0.1:5555/callback
   webPathPrefix: /
+  listenPort: 5555
 
 service:
   type: ClusterIP
@@ -40,6 +41,8 @@ ingress:
 
 servicemonitor:
   enabled: false
+  namespace: monitoring
+  port: 9090
 
 resources:
   limits:

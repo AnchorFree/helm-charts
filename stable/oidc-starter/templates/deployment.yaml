@@ -24,7 +24,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-          - --listen=http://0.0.0.0:80
+          - --listen=http://0.0.0.0:{{ .Values.oidc_starter.listenPort }}
           - --client-id=$(CLIENT_ID)
           - --client-secret=$(CLIENT_SECRET)
           {{- if .Values.oidc_starter.issuer }}
@@ -41,7 +41,7 @@ spec:
           {{- end }}
           ports:
           - name: http
-            containerPort: 80
+            containerPort: {{ .Values.oidc_starter.listenPort }}
             protocol: TCP
           env:
           - name: CLIENT_ID

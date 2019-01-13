@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: anchorfree/dex-k8s-authenticator
-  tag: v1.4.0
+  tag: v1.5.0
   pullPolicy: IfNotPresent
 
 nameOverride: ""
@@ -106,6 +106,8 @@ ingress:
 
 servicemonitor:
   enabled: false
+  namespace: monitoring
+  port: 9090
 
 resources:
   limits:

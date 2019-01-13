@@ -28,9 +28,9 @@ spec:
           args:
           - --config=config.yaml
           ports:
-            - name: http
-              containerPort: {{ .Values.dexK8sAuthenticator.listen_port }}
-              protocol: TCP
+          - name: http
+            containerPort: {{ .Values.dexK8sAuthenticator.listen_port }}
+            protocol: TCP
           livenessProbe:
             httpGet:
               path: {{ template "dex-k8s-authenticator.healthCheckPath" . }}
