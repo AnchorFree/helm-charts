@@ -6,6 +6,7 @@ FOLDER="packages"
 mkdir -p ${FOLDER}
 helm init --client-only
 
+git rebase --onto origin/gh-pages master
 # build each chart separately
 for i in $(ls -1 ${1})
 do
