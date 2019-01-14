@@ -30,6 +30,9 @@ spec:
         image: {{ if eq .Values.acme "v2" }}{{ .Values.image_v2 }}{{ else }}{{ .Values.image }}{{ end }}
         ports:
         - containerPort: 9375
+        envFrom:
+          secretRef:
+            name: {{ .Release.Name }}-aws-secret
         env:
 {{ toYaml .Values.env | indent 10 }}
 {{ if eq .Values.acme "v2" }}
