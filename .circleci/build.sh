@@ -6,6 +6,8 @@ FOLDER="packages"
 mkdir -p ${FOLDER}
 helm init --client-only
 
+git config --global user.email "y.molochko@anchorfree.com"
+git config --global user.name "Yaroslav Molochko"
 git rebase --onto origin/gh-pages master
 # build each chart separately
 for i in $(ls -1 ${1})
