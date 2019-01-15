@@ -3,9 +3,9 @@ entries:
   cert-issuer:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-14T16:42:34.6561795Z
+    created: 2019-01-15T10:46:39.472294895Z
     description: Chart to create Issuer or ClusterIssuer for cert-manager
-    digest: e68956dc229c07c215a7bd4fe4f51ca6d1b3cbdae8c622bba97063bb0603c3d6
+    digest: a4860e248b20c1f4a48ab297949f68cdb063155ef044aecdcb3e0f0fdb24d3b2
     home: none
     name: cert-issuer
     urls:
@@ -14,9 +14,9 @@ entries:
   dex-k8s-authenticator:
   - apiVersion: v1
     appVersion: v1.5.0
-    created: 2019-01-14T16:42:34.656609604Z
+    created: 2019-01-15T10:46:39.472710505Z
     description: Authenticator for using Dex with Kubernetes
-    digest: 1599c50daa4ecc5bc5c849c52d4240ffe246276cf3877f8c43ed68a8db75f83c
+    digest: 5e362fe3e8d3c750183e822a3b6a10223061f79df6feaca2cc303299dabbf56e
     home: https://github.com/mintel/dex-k8s-authenticator
     name: dex-k8s-authenticator
     urls:
@@ -24,8 +24,8 @@ entries:
     version: 1.2.0
   k8s-rumors:
   - apiVersion: v1
-    created: 2019-01-14T16:42:34.656786635Z
-    digest: 91c85da0534715673fed12b292575e32dd37c777d0947968e18245ff71e9892f
+    created: 2019-01-15T10:46:39.472842758Z
+    digest: 4457158a54bf516a665fa13f3a22ed0c5d1741c15aae3f3323f1ba5b076a85ec
     name: k8s-rumors
     urls:
     - https://anchorfree.github.io/helm-charts/packages/k8s-rumors-0.1.tgz
@@ -33,9 +33,9 @@ entries:
   legacy-cert-manager:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-01-14T16:42:34.657003084Z
+    created: 2019-01-15T10:46:39.473029454Z
     description: Chart to create a deployment of legacy cert-manager for non k8s-projects
-    digest: 3c618660a457d18b9240d7110fedf2873195a5b2fdf370bcbfaa5fff393f4a5d
+    digest: b5aaa5136383132bd3df32db5046736331ac2a9f8d8833b5d9b008db6dd27280
     home: https://github.com/AnchorFree/docker-cert-manager/
     name: legacy-cert-manager
     urls:
@@ -44,9 +44,9 @@ entries:
   oidc-starter:
   - apiVersion: v1
     appVersion: v1.1.0
-    created: 2019-01-14T16:42:34.657402884Z
+    created: 2019-01-15T10:46:39.473289526Z
     description: Authenticator for using Dex with Hashicorp Vault
-    digest: 23f528daa769b327ce0d4bc809ac4a36bd42a739e55ece5d1065d9868be4d0f7
+    digest: 08a8bdad6f24f26515dc1231b1acb4a373f02e58e0641bb1257d6c125acd0ebe
     home: https://github.com/AnchorFree/oidc-starter
     name: oidc-starter
     urls:
@@ -55,12 +55,12 @@ entries:
   oidc-static:
   - apiVersion: v1
     appVersion: 1.0.0
-    created: 2019-01-14T16:42:34.657815939Z
+    created: 2019-01-15T10:46:39.473529913Z
     description: Title page for OIDC Authenticators
-    digest: 6ad1e2359fb8813be7a06fdf204f3e9f27b5b7464daaa5f957b8d7c2f28e7f28
+    digest: 3d6d908d4237fb877a088fe21e7c810b5d39e8cce3552ed0a550c7c99937068c
     home: https://github.com/AnchorFree/oidc-static
     name: oidc-static
     urls:
     - https://anchorfree.github.io/helm-charts/packages/oidc-static-1.0.0.tgz
     version: 1.0.0
-generated: 2019-01-14T16:42:34.65581381Z
+generated: 2019-01-15T10:46:39.471972556Z
