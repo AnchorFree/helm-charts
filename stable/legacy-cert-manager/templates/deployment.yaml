@@ -27,7 +27,7 @@ spec:
       containers:
 
       - name: legacy-cert-manager
-        image: {{ if eq .Values.acme "v2" }}{{ .Values.image_v2 }}{{ else }}{{ .Values.image }}{{ end }}
+        image: {{ .Values.image }}
         ports:
         - containerPort: 9375
         envFrom:
@@ -35,10 +35,6 @@ spec:
             name: {{ .Release.Name }}-aws-secret
         env:
 {{ toYaml .Values.env | indent 10 }}
-{{ if eq .Values.acme "v2" }}
-        - name: ACME_URL
-          value: {{ .Values.acme_url }}
-{{ end }}
         volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 10 }}
       restartPolicy: Always
