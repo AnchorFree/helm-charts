@@ -32,7 +32,7 @@ spec:
         - containerPort: 9375
         envFrom:
           - secretRef:
-            name: {{ .Release.Name }}-aws-secret
+              name: {{ .Release.Name }}-aws-secret
         env:
 {{ toYaml .Values.env | indent 10 }}
         volumeMounts:
