@@ -1,0 +1,20 @@
+{{- if .Values.serviceMonitor -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-servicemonitor
+  labels:
+    app: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+    k8s-app: {{ .Chart.Name }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  endpoints:
+  - port: metrics
+{{- end }}
