@@ -1,0 +1,14 @@
+{{ if .Values.sslwatchConfig }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+data:
+  ssl-watch.conf: |
+{{ .Values.sslwatchConfig | indent 4 }}
+{{ end }}
