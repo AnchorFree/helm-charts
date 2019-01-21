@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
+    spec:
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+      containers:
+      - name: ssl-watch
+        image: {{ .Values.image }}
+        ports:
+        - containerPort: 9105
+{{ if .Values.aws_key }}
+        envFrom:
+          - secretRef:
+              name: {{ .Release.Name }}-aws-secret
+{{ end }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+{{ if .Values.sslwatchConfig }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/ssl-watch
+{{ end }}
+      restartPolicy: Always
+{{ if .Values.sslwatchConfig }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-configmap
+{{ end }}
