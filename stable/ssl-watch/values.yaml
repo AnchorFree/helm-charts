@@ -3,7 +3,9 @@ image: "anchorfree/ssl-watch:v1.1.0"
 aws_key: ""
 aws_secret: ""
 port: "9105"
-serviceMonitor: false
+serviceMonitor:
+  enabled: false
+  namespace: monitoring
 env:
 - name: SSLWATCH_CONFIG_DIR
   value: "s3://some-s3-bucket/ssl-watch"
