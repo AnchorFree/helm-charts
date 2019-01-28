@@ -182,6 +182,10 @@ data:
       path: /_cluster/health?local=true
       port: 9200
     initialDelaySeconds: 5
+  volumeHostPath:
+    enabled: false
+    path: /data
+    type: ""
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   nodeAffinity: {}
