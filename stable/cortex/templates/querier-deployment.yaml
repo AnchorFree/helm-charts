@@ -33,7 +33,7 @@ spec:
         image: "{{ .Values.querier.image.repository }}:{{ .Values.querier.image.tag }}"
         imagePullPolicy: {{ .Values.querier.image.pullPolicy }}
         args:
-        - -log.level=info
+        - -log.level=debug
         - -server.http-listen-port=80
         - -querier.frontend-address={{ include "cortex.fullname" . }}-query-frontend.{{ .Release.Namespace }}.svc.cluster.local:9095
         - -querier.timeout=5m
@@ -41,6 +41,7 @@ spec:
         - -querier.query-parallelism=1000
         - -querier.worker-parallelism=100
         - -querier.batch-iterators=true
+        - -querier.ingester-streaming=true
         - -ingester.max-series-per-user={{ .Values.global.ingester.max_series_per_user }}
         - -ingester.max-series-per-metric={{ .Values.global.ingester.max_series_per_metric }}
         - -consul.hostname={{ .Values.global.consul.hostname }}

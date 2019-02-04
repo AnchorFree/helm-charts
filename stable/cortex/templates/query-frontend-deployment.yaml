@@ -38,7 +38,7 @@ spec:
         - -server.grpc-listen-port=9095
         - -querier.max-outstanding-requests-per-tenant=10000
         - -querier.align-querier-with-step=true
-        - -querier.cache-results=false
+        - -querier.cache-results=true
         - -memcached.hostname={{ .Values.global.memcached.hostname }}
         - -memcached.service={{ .Values.global.memcached.service }}
         - -memcached.expiration=24h
