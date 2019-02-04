@@ -1,0 +1,30 @@
+{{- if .Values.distributor.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-distributor
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: distributor
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.distributor.service.type }}
+  ports:
+  - port: {{ .Values.distributor.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  {{- if .Values.distributor.servicemonitor.enabled }}
+  - port: {{ .Values.distributor.servicemonitor.port }}
+    targetPort: http
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: distributor
+{{- end }}

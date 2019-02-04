@@ -1,0 +1,374 @@
+# Default values for cortex.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+nameOverride: ""
+fullnameOverride: ""
+
+global:
+  consul:
+    hostname: ""
+  dynamodb:
+    url: ""
+    original_table_name: ""
+  ingester:
+    max_chunk_idle: ""
+    max_series_per_metric: ""
+    max_series_per_user: ""
+    num_tokens: ""
+  s3:
+    url: ""
+  memcached:
+    hostname: ""
+    service: ""
+  store:
+    index_cache_validity: ""
+    min_chunk_age: ""
+    index_cache_read:
+      memcached:
+        hostname: ""
+        service: ""
+    index_cache_write:
+      memcached:
+        hostname: ""
+        service: ""
+  database:
+    uri: ""
+  validation:
+    reject_old_samples: "false"
+
+  memcachedHostname: ""
+  memcachedReadHostname: ""
+  memcachedWriteHostname: ""
+
+alertmanager:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/alertmanager
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+configs:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/configs
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+distributor:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/distributor
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+ingester:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/ingester
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+  #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+nginx:
+  enabled: true
+
+  replicaCount: 1
+
+  image:
+    repository: nginx
+    tag: 1.14.2
+    pullPolicy: IfNotPresent
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+    exporter:
+      repository: nginx/nginx-prometheus-exporter
+      tag: 0.2.0
+      pullPolicy: IfNotPresent
+      resources: {}
+        # limits:
+        #  cpu: 100m
+        #  memory: 128Mi
+        # requests:
+        #  cpu: 100m
+        #  memory: 128Mi
+
+  service:
+    type: ClusterIP
+    port: 80
+    nodePort: 30080
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+querier:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/querier
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+  #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+query_frontend:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/query-frontend
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    http_port: 80
+    grpc_port: 9095
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+  #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+ruler:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/ruler
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+table_manager:
+  enabled: true
+
+  replicaCount: 1
+
+  servicemonitor:
+    enabled: false
+    namespace:
+    port: 9090
+    labels: {}
+
+  image:
+    repository: quay.io/cortexproject/table-manager
+    tag: master-9334e85d
+    pullPolicy: IfNotPresent
+
+  service:
+    type: ClusterIP
+    port: 80
+
+  resources: {}
+    # limits:
+    #  cpu: 100m
+    #  memory: 128Mi
+    # requests:
+    #  cpu: 100m
+    #  memory: 128Mi
+
+  nodeSelector:
+
+  tolerations:
+
+  affinity:
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  paths: []
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

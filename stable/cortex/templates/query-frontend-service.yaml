@@ -1,0 +1,34 @@
+{{- if .Values.query_frontend.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-query-frontend
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: query-frontend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.query_frontend.service.type }}
+  ports:
+  - port: {{ .Values.query_frontend.service.http_port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: {{ .Values.query_frontend.service.grpc_port }}
+    targetPort: grpc
+    protocol: TCP
+    name: grpc
+  {{- if .Values.query_frontend.servicemonitor.enabled }}
+  - port: {{ .Values.query_frontend.servicemonitor.port }}
+    targetPort: http
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: query-frontend
+{{- end }}

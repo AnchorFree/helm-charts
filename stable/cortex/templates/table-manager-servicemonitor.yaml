@@ -1,0 +1,31 @@
+{{- if .Values.table_manager.enabled -}}
+{{- if .Values.table_manager.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cortex.fullname" . }}-table-manager
+  {{- if .Values.table_manager.servicemonitor.namespace }}
+  namespace: {{ .Values.table_manager.servicemonitor.namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: table-manager
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.table_manager.servicemonitor.labels }}
+    {{- .Values.table_manager.servicemonitor.labels | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: table-manager
+  endpoints:
+  - port: metrics
+{{- end }}
+{{- end }}

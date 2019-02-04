@@ -1,0 +1,81 @@
+{{- if .Values.query_frontend.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-query-frontend
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: query-frontend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.query_frontend.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: query-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: query-frontend
+    spec:
+      containers:
+      - name: query-frontend
+        image: "{{ .Values.query_frontend.image.repository }}:{{ .Values.query_frontend.image.tag }}"
+        imagePullPolicy: {{ .Values.query_frontend.image.pullPolicy }}
+        args:
+        - -log.level=info
+        - -server.http-listen-port=80
+        - -server.grpc-listen-port=9095
+        - -querier.max-outstanding-requests-per-tenant=10000
+        - -querier.align-querier-with-step=true
+        - -querier.cache-results=false
+        - -memcached.hostname={{ .Values.global.memcached.hostname }}
+        - -memcached.service={{ .Values.global.memcached.service }}
+        - -memcached.expiration=24h
+        - -cache.enable-fifocache=true
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        - name: grpc
+          containerPort: 9095
+          protocol: TCP
+        {{/*livenessProbe:*/}}
+          {{/*httpGet:*/}}
+            {{/*path: /api/prom*/}}
+            {{/*port: http*/}}
+            {{/*httpHeaders:*/}}
+            {{/*- name: X-Scope-OrgID*/}}
+              {{/*value: 0*/}}
+        {{/*readinessProbe:*/}}
+          {{/*httpGet:*/}}
+            {{/*path: /api/prom*/}}
+            {{/*port: http*/}}
+            {{/*httpHeaders:*/}}
+            {{/*- name: X-Scope-OrgID*/}}
+              {{/*value: 0*/}}
+        resources:
+          {{- toYaml .Values.query_frontend.resources | nindent 10 }}
+      {{- with .Values.query_frontend.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.query_frontend.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.query_frontend.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

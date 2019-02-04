@@ -1,0 +1,31 @@
+{{- if .Values.nginx.enabled -}}
+{{- if .Values.nginx.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cortex.fullname" . }}-nginx
+  {{- if .Values.nginx.servicemonitor.namespace }}
+  namespace: {{ .Values.nginx.servicemonitor.namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.nginx.servicemonitor.labels }}
+    {{- .Values.nginx.servicemonitor.labels | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: nginx
+  endpoints:
+  - port: metrics
+{{- end }}
+{{- end }}

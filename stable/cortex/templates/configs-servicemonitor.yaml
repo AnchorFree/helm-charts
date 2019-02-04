@@ -1,0 +1,31 @@
+{{- if .Values.configs.enabled -}}
+{{- if .Values.configs.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cortex.fullname" . }}-configs
+  {{- if .Values.configs.servicemonitor.namespace }}
+  namespace: {{ .Values.configs.servicemonitor.namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: configs
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.configs.servicemonitor.labels }}
+    {{- .Values.configs.servicemonitor.labels | toYaml | nindent 4 }}
+{{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: configs
+  endpoints:
+  - port: metrics
+{{- end }}
+{{- end }}

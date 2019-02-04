@@ -1,0 +1,76 @@
+{{- if .Values.distributor.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-distributor
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: distributor
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.distributor.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: distributor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: distributor
+    spec:
+      terminationGracePeriodSeconds: 2400
+      containers:
+      - name: distributor
+        image: "{{ .Values.distributor.image.repository }}:{{ .Values.distributor.image.tag }}"
+        imagePullPolicy: {{ .Values.distributor.image.pullPolicy }}
+        args:
+        - -log.level=info
+        - -server.http-listen-port=80
+        - -consul.hostname={{ .Values.global.consul.hostname }}
+        - -ingester.max-series-per-user={{ .Values.global.ingester.max_series_per_user }}
+        - -ingester.max-series-per-metric={{ .Values.global.ingester.max_series_per_metric }}
+        - -ingester-client.expected-timeseries=1000      # to match setting in queue config
+        - -ingester-client.expected-samples-per-series=2 # default of 10 is way too high
+        - -distributor.shard-by-all-labels=true
+        - -distributor.ingestion-rate-limit=2500000
+        - -distributor.ingestion-burst-size=5000000
+        - -distributor.health-check-ingesters=true
+        - -validation.reject-old-samples={{ .Values.global.validation.reject_old_samples }}
+        - -validation.max-label-names-per-series=25
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        resources:
+          {{- toYaml .Values.distributor.resources | nindent 10 }}
+      {{- with .Values.distributor.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.distributor.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.distributor.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

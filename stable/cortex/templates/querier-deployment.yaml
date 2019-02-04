@@ -1,0 +1,90 @@
+{{- if .Values.querier.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-querier
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: querier
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.querier.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: querier
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: querier
+    spec:
+      containers:
+      - name: querier
+        image: "{{ .Values.querier.image.repository }}:{{ .Values.querier.image.tag }}"
+        imagePullPolicy: {{ .Values.querier.image.pullPolicy }}
+        args:
+        - -log.level=info
+        - -server.http-listen-port=80
+        - -querier.frontend-address={{ include "cortex.fullname" . }}-query-frontend.{{ .Release.Namespace }}.svc.cluster.local:9095
+        - -querier.timeout=5m
+        - -querier.max-concurrent=200
+        - -querier.query-parallelism=1000
+        - -querier.worker-parallelism=100
+        - -querier.batch-iterators=true
+        - -ingester.max-series-per-user={{ .Values.global.ingester.max_series_per_user }}
+        - -ingester.max-series-per-metric={{ .Values.global.ingester.max_series_per_metric }}
+        - -consul.hostname={{ .Values.global.consul.hostname }}
+        - -s3.url={{ .Values.global.s3.url }}
+        - -dynamodb.url={{ .Values.global.dynamodb.url }}
+        - -dynamodb.original-table-name={{ .Values.global.dynamodb.original_table_name }}
+        - -dynamodb.use-periodic-tables=false
+        - -dynamodb.v9-schema-from=2019-01-01
+        - -dynamodb.periodic-table.from=2030-01-01
+        - -memcached.hostname={{ .Values.global.memcached.hostname }}
+        - -memcached.service={{ .Values.global.memcached.service }}
+        - -memcached.expiration=24h
+        - -store.index-cache-read.memcached.hostname={{ .Values.global.store.index_cache_read.memcached.hostname }}
+        - -store.index-cache-read.memcached.service={{ .Values.global.store.index_cache_read.memcached.service }}
+        - -store.index-cache-read.memcached.expiration=24h
+        - -store.index-cache-write.memcached.hostname={{ .Values.global.store.index_cache_write.memcached.hostname }}
+        - -store.index-cache-write.memcached.service={{ .Values.global.store.index_cache_write.memcached.service }}
+        - -store.index-cache-write.memcached.expiration=24h
+        {{/*- -store.min-chunk-age={{ .Values.global.store.min_chunk_age }}*/}}
+        - -cache.enable-fifocache=true
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        resources:
+          {{- toYaml .Values.querier.resources | nindent 10 }}
+      {{- with .Values.querier.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.querier.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.querier.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

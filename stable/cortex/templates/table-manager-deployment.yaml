@@ -1,0 +1,71 @@
+{{- if .Values.table_manager.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-table-manager
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: table-manager
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.table_manager.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: table-manager
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: table-manager
+    spec:
+      containers:
+      - name: table-manager
+        image: "{{ .Values.table_manager.image.repository }}:{{ .Values.table_manager.image.tag }}"
+        imagePullPolicy: {{ .Values.table_manager.image.pullPolicy }}
+        args:
+        - -log.level=info
+        - -server.http-listen-port=80
+        - -dynamodb.original-table-name=cortex-index
+        - -dynamodb.use-periodic-tables=false
+        - -dynamodb.url={{ .Values.global.cortex.dynamodbURL }}
+        - -dynamodb.v9-schema-from=2019-01-01
+        - -dynamodb.periodic-table.from=2030-01-01
+        - -table-manager.throughput-updates-disabled=true
+        - -ingester.flush-period=300s
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /debug/pprof/
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /debug/pprof/
+            port: http
+        resources:
+          {{- toYaml .Values.table_manager.resources | nindent 10 }}
+      {{- with .Values.table_manager.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.table_manager.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.table_manager.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+  {{- end }}

@@ -1,0 +1,30 @@
+{{- if .Values.configs.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-configs
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: configs
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.configs.service.type }}
+  ports:
+  - port: {{ .Values.configs.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  {{- if .Values.configs.servicemonitor.enabled }}
+  - port: {{ .Values.configs.servicemonitor.port }}
+    targetPort: http
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: configs
+{{- end }}

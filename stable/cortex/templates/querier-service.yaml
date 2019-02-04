@@ -1,0 +1,30 @@
+{{- if .Values.querier.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-querier
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: querier
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.querier.service.type }}
+  ports:
+  - port: {{ .Values.querier.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  {{- if .Values.querier.servicemonitor.enabled }}
+  - port: {{ .Values.querier.servicemonitor.port }}
+    targetPort: http
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: querier
+{{- end }}
