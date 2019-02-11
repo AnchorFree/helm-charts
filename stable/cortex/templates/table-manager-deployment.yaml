@@ -33,19 +33,581 @@ spec:
         image: "{{ .Values.table_manager.image.repository }}:{{ .Values.table_manager.image.tag }}"
         imagePullPolicy: {{ .Values.table_manager.image.pullPolicy }}
         args:
-        - -log.level=info
-        - -server.http-listen-port=80
-        - -dynamodb.original-table-name=cortex-index
-        - -dynamodb.use-periodic-tables=false
-        - -dynamodb.url={{ .Values.global.cortex.dynamodbURL }}
-        - -dynamodb.v9-schema-from=2019-01-01
-        - -dynamodb.periodic-table.from=2030-01-01
-        - -table-manager.throughput-updates-disabled=true
-        - -ingester.flush-period=300s
+        {{- if default .Values.cortex.applicationautoscaling_url .Values.table_manager.applicationautoscaling_url }}
+        - -applicationautoscaling.url={{ default .Values.cortex.applicationautoscaling_url .Values.table_manager.applicationautoscaling_url }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_column_key_from .Values.table_manager.bigtable_column_key_from }}
+        - -bigtable.column-key-from={{ default .Values.cortex.bigtable_column_key_from .Values.table_manager.bigtable_column_key_from }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_max_recv_msg_size .Values.table_manager.bigtable_grpc_max_recv_msg_size }}
+        - -bigtable.grpc-max-recv-msg-size={{ default .Values.cortex.bigtable_grpc_max_recv_msg_size .Values.table_manager.bigtable_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_max_send_msg_size .Values.table_manager.bigtable_grpc_max_send_msg_size }}
+        - -bigtable.grpc-max-send-msg-size={{ default .Values.cortex.bigtable_grpc_max_send_msg_size .Values.table_manager.bigtable_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_use_gzip_compression .Values.table_manager.bigtable_grpc_use_gzip_compression }}
+        - -bigtable.grpc-use-gzip-compression={{ default .Values.cortex.bigtable_grpc_use_gzip_compression .Values.table_manager.bigtable_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_instance .Values.table_manager.bigtable_instance }}
+        - -bigtable.instance={{ default .Values.cortex.bigtable_instance .Values.table_manager.bigtable_instance }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_project .Values.table_manager.bigtable_project }}
+        - -bigtable.project={{ default .Values.cortex.bigtable_project .Values.table_manager.bigtable_project }}
+        {{- end }}
+        {{- if default .Values.cortex.boltdb_dir .Values.table_manager.boltdb_dir }}
+        - -boltdb.dir={{ default .Values.cortex.boltdb_dir .Values.table_manager.boltdb_dir }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_addresses .Values.table_manager.cassandra_addresses }}
+        - -cassandra.addresses={{ default .Values.cortex.cassandra_addresses .Values.table_manager.cassandra_addresses }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_auth .Values.table_manager.cassandra_auth }}
+        - -cassandra.auth={{ default .Values.cortex.cassandra_auth .Values.table_manager.cassandra_auth }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_ca_path .Values.table_manager.cassandra_ca_path }}
+        - -cassandra.ca-path={{ default .Values.cortex.cassandra_ca_path .Values.table_manager.cassandra_ca_path }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_consistency .Values.table_manager.cassandra_consistency }}
+        - -cassandra.consistency={{ default .Values.cortex.cassandra_consistency .Values.table_manager.cassandra_consistency }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_disable_initial_host_lookup .Values.table_manager.cassandra_disable_initial_host_lookup }}
+        - -cassandra.disable-initial-host-lookup={{ default .Values.cortex.cassandra_disable_initial_host_lookup .Values.table_manager.cassandra_disable_initial_host_lookup }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_host_verification .Values.table_manager.cassandra_host_verification }}
+        - -cassandra.host-verification={{ default .Values.cortex.cassandra_host_verification .Values.table_manager.cassandra_host_verification }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_keyspace .Values.table_manager.cassandra_keyspace }}
+        - -cassandra.keyspace={{ default .Values.cortex.cassandra_keyspace .Values.table_manager.cassandra_keyspace }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_password .Values.table_manager.cassandra_password }}
+        - -cassandra.password={{ default .Values.cortex.cassandra_password .Values.table_manager.cassandra_password }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_port .Values.table_manager.cassandra_port }}
+        - -cassandra.port={{ default .Values.cortex.cassandra_port .Values.table_manager.cassandra_port }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_replication_factor .Values.table_manager.cassandra_replication_factor }}
+        - -cassandra.replication-factor={{ default .Values.cortex.cassandra_replication_factor .Values.table_manager.cassandra_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_ssl .Values.table_manager.cassandra_ssl }}
+        - -cassandra.ssl={{ default .Values.cortex.cassandra_ssl .Values.table_manager.cassandra_ssl }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_timeout .Values.table_manager.cassandra_timeout }}
+        - -cassandra.timeout={{ default .Values.cortex.cassandra_timeout .Values.table_manager.cassandra_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_username .Values.table_manager.cassandra_username }}
+        - -cassandra.username={{ default .Values.cortex.cassandra_username .Values.table_manager.cassandra_username }}
+        {{- end }}
+        {{- if default .Values.cortex.chunk_storage_client .Values.table_manager.chunk_storage_client }}
+        - -chunk.storage-client={{ default .Values.cortex.chunk_storage_client .Values.table_manager.chunk_storage_client }}
+        {{- end }}
+        {{- if default .Values.cortex.config_yaml .Values.table_manager.config_yaml }}
+        - -config-yaml={{ default .Values.cortex.config_yaml .Values.table_manager.config_yaml }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_acltoken .Values.table_manager.consul_acltoken }}
+        - -consul.acltoken={{ default .Values.cortex.consul_acltoken .Values.table_manager.consul_acltoken }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_client_timeout .Values.table_manager.consul_client_timeout }}
+        - -consul.client-timeout={{ default .Values.cortex.consul_client_timeout .Values.table_manager.consul_client_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_consistent_reads .Values.table_manager.consul_consistent_reads }}
+        - -consul.consistent-reads={{ default .Values.cortex.consul_consistent_reads .Values.table_manager.consul_consistent_reads }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_hostname .Values.table_manager.consul_hostname }}
+        - -consul.hostname={{ default .Values.cortex.consul_hostname .Values.table_manager.consul_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_prefix .Values.table_manager.consul_prefix }}
+        - -consul.prefix={{ default .Values.cortex.consul_prefix .Values.table_manager.consul_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_replication_factor .Values.table_manager.distributor_replication_factor }}
+        - -distributor.replication-factor={{ default .Values.cortex.distributor_replication_factor .Values.table_manager.distributor_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_api_limit .Values.table_manager.dynamodb_api_limit }}
+        - -dynamodb.api-limit={{ default .Values.cortex.dynamodb_api_limit .Values.table_manager.dynamodb_api_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_base64_buckets_from .Values.table_manager.dynamodb_base64_buckets_from }}
+        - -dynamodb.base64-buckets-from={{ default .Values.cortex.dynamodb_base64_buckets_from .Values.table_manager.dynamodb_base64_buckets_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_chunk_table_enable_ondemand_throughput_mode }}
+        - -dynamodb.chunk-table.enable-ondemand-throughput-mode={{ default .Values.cortex.dynamodb_chunk_table_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_chunk_table_enable_ondemand_throughput_mode }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_from .Values.table_manager.dynamodb_chunk_table_from }}
+        - -dynamodb.chunk-table.from={{ default .Values.cortex.dynamodb_chunk_table_from .Values.table_manager.dynamodb_chunk_table_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_chunk_table_inactive_enable_ondemand_throughput_mode }}
+        - -dynamodb.chunk-table.inactive-enable-ondemand-throughput-mode={{ default .Values.cortex.dynamodb_chunk_table_inactive_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_chunk_table_inactive_enable_ondemand_throughput_mode }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput }}
+        - -dynamodb.chunk-table.inactive-read-throughput={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_last_n .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_last_n }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale-last-n={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_last_n .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_last_n }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_enabled }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.enabled={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_in_cooldown }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_max_capacity }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_min_capacity }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_out_cooldown }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_role_arn }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_target_value }}
+        - -dynamodb.chunk-table.inactive-read-throughput.scale.target-value={{ default .Values.cortex.dynamodb_chunk_table_inactive_read_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_inactive_read_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput }}
+        - -dynamodb.chunk-table.inactive-write-throughput={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_last_n .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_last_n }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale-last-n={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_last_n .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_last_n }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_enabled }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.enabled={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_in_cooldown }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_max_capacity }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_min_capacity }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_out_cooldown }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_role_arn }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_target_value }}
+        - -dynamodb.chunk-table.inactive-write-throughput.scale.target-value={{ default .Values.cortex.dynamodb_chunk_table_inactive_write_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_inactive_write_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_period .Values.table_manager.dynamodb_chunk_table_period }}
+        - -dynamodb.chunk-table.period={{ default .Values.cortex.dynamodb_chunk_table_period .Values.table_manager.dynamodb_chunk_table_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_prefix .Values.table_manager.dynamodb_chunk_table_prefix }}
+        - -dynamodb.chunk-table.prefix={{ default .Values.cortex.dynamodb_chunk_table_prefix .Values.table_manager.dynamodb_chunk_table_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput .Values.table_manager.dynamodb_chunk_table_read_throughput }}
+        - -dynamodb.chunk-table.read-throughput={{ default .Values.cortex.dynamodb_chunk_table_read_throughput .Values.table_manager.dynamodb_chunk_table_read_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_enabled }}
+        - -dynamodb.chunk-table.read-throughput.scale.enabled={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_in_cooldown }}
+        - -dynamodb.chunk-table.read-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_max_capacity }}
+        - -dynamodb.chunk-table.read-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_min_capacity }}
+        - -dynamodb.chunk-table.read-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_out_cooldown }}
+        - -dynamodb.chunk-table.read-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_role_arn }}
+        - -dynamodb.chunk-table.read-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_target_value }}
+        - -dynamodb.chunk-table.read-throughput.scale.target-value={{ default .Values.cortex.dynamodb_chunk_table_read_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_read_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_tag .Values.table_manager.dynamodb_chunk_table_tag }}
+        - -dynamodb.chunk-table.tag={{ default .Values.cortex.dynamodb_chunk_table_tag .Values.table_manager.dynamodb_chunk_table_tag }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput .Values.table_manager.dynamodb_chunk_table_write_throughput }}
+        - -dynamodb.chunk-table.write-throughput={{ default .Values.cortex.dynamodb_chunk_table_write_throughput .Values.table_manager.dynamodb_chunk_table_write_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_enabled }}
+        - -dynamodb.chunk-table.write-throughput.scale.enabled={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_enabled .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_in_cooldown }}
+        - -dynamodb.chunk-table.write-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_max_capacity }}
+        - -dynamodb.chunk-table.write-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_min_capacity }}
+        - -dynamodb.chunk-table.write-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_out_cooldown }}
+        - -dynamodb.chunk-table.write-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_role_arn }}
+        - -dynamodb.chunk-table.write-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_role_arn .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_target_value }}
+        - -dynamodb.chunk-table.write-throughput.scale.target-value={{ default .Values.cortex.dynamodb_chunk_table_write_throughput_scale_target_value .Values.table_manager.dynamodb_chunk_table_write_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_gang_size .Values.table_manager.dynamodb_chunk_gang_size }}
+        - -dynamodb.chunk.gang.size={{ default .Values.cortex.dynamodb_chunk_gang_size .Values.table_manager.dynamodb_chunk_gang_size }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_get_max_parallelism .Values.table_manager.dynamodb_chunk_get_max_parallelism }}
+        - -dynamodb.chunk.get.max.parallelism={{ default .Values.cortex.dynamodb_chunk_get_max_parallelism .Values.table_manager.dynamodb_chunk_get_max_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_daily_buckets_from .Values.table_manager.dynamodb_daily_buckets_from }}
+        - -dynamodb.daily-buckets-from={{ default .Values.cortex.dynamodb_daily_buckets_from .Values.table_manager.dynamodb_daily_buckets_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_max_backoff .Values.table_manager.dynamodb_max_backoff }}
+        - -dynamodb.max-backoff={{ default .Values.cortex.dynamodb_max_backoff .Values.table_manager.dynamodb_max_backoff }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_max_retries .Values.table_manager.dynamodb_max_retries }}
+        - -dynamodb.max-retries={{ default .Values.cortex.dynamodb_max_retries .Values.table_manager.dynamodb_max_retries }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_min_backoff .Values.table_manager.dynamodb_min_backoff }}
+        - -dynamodb.min-backoff={{ default .Values.cortex.dynamodb_min_backoff .Values.table_manager.dynamodb_min_backoff }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_original_table_name .Values.table_manager.dynamodb_original_table_name }}
+        - -dynamodb.original-table-name={{ default .Values.cortex.dynamodb_original_table_name .Values.table_manager.dynamodb_original_table_name }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_periodic_table_enable_ondemand_throughput_mode }}
+        - -dynamodb.periodic-table.enable-ondemand-throughput-mode={{ default .Values.cortex.dynamodb_periodic_table_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_periodic_table_enable_ondemand_throughput_mode }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_from .Values.table_manager.dynamodb_periodic_table_from }}
+        - -dynamodb.periodic-table.from={{ default .Values.cortex.dynamodb_periodic_table_from .Values.table_manager.dynamodb_periodic_table_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_grace_period .Values.table_manager.dynamodb_periodic_table_grace_period }}
+        - -dynamodb.periodic-table.grace-period={{ default .Values.cortex.dynamodb_periodic_table_grace_period .Values.table_manager.dynamodb_periodic_table_grace_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_periodic_table_inactive_enable_ondemand_throughput_mode }}
+        - -dynamodb.periodic-table.inactive-enable-ondemand-throughput-mode={{ default .Values.cortex.dynamodb_periodic_table_inactive_enable_ondemand_throughput_mode .Values.table_manager.dynamodb_periodic_table_inactive_enable_ondemand_throughput_mode }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput }}
+        - -dynamodb.periodic-table.inactive-read-throughput={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_last_n .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_last_n }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale-last-n={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_last_n .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_last_n }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_enabled }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.enabled={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_in_cooldown }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_max_capacity }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_min_capacity }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_out_cooldown }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_role_arn }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_target_value }}
+        - -dynamodb.periodic-table.inactive-read-throughput.scale.target-value={{ default .Values.cortex.dynamodb_periodic_table_inactive_read_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_inactive_read_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput }}
+        - -dynamodb.periodic-table.inactive-write-throughput={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_last_n .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_last_n }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale-last-n={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_last_n .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_last_n }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_enabled }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.enabled={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_in_cooldown }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_max_capacity }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_min_capacity }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_out_cooldown }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_role_arn }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_target_value }}
+        - -dynamodb.periodic-table.inactive-write-throughput.scale.target-value={{ default .Values.cortex.dynamodb_periodic_table_inactive_write_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_inactive_write_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_period .Values.table_manager.dynamodb_periodic_table_period }}
+        - -dynamodb.periodic-table.period={{ default .Values.cortex.dynamodb_periodic_table_period .Values.table_manager.dynamodb_periodic_table_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_prefix .Values.table_manager.dynamodb_periodic_table_prefix }}
+        - -dynamodb.periodic-table.prefix={{ default .Values.cortex.dynamodb_periodic_table_prefix .Values.table_manager.dynamodb_periodic_table_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput .Values.table_manager.dynamodb_periodic_table_read_throughput }}
+        - -dynamodb.periodic-table.read-throughput={{ default .Values.cortex.dynamodb_periodic_table_read_throughput .Values.table_manager.dynamodb_periodic_table_read_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_enabled }}
+        - -dynamodb.periodic-table.read-throughput.scale.enabled={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_in_cooldown }}
+        - -dynamodb.periodic-table.read-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_max_capacity }}
+        - -dynamodb.periodic-table.read-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_min_capacity }}
+        - -dynamodb.periodic-table.read-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_out_cooldown }}
+        - -dynamodb.periodic-table.read-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_role_arn }}
+        - -dynamodb.periodic-table.read-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_target_value }}
+        - -dynamodb.periodic-table.read-throughput.scale.target-value={{ default .Values.cortex.dynamodb_periodic_table_read_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_read_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_tag .Values.table_manager.dynamodb_periodic_table_tag }}
+        - -dynamodb.periodic-table.tag={{ default .Values.cortex.dynamodb_periodic_table_tag .Values.table_manager.dynamodb_periodic_table_tag }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput .Values.table_manager.dynamodb_periodic_table_write_throughput }}
+        - -dynamodb.periodic-table.write-throughput={{ default .Values.cortex.dynamodb_periodic_table_write_throughput .Values.table_manager.dynamodb_periodic_table_write_throughput }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_enabled }}
+        - -dynamodb.periodic-table.write-throughput.scale.enabled={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_enabled .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_in_cooldown }}
+        - -dynamodb.periodic-table.write-throughput.scale.in-cooldown={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_in_cooldown .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_in_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_max_capacity }}
+        - -dynamodb.periodic-table.write-throughput.scale.max-capacity={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_max_capacity .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_max_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_min_capacity }}
+        - -dynamodb.periodic-table.write-throughput.scale.min-capacity={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_min_capacity .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_min_capacity }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_out_cooldown }}
+        - -dynamodb.periodic-table.write-throughput.scale.out-cooldown={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_out_cooldown .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_out_cooldown }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_role_arn }}
+        - -dynamodb.periodic-table.write-throughput.scale.role-arn={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_role_arn .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_role_arn }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_target_value }}
+        - -dynamodb.periodic-table.write-throughput.scale.target-value={{ default .Values.cortex.dynamodb_periodic_table_write_throughput_scale_target_value .Values.table_manager.dynamodb_periodic_table_write_throughput_scale_target_value }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_poll_interval .Values.table_manager.dynamodb_poll_interval }}
+        - -dynamodb.poll-interval={{ default .Values.cortex.dynamodb_poll_interval .Values.table_manager.dynamodb_poll_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_url .Values.table_manager.dynamodb_url }}
+        - -dynamodb.url={{ default .Values.cortex.dynamodb_url .Values.table_manager.dynamodb_url }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_use_periodic_tables .Values.table_manager.dynamodb_use_periodic_tables }}
+        - -dynamodb.use-periodic-tables={{ default .Values.cortex.dynamodb_use_periodic_tables .Values.table_manager.dynamodb_use_periodic_tables }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v4_schema_from .Values.table_manager.dynamodb_v4_schema_from }}
+        - -dynamodb.v4-schema-from={{ default .Values.cortex.dynamodb_v4_schema_from .Values.table_manager.dynamodb_v4_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v5_schema_from .Values.table_manager.dynamodb_v5_schema_from }}
+        - -dynamodb.v5-schema-from={{ default .Values.cortex.dynamodb_v5_schema_from .Values.table_manager.dynamodb_v5_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v6_schema_from .Values.table_manager.dynamodb_v6_schema_from }}
+        - -dynamodb.v6-schema-from={{ default .Values.cortex.dynamodb_v6_schema_from .Values.table_manager.dynamodb_v6_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v9_schema_from .Values.table_manager.dynamodb_v9_schema_from }}
+        - -dynamodb.v9-schema-from={{ default .Values.cortex.dynamodb_v9_schema_from .Values.table_manager.dynamodb_v9_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.gcs_bucketname .Values.table_manager.gcs_bucketname }}
+        - -gcs.bucketname={{ default .Values.cortex.gcs_bucketname .Values.table_manager.gcs_bucketname }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.table_manager.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.table_manager.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_ID .Values.table_manager.ingester_ID }}
+        - -ingester.ID={{ default .Values.cortex.ingester_ID .Values.table_manager.ingester_ID }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_addr .Values.table_manager.ingester_addr }}
+        - -ingester.addr={{ default .Values.cortex.ingester_addr .Values.table_manager.ingester_addr }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_chunk_age_jitter .Values.table_manager.ingester_chunk_age_jitter }}
+        - -ingester.chunk-age-jitter={{ default .Values.cortex.ingester_chunk_age_jitter .Values.table_manager.ingester_chunk_age_jitter }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_claim_on_rollout .Values.table_manager.ingester_claim_on_rollout }}
+        - -ingester.claim-on-rollout={{ default .Values.cortex.ingester_claim_on_rollout .Values.table_manager.ingester_claim_on_rollout }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_concurrent_flushes .Values.table_manager.ingester_concurrent_flushes }}
+        - -ingester.concurrent-flushes={{ default .Values.cortex.ingester_concurrent_flushes .Values.table_manager.ingester_concurrent_flushes }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_flush_op_timeout .Values.table_manager.ingester_flush_op_timeout }}
+        - -ingester.flush-op-timeout={{ default .Values.cortex.ingester_flush_op_timeout .Values.table_manager.ingester_flush_op_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_flush_period .Values.table_manager.ingester_flush_period }}
+        - -ingester.flush-period={{ default .Values.cortex.ingester_flush_period .Values.table_manager.ingester_flush_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_heartbeat_period .Values.table_manager.ingester_heartbeat_period }}
+        - -ingester.heartbeat-period={{ default .Values.cortex.ingester_heartbeat_period .Values.table_manager.ingester_heartbeat_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_interface .Values.table_manager.ingester_interface }}
+        - -ingester.interface={{ default .Values.cortex.ingester_interface .Values.table_manager.ingester_interface }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_join_after .Values.table_manager.ingester_join_after }}
+        - -ingester.join-after={{ default .Values.cortex.ingester_join_after .Values.table_manager.ingester_join_after }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_chunk_age .Values.table_manager.ingester_max_chunk_age }}
+        - -ingester.max-chunk-age={{ default .Values.cortex.ingester_max_chunk_age .Values.table_manager.ingester_max_chunk_age }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_chunk_idle .Values.table_manager.ingester_max_chunk_idle }}
+        - -ingester.max-chunk-idle={{ default .Values.cortex.ingester_max_chunk_idle .Values.table_manager.ingester_max_chunk_idle }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_min_ready_duration .Values.table_manager.ingester_min_ready_duration }}
+        - -ingester.min-ready-duration={{ default .Values.cortex.ingester_min_ready_duration .Values.table_manager.ingester_min_ready_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_normalise_tokens .Values.table_manager.ingester_normalise_tokens }}
+        - -ingester.normalise-tokens={{ default .Values.cortex.ingester_normalise_tokens .Values.table_manager.ingester_normalise_tokens }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_num_tokens .Values.table_manager.ingester_num_tokens }}
+        - -ingester.num-tokens={{ default .Values.cortex.ingester_num_tokens .Values.table_manager.ingester_num_tokens }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_port .Values.table_manager.ingester_port }}
+        - -ingester.port={{ default .Values.cortex.ingester_port .Values.table_manager.ingester_port }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_rate_update_period .Values.table_manager.ingester_rate_update_period }}
+        - -ingester.rate-update-period={{ default .Values.cortex.ingester_rate_update_period .Values.table_manager.ingester_rate_update_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_retain_period .Values.table_manager.ingester_retain_period }}
+        - -ingester.retain-period={{ default .Values.cortex.ingester_retain_period .Values.table_manager.ingester_retain_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_search_pending_for .Values.table_manager.ingester_search_pending_for }}
+        - -ingester.search-pending-for={{ default .Values.cortex.ingester_search_pending_for .Values.table_manager.ingester_search_pending_for }}
+        {{- end }}
+        {{- if default .Values.cortex.local_chunk_directory .Values.table_manager.local_chunk_directory }}
+        - -local.chunk-directory={{ default .Values.cortex.local_chunk_directory .Values.table_manager.local_chunk_directory }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.table_manager.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.table_manager.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_error_rate_query .Values.table_manager.metrics_error_rate_query }}
+        - -metrics.error-rate-query={{ default .Values.cortex.metrics_error_rate_query .Values.table_manager.metrics_error_rate_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_queue_length_query .Values.table_manager.metrics_queue_length_query }}
+        - -metrics.queue-length-query={{ default .Values.cortex.metrics_queue_length_query .Values.table_manager.metrics_queue_length_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_read_error_query .Values.table_manager.metrics_read_error_query }}
+        - -metrics.read-error-query={{ default .Values.cortex.metrics_read_error_query .Values.table_manager.metrics_read_error_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_read_usage_query .Values.table_manager.metrics_read_usage_query }}
+        - -metrics.read-usage-query={{ default .Values.cortex.metrics_read_usage_query .Values.table_manager.metrics_read_usage_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_scale_up_factor .Values.table_manager.metrics_scale_up_factor }}
+        - -metrics.scale-up-factor={{ default .Values.cortex.metrics_scale_up_factor .Values.table_manager.metrics_scale_up_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_target_queue_length .Values.table_manager.metrics_target_queue_length }}
+        - -metrics.target-queue-length={{ default .Values.cortex.metrics_target_queue_length .Values.table_manager.metrics_target_queue_length }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_url .Values.table_manager.metrics_url }}
+        - -metrics.url={{ default .Values.cortex.metrics_url .Values.table_manager.metrics_url }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_usage_query .Values.table_manager.metrics_usage_query }}
+        - -metrics.usage-query={{ default .Values.cortex.metrics_usage_query .Values.table_manager.metrics_usage_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_heartbeat_timeout .Values.table_manager.ring_heartbeat_timeout }}
+        - -ring.heartbeat-timeout={{ default .Values.cortex.ring_heartbeat_timeout .Values.table_manager.ring_heartbeat_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_store .Values.table_manager.ring_store }}
+        - -ring.store={{ default .Values.cortex.ring_store .Values.table_manager.ring_store }}
+        {{- end }}
+        {{- if default .Values.cortex.s3_url .Values.table_manager.s3_url }}
+        - -s3.url={{ default .Values.cortex.s3_url .Values.table_manager.s3_url }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.table_manager.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.table_manager.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.table_manager.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.table_manager.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.table_manager.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.table_manager.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.table_manager.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.table_manager.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.table_manager.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.table_manager.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.table_manager.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.table_manager.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.table_manager.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.table_manager.server_register_instrumentation }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_cache_enable_diskcache .Values.table_manager.store_index_cache_read_cache_enable_diskcache }}
+        - -store.index-cache-read.cache.enable-diskcache={{ default .Values.cortex.store_index_cache_read_cache_enable_diskcache .Values.table_manager.store_index_cache_read_cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_cache_enable_fifocache .Values.table_manager.store_index_cache_read_cache_enable_fifocache }}
+        - -store.index-cache-read.cache.enable-fifocache={{ default .Values.cortex.store_index_cache_read_cache_enable_fifocache .Values.table_manager.store_index_cache_read_cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_default_validity .Values.table_manager.store_index_cache_read_default_validity }}
+        - -store.index-cache-read.default-validity={{ default .Values.cortex.store_index_cache_read_default_validity .Values.table_manager.store_index_cache_read_default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_diskcache_path .Values.table_manager.store_index_cache_read_diskcache_path }}
+        - -store.index-cache-read.diskcache.path={{ default .Values.cortex.store_index_cache_read_diskcache_path .Values.table_manager.store_index_cache_read_diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_diskcache_size .Values.table_manager.store_index_cache_read_diskcache_size }}
+        - -store.index-cache-read.diskcache.size={{ default .Values.cortex.store_index_cache_read_diskcache_size .Values.table_manager.store_index_cache_read_diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_fifocache_duration .Values.table_manager.store_index_cache_read_fifocache_duration }}
+        - -store.index-cache-read.fifocache.duration={{ default .Values.cortex.store_index_cache_read_fifocache_duration .Values.table_manager.store_index_cache_read_fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_fifocache_size .Values.table_manager.store_index_cache_read_fifocache_size }}
+        - -store.index-cache-read.fifocache.size={{ default .Values.cortex.store_index_cache_read_fifocache_size .Values.table_manager.store_index_cache_read_fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcache_write_back_buffer .Values.table_manager.store_index_cache_read_memcache_write_back_buffer }}
+        - -store.index-cache-read.memcache.write-back-buffer={{ default .Values.cortex.store_index_cache_read_memcache_write_back_buffer .Values.table_manager.store_index_cache_read_memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcache_write_back_goroutines .Values.table_manager.store_index_cache_read_memcache_write_back_goroutines }}
+        - -store.index-cache-read.memcache.write-back-goroutines={{ default .Values.cortex.store_index_cache_read_memcache_write_back_goroutines .Values.table_manager.store_index_cache_read_memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_batchsize .Values.table_manager.store_index_cache_read_memcached_batchsize }}
+        - -store.index-cache-read.memcached.batchsize={{ default .Values.cortex.store_index_cache_read_memcached_batchsize .Values.table_manager.store_index_cache_read_memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_expiration .Values.table_manager.store_index_cache_read_memcached_expiration }}
+        - -store.index-cache-read.memcached.expiration={{ default .Values.cortex.store_index_cache_read_memcached_expiration .Values.table_manager.store_index_cache_read_memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_hostname .Values.table_manager.store_index_cache_read_memcached_hostname }}
+        - -store.index-cache-read.memcached.hostname={{ default .Values.cortex.store_index_cache_read_memcached_hostname .Values.table_manager.store_index_cache_read_memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_max_idle_conns .Values.table_manager.store_index_cache_read_memcached_max_idle_conns }}
+        - -store.index-cache-read.memcached.max-idle-conns={{ default .Values.cortex.store_index_cache_read_memcached_max_idle_conns .Values.table_manager.store_index_cache_read_memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_parallelism .Values.table_manager.store_index_cache_read_memcached_parallelism }}
+        - -store.index-cache-read.memcached.parallelism={{ default .Values.cortex.store_index_cache_read_memcached_parallelism .Values.table_manager.store_index_cache_read_memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_service .Values.table_manager.store_index_cache_read_memcached_service }}
+        - -store.index-cache-read.memcached.service={{ default .Values.cortex.store_index_cache_read_memcached_service .Values.table_manager.store_index_cache_read_memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_timeout .Values.table_manager.store_index_cache_read_memcached_timeout }}
+        - -store.index-cache-read.memcached.timeout={{ default .Values.cortex.store_index_cache_read_memcached_timeout .Values.table_manager.store_index_cache_read_memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_update_interval .Values.table_manager.store_index_cache_read_memcached_update_interval }}
+        - -store.index-cache-read.memcached.update-interval={{ default .Values.cortex.store_index_cache_read_memcached_update_interval .Values.table_manager.store_index_cache_read_memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_validity .Values.table_manager.store_index_cache_validity }}
+        - -store.index-cache-validity={{ default .Values.cortex.store_index_cache_validity .Values.table_manager.store_index_cache_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.table_manager_retention_deletes_enabled .Values.table_manager.table_manager_retention_deletes_enabled }}
+        - -table-manager.retention-deletes-enabled={{ default .Values.cortex.table_manager_retention_deletes_enabled .Values.table_manager.table_manager_retention_deletes_enabled }}
+        {{- end }}
+        {{- if default .Values.cortex.table_manager_retention_period .Values.table_manager.table_manager_retention_period }}
+        - -table-manager.retention-period={{ default .Values.cortex.table_manager_retention_period .Values.table_manager.table_manager_retention_period }}
+        {{- end }}
+        {{- if default .Values.cortex.table_manager_throughput_updates_disabled .Values.table_manager.table_manager_throughput_updates_disabled }}
+        - -table-manager.throughput-updates-disabled={{ default .Values.cortex.table_manager_throughput_updates_disabled .Values.table_manager.table_manager_throughput_updates_disabled }}
+        {{- end }}
         ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.table_manager.server_http_listen_port }}
         - name: http
-          containerPort: 80
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.table_manager.server_http_listen_port }}
           protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.table_manager.server_grpc_listen_port }}
+        - name: grpc
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.table_manager.server_grpc_listen_port }}
+          protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /debug/pprof/

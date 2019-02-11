@@ -12,11 +12,22 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.table_manager.service.type }}
+  {{- if and .Values.table_manager.service.clusterIP ( eq .Values.table_manager.service.type "ClusterIP" ) }}
+  clusterIP: {{ .Values.table_manager.service.clusterIP }}
+  {{- end }}
   ports:
-  - port: {{ .Values.table_manager.service.port }}
+  {{- if default .Values.cortex.server_http_listen_port .Values.table_manager.server_http_listen_port }}
+  - port: {{ .Values.table_manager.service.httpPort }}
     targetPort: http
     protocol: TCP
     name: http
+  {{- end }}
+  {{- if default .Values.cortex.server_grpc_listen_port .Values.table_manager.server_grpc_listen_port }}
+  - port: {{ .Values.table_manager.service.grpcPort }}
+    targetPort: grpc
+    protocol: TCP
+    name: http
+  {{- end }}
   {{- if .Values.table_manager.servicemonitor.enabled }}
   - port: {{ .Values.table_manager.servicemonitor.port }}
     targetPort: http

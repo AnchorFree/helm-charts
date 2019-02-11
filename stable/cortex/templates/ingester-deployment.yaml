@@ -35,57 +35,557 @@ spec:
         image: "{{ .Values.ingester.image.repository }}:{{ .Values.ingester.image.tag }}"
         imagePullPolicy: {{ .Values.ingester.image.pullPolicy }}
         args:
-        - -log.level=info
-        - -server.http-listen-port=80
-        - -server.grpc-listen-port=9095
-        - -ingester.num-tokens={{ .Values.global.ingester.num_tokens }}
-        - -ingester.join-after=30s
-        - -ingester.search-pending-for=2m
-        - -ingester.claim-on-rollout=true
-        - -ingester.chunk-encoding=3
-        - -ingester.normalise-tokens=true
-        - -ingester.max-chunk-idle={{ .Values.global.ingester.max_chunk_idle }}
-        - -ingester.retain-period=10m10s
-        - -ingester.max-series-per-user={{ .Values.global.ingester.max_series_per_user }}
-        - -ingester.max-series-per-metric={{ .Values.global.ingester.max_series_per_metric }}
-        - -ingester-client.expected-timeseries=1000     # to match setting in queue config
-        - -ingester-client.expected-samples-per-series=2 # default of 10 is way too high
-        - -validation.reject-old-samples={{ .Values.global.validation.reject_old_samples }}
-        - -validation.max-label-names-per-series=25
-        - -consul.hostname={{ .Values.global.consul.hostname }}
-        - -s3.url={{ .Values.global.s3.url }}
-        - -dynamodb.url={{ .Values.global.dynamodb.url }}
-        - -dynamodb.original-table-name={{ .Values.global.dynamodb.original_table_name }}
-        - -dynamodb.use-periodic-tables=false
-        - -dynamodb.v9-schema-from=2019-01-01
-        - -dynamodb.periodic-table.from=2030-01-01
-        - -distributor.ingestion-rate-limit=2500000
-        - -distributor.ingestion-burst-size=5000000
-        - -memcached.hostname={{ .Values.global.memcached.hostname }}
-        - -memcached.service={{ .Values.global.memcached.service }}
-        - -memcached.expiration=24h
-        - -store.index-cache-read.memcached.hostname={{ .Values.global.store.index_cache_read.memcached.hostname }}
-        - -store.index-cache-read.memcached.service={{ .Values.global.store.index_cache_read.memcached.service }}
-        - -store.index-cache-read.memcached.expiration=24h
-        - -store.index-cache-write.memcached.hostname={{ .Values.global.store.index_cache_write.memcached.hostname }}
-        - -store.index-cache-write.memcached.service={{ .Values.global.store.index_cache_write.memcached.service }}
-        - -store.index-cache-write.memcached.expiration=24h
-        - -cache.enable-fifocache=true
-        - -event.sample-rate=1000
+        {{- if default .Values.cortex.applicationautoscaling_url .Values.ingester.applicationautoscaling_url }}
+        - -applicationautoscaling.url={{ default .Values.cortex.applicationautoscaling_url .Values.ingester.applicationautoscaling_url }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_column_key_from .Values.ingester.bigtable_column_key_from }}
+        - -bigtable.column-key-from={{ default .Values.cortex.bigtable_column_key_from .Values.ingester.bigtable_column_key_from }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_max_recv_msg_size .Values.ingester.bigtable_grpc_max_recv_msg_size }}
+        - -bigtable.grpc-max-recv-msg-size={{ default .Values.cortex.bigtable_grpc_max_recv_msg_size .Values.ingester.bigtable_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_max_send_msg_size .Values.ingester.bigtable_grpc_max_send_msg_size }}
+        - -bigtable.grpc-max-send-msg-size={{ default .Values.cortex.bigtable_grpc_max_send_msg_size .Values.ingester.bigtable_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_use_gzip_compression .Values.ingester.bigtable_grpc_use_gzip_compression }}
+        - -bigtable.grpc-use-gzip-compression={{ default .Values.cortex.bigtable_grpc_use_gzip_compression .Values.ingester.bigtable_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_instance .Values.ingester.bigtable_instance }}
+        - -bigtable.instance={{ default .Values.cortex.bigtable_instance .Values.ingester.bigtable_instance }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_project .Values.ingester.bigtable_project }}
+        - -bigtable.project={{ default .Values.cortex.bigtable_project .Values.ingester.bigtable_project }}
+        {{- end }}
+        {{- if default .Values.cortex.boltdb_dir .Values.ingester.boltdb_dir }}
+        - -boltdb.dir={{ default .Values.cortex.boltdb_dir .Values.ingester.boltdb_dir }}
+        {{- end }}
+        {{- if default .Values.cortex.cache_enable_diskcache .Values.ingester.cache_enable_diskcache }}
+        - -cache.enable-diskcache={{ default .Values.cortex.cache_enable_diskcache .Values.ingester.cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.cache_enable_fifocache .Values.ingester.cache_enable_fifocache }}
+        - -cache.enable-fifocache={{ default .Values.cortex.cache_enable_fifocache .Values.ingester.cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_addresses .Values.ingester.cassandra_addresses }}
+        - -cassandra.addresses={{ default .Values.cortex.cassandra_addresses .Values.ingester.cassandra_addresses }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_auth .Values.ingester.cassandra_auth }}
+        - -cassandra.auth={{ default .Values.cortex.cassandra_auth .Values.ingester.cassandra_auth }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_ca_path .Values.ingester.cassandra_ca_path }}
+        - -cassandra.ca-path={{ default .Values.cortex.cassandra_ca_path .Values.ingester.cassandra_ca_path }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_consistency .Values.ingester.cassandra_consistency }}
+        - -cassandra.consistency={{ default .Values.cortex.cassandra_consistency .Values.ingester.cassandra_consistency }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_disable_initial_host_lookup .Values.ingester.cassandra_disable_initial_host_lookup }}
+        - -cassandra.disable-initial-host-lookup={{ default .Values.cortex.cassandra_disable_initial_host_lookup .Values.ingester.cassandra_disable_initial_host_lookup }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_host_verification .Values.ingester.cassandra_host_verification }}
+        - -cassandra.host-verification={{ default .Values.cortex.cassandra_host_verification .Values.ingester.cassandra_host_verification }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_keyspace .Values.ingester.cassandra_keyspace }}
+        - -cassandra.keyspace={{ default .Values.cortex.cassandra_keyspace .Values.ingester.cassandra_keyspace }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_password .Values.ingester.cassandra_password }}
+        - -cassandra.password={{ default .Values.cortex.cassandra_password .Values.ingester.cassandra_password }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_port .Values.ingester.cassandra_port }}
+        - -cassandra.port={{ default .Values.cortex.cassandra_port .Values.ingester.cassandra_port }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_replication_factor .Values.ingester.cassandra_replication_factor }}
+        - -cassandra.replication-factor={{ default .Values.cortex.cassandra_replication_factor .Values.ingester.cassandra_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_ssl .Values.ingester.cassandra_ssl }}
+        - -cassandra.ssl={{ default .Values.cortex.cassandra_ssl .Values.ingester.cassandra_ssl }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_timeout .Values.ingester.cassandra_timeout }}
+        - -cassandra.timeout={{ default .Values.cortex.cassandra_timeout .Values.ingester.cassandra_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_username .Values.ingester.cassandra_username }}
+        - -cassandra.username={{ default .Values.cortex.cassandra_username .Values.ingester.cassandra_username }}
+        {{- end }}
+        {{- if default .Values.cortex.chunk_storage_client .Values.ingester.chunk_storage_client }}
+        - -chunk.storage-client={{ default .Values.cortex.chunk_storage_client .Values.ingester.chunk_storage_client }}
+        {{- end }}
+        {{- if default .Values.cortex.config_yaml .Values.ingester.config_yaml }}
+        - -config-yaml={{ default .Values.cortex.config_yaml .Values.ingester.config_yaml }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_acltoken .Values.ingester.consul_acltoken }}
+        - -consul.acltoken={{ default .Values.cortex.consul_acltoken .Values.ingester.consul_acltoken }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_client_timeout .Values.ingester.consul_client_timeout }}
+        - -consul.client-timeout={{ default .Values.cortex.consul_client_timeout .Values.ingester.consul_client_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_consistent_reads .Values.ingester.consul_consistent_reads }}
+        - -consul.consistent-reads={{ default .Values.cortex.consul_consistent_reads .Values.ingester.consul_consistent_reads }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_hostname .Values.ingester.consul_hostname }}
+        - -consul.hostname={{ default .Values.cortex.consul_hostname .Values.ingester.consul_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_prefix .Values.ingester.consul_prefix }}
+        - -consul.prefix={{ default .Values.cortex.consul_prefix .Values.ingester.consul_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.default_validity .Values.ingester.default_validity }}
+        - -default-validity={{ default .Values.cortex.default_validity .Values.ingester.default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.diskcache_path .Values.ingester.diskcache_path }}
+        - -diskcache.path={{ default .Values.cortex.diskcache_path .Values.ingester.diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.diskcache_size .Values.ingester.diskcache_size }}
+        - -diskcache.size={{ default .Values.cortex.diskcache_size .Values.ingester.diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_ingestion_burst_size .Values.ingester.distributor_ingestion_burst_size }}
+        - -distributor.ingestion-burst-size={{ default .Values.cortex.distributor_ingestion_burst_size .Values.ingester.distributor_ingestion_burst_size }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_ingestion_rate_limit .Values.ingester.distributor_ingestion_rate_limit }}
+        - -distributor.ingestion-rate-limit={{ default .Values.cortex.distributor_ingestion_rate_limit .Values.ingester.distributor_ingestion_rate_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_replication_factor .Values.ingester.distributor_replication_factor }}
+        - -distributor.replication-factor={{ default .Values.cortex.distributor_replication_factor .Values.ingester.distributor_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_api_limit .Values.ingester.dynamodb_api_limit }}
+        - -dynamodb.api-limit={{ default .Values.cortex.dynamodb_api_limit .Values.ingester.dynamodb_api_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_base64_buckets_from .Values.ingester.dynamodb_base64_buckets_from }}
+        - -dynamodb.base64-buckets-from={{ default .Values.cortex.dynamodb_base64_buckets_from .Values.ingester.dynamodb_base64_buckets_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_from .Values.ingester.dynamodb_chunk_table_from }}
+        - -dynamodb.chunk-table.from={{ default .Values.cortex.dynamodb_chunk_table_from .Values.ingester.dynamodb_chunk_table_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_period .Values.ingester.dynamodb_chunk_table_period }}
+        - -dynamodb.chunk-table.period={{ default .Values.cortex.dynamodb_chunk_table_period .Values.ingester.dynamodb_chunk_table_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_prefix .Values.ingester.dynamodb_chunk_table_prefix }}
+        - -dynamodb.chunk-table.prefix={{ default .Values.cortex.dynamodb_chunk_table_prefix .Values.ingester.dynamodb_chunk_table_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_tag .Values.ingester.dynamodb_chunk_table_tag }}
+        - -dynamodb.chunk-table.tag={{ default .Values.cortex.dynamodb_chunk_table_tag .Values.ingester.dynamodb_chunk_table_tag }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_gang_size .Values.ingester.dynamodb_chunk_gang_size }}
+        - -dynamodb.chunk.gang.size={{ default .Values.cortex.dynamodb_chunk_gang_size .Values.ingester.dynamodb_chunk_gang_size }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_get_max_parallelism .Values.ingester.dynamodb_chunk_get_max_parallelism }}
+        - -dynamodb.chunk.get.max.parallelism={{ default .Values.cortex.dynamodb_chunk_get_max_parallelism .Values.ingester.dynamodb_chunk_get_max_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_daily_buckets_from .Values.ingester.dynamodb_daily_buckets_from }}
+        - -dynamodb.daily-buckets-from={{ default .Values.cortex.dynamodb_daily_buckets_from .Values.ingester.dynamodb_daily_buckets_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_max_backoff .Values.ingester.dynamodb_max_backoff }}
+        - -dynamodb.max-backoff={{ default .Values.cortex.dynamodb_max_backoff .Values.ingester.dynamodb_max_backoff }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_max_retries .Values.ingester.dynamodb_max_retries }}
+        - -dynamodb.max-retries={{ default .Values.cortex.dynamodb_max_retries .Values.ingester.dynamodb_max_retries }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_min_backoff .Values.ingester.dynamodb_min_backoff }}
+        - -dynamodb.min-backoff={{ default .Values.cortex.dynamodb_min_backoff .Values.ingester.dynamodb_min_backoff }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_original_table_name .Values.ingester.dynamodb_original_table_name }}
+        - -dynamodb.original-table-name={{ default .Values.cortex.dynamodb_original_table_name .Values.ingester.dynamodb_original_table_name }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_from .Values.ingester.dynamodb_periodic_table_from }}
+        - -dynamodb.periodic-table.from={{ default .Values.cortex.dynamodb_periodic_table_from .Values.ingester.dynamodb_periodic_table_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_period .Values.ingester.dynamodb_periodic_table_period }}
+        - -dynamodb.periodic-table.period={{ default .Values.cortex.dynamodb_periodic_table_period .Values.ingester.dynamodb_periodic_table_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_prefix .Values.ingester.dynamodb_periodic_table_prefix }}
+        - -dynamodb.periodic-table.prefix={{ default .Values.cortex.dynamodb_periodic_table_prefix .Values.ingester.dynamodb_periodic_table_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_tag .Values.ingester.dynamodb_periodic_table_tag }}
+        - -dynamodb.periodic-table.tag={{ default .Values.cortex.dynamodb_periodic_table_tag .Values.ingester.dynamodb_periodic_table_tag }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_url .Values.ingester.dynamodb_url }}
+        - -dynamodb.url={{ default .Values.cortex.dynamodb_url .Values.ingester.dynamodb_url }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_use_periodic_tables .Values.ingester.dynamodb_use_periodic_tables }}
+        - -dynamodb.use-periodic-tables={{ default .Values.cortex.dynamodb_use_periodic_tables .Values.ingester.dynamodb_use_periodic_tables }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v4_schema_from .Values.ingester.dynamodb_v4_schema_from }}
+        - -dynamodb.v4-schema-from={{ default .Values.cortex.dynamodb_v4_schema_from .Values.ingester.dynamodb_v4_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v5_schema_from .Values.ingester.dynamodb_v5_schema_from }}
+        - -dynamodb.v5-schema-from={{ default .Values.cortex.dynamodb_v5_schema_from .Values.ingester.dynamodb_v5_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v6_schema_from .Values.ingester.dynamodb_v6_schema_from }}
+        - -dynamodb.v6-schema-from={{ default .Values.cortex.dynamodb_v6_schema_from .Values.ingester.dynamodb_v6_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v9_schema_from .Values.ingester.dynamodb_v9_schema_from }}
+        - -dynamodb.v9-schema-from={{ default .Values.cortex.dynamodb_v9_schema_from .Values.ingester.dynamodb_v9_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.event_sample_rate .Values.ingester.event_sample_rate }}
+        - -event.sample-rate={{ default .Values.cortex.event_sample_rate .Values.ingester.event_sample_rate }}
+        {{- end }}
+        {{- if default .Values.cortex.fifocache_duration .Values.ingester.fifocache_duration }}
+        - -fifocache.duration={{ default .Values.cortex.fifocache_duration .Values.ingester.fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.fifocache_size .Values.ingester.fifocache_size }}
+        - -fifocache.size={{ default .Values.cortex.fifocache_size .Values.ingester.fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.gcs_bucketname .Values.ingester.gcs_bucketname }}
+        - -gcs.bucketname={{ default .Values.cortex.gcs_bucketname .Values.ingester.gcs_bucketname }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.ingester.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.ingester.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_expected_labels .Values.ingester.ingester_client_expected_labels }}
+        - -ingester-client.expected-labels={{ default .Values.cortex.ingester_client_expected_labels .Values.ingester.ingester_client_expected_labels }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_expected_samples_per_series .Values.ingester.ingester_client_expected_samples_per_series }}
+        - -ingester-client.expected-samples-per-series={{ default .Values.cortex.ingester_client_expected_samples_per_series .Values.ingester.ingester_client_expected_samples_per_series }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_expected_timeseries .Values.ingester.ingester_client_expected_timeseries }}
+        - -ingester-client.expected-timeseries={{ default .Values.cortex.ingester_client_expected_timeseries .Values.ingester.ingester_client_expected_timeseries }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_ID .Values.ingester.ingester_ID }}
+        - -ingester.ID={{ default .Values.cortex.ingester_ID .Values.ingester.ingester_ID }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_addr .Values.ingester.ingester_addr }}
+        - -ingester.addr={{ default .Values.cortex.ingester_addr .Values.ingester.ingester_addr }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_chunk_age_jitter .Values.ingester.ingester_chunk_age_jitter }}
+        - -ingester.chunk-age-jitter={{ default .Values.cortex.ingester_chunk_age_jitter .Values.ingester.ingester_chunk_age_jitter }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_chunk_encoding .Values.ingester.ingester_chunk_encoding }}
+        - -ingester.chunk-encoding={{ default .Values.cortex.ingester_chunk_encoding .Values.ingester.ingester_chunk_encoding }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_claim_on_rollout .Values.ingester.ingester_claim_on_rollout }}
+        - -ingester.claim-on-rollout={{ default .Values.cortex.ingester_claim_on_rollout .Values.ingester.ingester_claim_on_rollout }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_max_recv_msg_size .Values.ingester.ingester_client_grpc_max_recv_msg_size }}
+        - -ingester.client.grpc-max-recv-msg-size={{ default .Values.cortex.ingester_client_grpc_max_recv_msg_size .Values.ingester.ingester_client_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_max_send_msg_size .Values.ingester.ingester_client_grpc_max_send_msg_size }}
+        - -ingester.client.grpc-max-send-msg-size={{ default .Values.cortex.ingester_client_grpc_max_send_msg_size .Values.ingester.ingester_client_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_use_gzip_compression .Values.ingester.ingester_client_grpc_use_gzip_compression }}
+        - -ingester.client.grpc-use-gzip-compression={{ default .Values.cortex.ingester_client_grpc_use_gzip_compression .Values.ingester.ingester_client_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_concurrent_flushes .Values.ingester.ingester_concurrent_flushes }}
+        - -ingester.concurrent-flushes={{ default .Values.cortex.ingester_concurrent_flushes .Values.ingester.ingester_concurrent_flushes }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_flush_op_timeout .Values.ingester.ingester_flush_op_timeout }}
+        - -ingester.flush-op-timeout={{ default .Values.cortex.ingester_flush_op_timeout .Values.ingester.ingester_flush_op_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_flush_period .Values.ingester.ingester_flush_period }}
+        - -ingester.flush-period={{ default .Values.cortex.ingester_flush_period .Values.ingester.ingester_flush_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_heartbeat_period .Values.ingester.ingester_heartbeat_period }}
+        - -ingester.heartbeat-period={{ default .Values.cortex.ingester_heartbeat_period .Values.ingester.ingester_heartbeat_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_interface .Values.ingester.ingester_interface }}
+        - -ingester.interface={{ default .Values.cortex.ingester_interface .Values.ingester.ingester_interface }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_join_after .Values.ingester.ingester_join_after }}
+        - -ingester.join-after={{ default .Values.cortex.ingester_join_after .Values.ingester.ingester_join_after }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_chunk_age .Values.ingester.ingester_max_chunk_age }}
+        - -ingester.max-chunk-age={{ default .Values.cortex.ingester_max_chunk_age .Values.ingester.ingester_max_chunk_age }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_chunk_idle .Values.ingester.ingester_max_chunk_idle }}
+        - -ingester.max-chunk-idle={{ default .Values.cortex.ingester_max_chunk_idle .Values.ingester.ingester_max_chunk_idle }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_concurrent_streams .Values.ingester.ingester_max_concurrent_streams }}
+        - -ingester.max-concurrent-streams={{ default .Values.cortex.ingester_max_concurrent_streams .Values.ingester.ingester_max_concurrent_streams }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_samples_per_query .Values.ingester.ingester_max_samples_per_query }}
+        - -ingester.max-samples-per-query={{ default .Values.cortex.ingester_max_samples_per_query .Values.ingester.ingester_max_samples_per_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_metric .Values.ingester.ingester_max_series_per_metric }}
+        - -ingester.max-series-per-metric={{ default .Values.cortex.ingester_max_series_per_metric .Values.ingester.ingester_max_series_per_metric }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_query .Values.ingester.ingester_max_series_per_query }}
+        - -ingester.max-series-per-query={{ default .Values.cortex.ingester_max_series_per_query .Values.ingester.ingester_max_series_per_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_user .Values.ingester.ingester_max_series_per_user }}
+        - -ingester.max-series-per-user={{ default .Values.cortex.ingester_max_series_per_user .Values.ingester.ingester_max_series_per_user }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_min_ready_duration .Values.ingester.ingester_min_ready_duration }}
+        - -ingester.min-ready-duration={{ default .Values.cortex.ingester_min_ready_duration .Values.ingester.ingester_min_ready_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_normalise_tokens .Values.ingester.ingester_normalise_tokens }}
+        - -ingester.normalise-tokens={{ default .Values.cortex.ingester_normalise_tokens .Values.ingester.ingester_normalise_tokens }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_num_tokens .Values.ingester.ingester_num_tokens }}
+        - -ingester.num-tokens={{ default .Values.cortex.ingester_num_tokens .Values.ingester.ingester_num_tokens }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_port .Values.ingester.ingester_port }}
+        - -ingester.port={{ default .Values.cortex.ingester_port .Values.ingester.ingester_port }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_rate_update_period .Values.ingester.ingester_rate_update_period }}
+        - -ingester.rate-update-period={{ default .Values.cortex.ingester_rate_update_period .Values.ingester.ingester_rate_update_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_retain_period .Values.ingester.ingester_retain_period }}
+        - -ingester.retain-period={{ default .Values.cortex.ingester_retain_period .Values.ingester.ingester_retain_period }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_search_pending_for .Values.ingester.ingester_search_pending_for }}
+        - -ingester.search-pending-for={{ default .Values.cortex.ingester_search_pending_for .Values.ingester.ingester_search_pending_for }}
+        {{- end }}
+        {{- if default .Values.cortex.limits_per_user_override_config .Values.ingester.limits_per_user_override_config }}
+        - -limits.per-user-override-config={{ default .Values.cortex.limits_per_user_override_config .Values.ingester.limits_per_user_override_config }}
+        {{- end }}
+        {{- if default .Values.cortex.limits_per_user_override_period .Values.ingester.limits_per_user_override_period }}
+        - -limits.per-user-override-period={{ default .Values.cortex.limits_per_user_override_period .Values.ingester.limits_per_user_override_period }}
+        {{- end }}
+        {{- if default .Values.cortex.local_chunk_directory .Values.ingester.local_chunk_directory }}
+        - -local.chunk-directory={{ default .Values.cortex.local_chunk_directory .Values.ingester.local_chunk_directory }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.ingester.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.ingester.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.memcache_write_back_buffer .Values.ingester.memcache_write_back_buffer }}
+        - -memcache.write-back-buffer={{ default .Values.cortex.memcache_write_back_buffer .Values.ingester.memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.memcache_write_back_goroutines .Values.ingester.memcache_write_back_goroutines }}
+        - -memcache.write-back-goroutines={{ default .Values.cortex.memcache_write_back_goroutines .Values.ingester.memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_batchsize .Values.ingester.memcached_batchsize }}
+        - -memcached.batchsize={{ default .Values.cortex.memcached_batchsize .Values.ingester.memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_expiration .Values.ingester.memcached_expiration }}
+        - -memcached.expiration={{ default .Values.cortex.memcached_expiration .Values.ingester.memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_hostname .Values.ingester.memcached_hostname }}
+        - -memcached.hostname={{ default .Values.cortex.memcached_hostname .Values.ingester.memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_max_idle_conns .Values.ingester.memcached_max_idle_conns }}
+        - -memcached.max-idle-conns={{ default .Values.cortex.memcached_max_idle_conns .Values.ingester.memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_parallelism .Values.ingester.memcached_parallelism }}
+        - -memcached.parallelism={{ default .Values.cortex.memcached_parallelism .Values.ingester.memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_service .Values.ingester.memcached_service }}
+        - -memcached.service={{ default .Values.cortex.memcached_service .Values.ingester.memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_timeout .Values.ingester.memcached_timeout }}
+        - -memcached.timeout={{ default .Values.cortex.memcached_timeout .Values.ingester.memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_update_interval .Values.ingester.memcached_update_interval }}
+        - -memcached.update-interval={{ default .Values.cortex.memcached_update_interval .Values.ingester.memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_error_rate_query .Values.ingester.metrics_error_rate_query }}
+        - -metrics.error-rate-query={{ default .Values.cortex.metrics_error_rate_query .Values.ingester.metrics_error_rate_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_queue_length_query .Values.ingester.metrics_queue_length_query }}
+        - -metrics.queue-length-query={{ default .Values.cortex.metrics_queue_length_query .Values.ingester.metrics_queue_length_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_read_error_query .Values.ingester.metrics_read_error_query }}
+        - -metrics.read-error-query={{ default .Values.cortex.metrics_read_error_query .Values.ingester.metrics_read_error_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_read_usage_query .Values.ingester.metrics_read_usage_query }}
+        - -metrics.read-usage-query={{ default .Values.cortex.metrics_read_usage_query .Values.ingester.metrics_read_usage_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_scale_up_factor .Values.ingester.metrics_scale_up_factor }}
+        - -metrics.scale-up-factor={{ default .Values.cortex.metrics_scale_up_factor .Values.ingester.metrics_scale_up_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_target_queue_length .Values.ingester.metrics_target_queue_length }}
+        - -metrics.target-queue-length={{ default .Values.cortex.metrics_target_queue_length .Values.ingester.metrics_target_queue_length }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_url .Values.ingester.metrics_url }}
+        - -metrics.url={{ default .Values.cortex.metrics_url .Values.ingester.metrics_url }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_usage_query .Values.ingester.metrics_usage_query }}
+        - -metrics.usage-query={{ default .Values.cortex.metrics_usage_query .Values.ingester.metrics_usage_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_heartbeat_timeout .Values.ingester.ring_heartbeat_timeout }}
+        - -ring.heartbeat-timeout={{ default .Values.cortex.ring_heartbeat_timeout .Values.ingester.ring_heartbeat_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_store .Values.ingester.ring_store }}
+        - -ring.store={{ default .Values.cortex.ring_store .Values.ingester.ring_store }}
+        {{- end }}
+        {{- if default .Values.cortex.s3_url .Values.ingester.s3_url }}
+        - -s3.url={{ default .Values.cortex.s3_url .Values.ingester.s3_url }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.ingester.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.ingester.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.ingester.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.ingester.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.ingester.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.ingester.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.ingester.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.ingester.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.ingester.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.ingester.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.ingester.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.ingester.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.ingester.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.ingester.server_register_instrumentation }}
+        {{- end }}
+        {{- if default .Values.cortex.store_bigchunk_size_cap_bytes .Values.ingester.store_bigchunk_size_cap_bytes }}
+        - -store.bigchunk-size-cap-bytes={{ default .Values.cortex.store_bigchunk_size_cap_bytes .Values.ingester.store_bigchunk_size_cap_bytes }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cache_lookups_older_than .Values.ingester.store_cache_lookups_older_than }}
+        - -store.cache-lookups-older-than={{ default .Values.cortex.store_cache_lookups_older_than .Values.ingester.store_cache_lookups_older_than }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cardinality_cache_size .Values.ingester.store_cardinality_cache_size }}
+        - -store.cardinality-cache-size={{ default .Values.cortex.store_cardinality_cache_size .Values.ingester.store_cardinality_cache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cardinality_cache_validity .Values.ingester.store_cardinality_cache_validity }}
+        - -store.cardinality-cache-validity={{ default .Values.cortex.store_cardinality_cache_validity .Values.ingester.store_cardinality_cache_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cardinality_limit .Values.ingester.store_cardinality_limit }}
+        - -store.cardinality-limit={{ default .Values.cortex.store_cardinality_limit .Values.ingester.store_cardinality_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.store_fullsize_chunks .Values.ingester.store_fullsize_chunks }}
+        - -store.fullsize-chunks={{ default .Values.cortex.store_fullsize_chunks .Values.ingester.store_fullsize_chunks }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_cache_enable_diskcache .Values.ingester.store_index_cache_read_cache_enable_diskcache }}
+        - -store.index-cache-read.cache.enable-diskcache={{ default .Values.cortex.store_index_cache_read_cache_enable_diskcache .Values.ingester.store_index_cache_read_cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_cache_enable_fifocache .Values.ingester.store_index_cache_read_cache_enable_fifocache }}
+        - -store.index-cache-read.cache.enable-fifocache={{ default .Values.cortex.store_index_cache_read_cache_enable_fifocache .Values.ingester.store_index_cache_read_cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_default_validity .Values.ingester.store_index_cache_read_default_validity }}
+        - -store.index-cache-read.default-validity={{ default .Values.cortex.store_index_cache_read_default_validity .Values.ingester.store_index_cache_read_default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_diskcache_path .Values.ingester.store_index_cache_read_diskcache_path }}
+        - -store.index-cache-read.diskcache.path={{ default .Values.cortex.store_index_cache_read_diskcache_path .Values.ingester.store_index_cache_read_diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_diskcache_size .Values.ingester.store_index_cache_read_diskcache_size }}
+        - -store.index-cache-read.diskcache.size={{ default .Values.cortex.store_index_cache_read_diskcache_size .Values.ingester.store_index_cache_read_diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_fifocache_duration .Values.ingester.store_index_cache_read_fifocache_duration }}
+        - -store.index-cache-read.fifocache.duration={{ default .Values.cortex.store_index_cache_read_fifocache_duration .Values.ingester.store_index_cache_read_fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_fifocache_size .Values.ingester.store_index_cache_read_fifocache_size }}
+        - -store.index-cache-read.fifocache.size={{ default .Values.cortex.store_index_cache_read_fifocache_size .Values.ingester.store_index_cache_read_fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcache_write_back_buffer .Values.ingester.store_index_cache_read_memcache_write_back_buffer }}
+        - -store.index-cache-read.memcache.write-back-buffer={{ default .Values.cortex.store_index_cache_read_memcache_write_back_buffer .Values.ingester.store_index_cache_read_memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcache_write_back_goroutines .Values.ingester.store_index_cache_read_memcache_write_back_goroutines }}
+        - -store.index-cache-read.memcache.write-back-goroutines={{ default .Values.cortex.store_index_cache_read_memcache_write_back_goroutines .Values.ingester.store_index_cache_read_memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_batchsize .Values.ingester.store_index_cache_read_memcached_batchsize }}
+        - -store.index-cache-read.memcached.batchsize={{ default .Values.cortex.store_index_cache_read_memcached_batchsize .Values.ingester.store_index_cache_read_memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_expiration .Values.ingester.store_index_cache_read_memcached_expiration }}
+        - -store.index-cache-read.memcached.expiration={{ default .Values.cortex.store_index_cache_read_memcached_expiration .Values.ingester.store_index_cache_read_memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_hostname .Values.ingester.store_index_cache_read_memcached_hostname }}
+        - -store.index-cache-read.memcached.hostname={{ default .Values.cortex.store_index_cache_read_memcached_hostname .Values.ingester.store_index_cache_read_memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_max_idle_conns .Values.ingester.store_index_cache_read_memcached_max_idle_conns }}
+        - -store.index-cache-read.memcached.max-idle-conns={{ default .Values.cortex.store_index_cache_read_memcached_max_idle_conns .Values.ingester.store_index_cache_read_memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_parallelism .Values.ingester.store_index_cache_read_memcached_parallelism }}
+        - -store.index-cache-read.memcached.parallelism={{ default .Values.cortex.store_index_cache_read_memcached_parallelism .Values.ingester.store_index_cache_read_memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_service .Values.ingester.store_index_cache_read_memcached_service }}
+        - -store.index-cache-read.memcached.service={{ default .Values.cortex.store_index_cache_read_memcached_service .Values.ingester.store_index_cache_read_memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_timeout .Values.ingester.store_index_cache_read_memcached_timeout }}
+        - -store.index-cache-read.memcached.timeout={{ default .Values.cortex.store_index_cache_read_memcached_timeout .Values.ingester.store_index_cache_read_memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_update_interval .Values.ingester.store_index_cache_read_memcached_update_interval }}
+        - -store.index-cache-read.memcached.update-interval={{ default .Values.cortex.store_index_cache_read_memcached_update_interval .Values.ingester.store_index_cache_read_memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_validity .Values.ingester.store_index_cache_validity }}
+        - -store.index-cache-validity={{ default .Values.cortex.store_index_cache_validity .Values.ingester.store_index_cache_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_cache_enable_diskcache .Values.ingester.store_index_cache_write_cache_enable_diskcache }}
+        - -store.index-cache-write.cache.enable-diskcache={{ default .Values.cortex.store_index_cache_write_cache_enable_diskcache .Values.ingester.store_index_cache_write_cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_cache_enable_fifocache .Values.ingester.store_index_cache_write_cache_enable_fifocache }}
+        - -store.index-cache-write.cache.enable-fifocache={{ default .Values.cortex.store_index_cache_write_cache_enable_fifocache .Values.ingester.store_index_cache_write_cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_default_validity .Values.ingester.store_index_cache_write_default_validity }}
+        - -store.index-cache-write.default-validity={{ default .Values.cortex.store_index_cache_write_default_validity .Values.ingester.store_index_cache_write_default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_diskcache_path .Values.ingester.store_index_cache_write_diskcache_path }}
+        - -store.index-cache-write.diskcache.path={{ default .Values.cortex.store_index_cache_write_diskcache_path .Values.ingester.store_index_cache_write_diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_diskcache_size .Values.ingester.store_index_cache_write_diskcache_size }}
+        - -store.index-cache-write.diskcache.size={{ default .Values.cortex.store_index_cache_write_diskcache_size .Values.ingester.store_index_cache_write_diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_fifocache_duration .Values.ingester.store_index_cache_write_fifocache_duration }}
+        - -store.index-cache-write.fifocache.duration={{ default .Values.cortex.store_index_cache_write_fifocache_duration .Values.ingester.store_index_cache_write_fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_fifocache_size .Values.ingester.store_index_cache_write_fifocache_size }}
+        - -store.index-cache-write.fifocache.size={{ default .Values.cortex.store_index_cache_write_fifocache_size .Values.ingester.store_index_cache_write_fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcache_write_back_buffer .Values.ingester.store_index_cache_write_memcache_write_back_buffer }}
+        - -store.index-cache-write.memcache.write-back-buffer={{ default .Values.cortex.store_index_cache_write_memcache_write_back_buffer .Values.ingester.store_index_cache_write_memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcache_write_back_goroutines .Values.ingester.store_index_cache_write_memcache_write_back_goroutines }}
+        - -store.index-cache-write.memcache.write-back-goroutines={{ default .Values.cortex.store_index_cache_write_memcache_write_back_goroutines .Values.ingester.store_index_cache_write_memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_batchsize .Values.ingester.store_index_cache_write_memcached_batchsize }}
+        - -store.index-cache-write.memcached.batchsize={{ default .Values.cortex.store_index_cache_write_memcached_batchsize .Values.ingester.store_index_cache_write_memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_expiration .Values.ingester.store_index_cache_write_memcached_expiration }}
+        - -store.index-cache-write.memcached.expiration={{ default .Values.cortex.store_index_cache_write_memcached_expiration .Values.ingester.store_index_cache_write_memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_hostname .Values.ingester.store_index_cache_write_memcached_hostname }}
+        - -store.index-cache-write.memcached.hostname={{ default .Values.cortex.store_index_cache_write_memcached_hostname .Values.ingester.store_index_cache_write_memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_max_idle_conns .Values.ingester.store_index_cache_write_memcached_max_idle_conns }}
+        - -store.index-cache-write.memcached.max-idle-conns={{ default .Values.cortex.store_index_cache_write_memcached_max_idle_conns .Values.ingester.store_index_cache_write_memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_parallelism .Values.ingester.store_index_cache_write_memcached_parallelism }}
+        - -store.index-cache-write.memcached.parallelism={{ default .Values.cortex.store_index_cache_write_memcached_parallelism .Values.ingester.store_index_cache_write_memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_service .Values.ingester.store_index_cache_write_memcached_service }}
+        - -store.index-cache-write.memcached.service={{ default .Values.cortex.store_index_cache_write_memcached_service .Values.ingester.store_index_cache_write_memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_timeout .Values.ingester.store_index_cache_write_memcached_timeout }}
+        - -store.index-cache-write.memcached.timeout={{ default .Values.cortex.store_index_cache_write_memcached_timeout .Values.ingester.store_index_cache_write_memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_update_interval .Values.ingester.store_index_cache_write_memcached_update_interval }}
+        - -store.index-cache-write.memcached.update-interval={{ default .Values.cortex.store_index_cache_write_memcached_update_interval .Values.ingester.store_index_cache_write_memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.store_max_query_length .Values.ingester.store_max_query_length }}
+        - -store.max-query-length={{ default .Values.cortex.store_max_query_length .Values.ingester.store_max_query_length }}
+        {{- end }}
+        {{- if default .Values.cortex.store_min_chunk_age .Values.ingester.store_min_chunk_age }}
+        - -store.min-chunk-age={{ default .Values.cortex.store_min_chunk_age .Values.ingester.store_min_chunk_age }}
+        {{- end }}
+        {{- if default .Values.cortex.store_query_chunk_limit .Values.ingester.store_query_chunk_limit }}
+        - -store.query-chunk-limit={{ default .Values.cortex.store_query_chunk_limit .Values.ingester.store_query_chunk_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_create_grace_period .Values.ingester.validation_create_grace_period }}
+        - -validation.create-grace-period={{ default .Values.cortex.validation_create_grace_period .Values.ingester.validation_create_grace_period }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_label_names_per_series .Values.ingester.validation_max_label_names_per_series }}
+        - -validation.max-label-names-per-series={{ default .Values.cortex.validation_max_label_names_per_series .Values.ingester.validation_max_label_names_per_series }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_length_label_name .Values.ingester.validation_max_length_label_name }}
+        - -validation.max-length-label-name={{ default .Values.cortex.validation_max_length_label_name .Values.ingester.validation_max_length_label_name }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_length_label_value .Values.ingester.validation_max_length_label_value }}
+        - -validation.max-length-label-value={{ default .Values.cortex.validation_max_length_label_value .Values.ingester.validation_max_length_label_value }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_reject_old_samples .Values.ingester.validation_reject_old_samples }}
+        - -validation.reject-old-samples={{ default .Values.cortex.validation_reject_old_samples .Values.ingester.validation_reject_old_samples }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_reject_old_samples_max_age .Values.ingester.validation_reject_old_samples_max_age }}
+        - -validation.reject-old-samples.max-age={{ default .Values.cortex.validation_reject_old_samples_max_age .Values.ingester.validation_reject_old_samples_max_age }}
+        {{- end }}
         env:
         - name: GOGC
           value: "60"
+        - name: JAEGER_AGENT_HOST
+          value: jaegertracing-agent.cortex.svc.cluster.local
+        - name: JAEGER_SAMPLER_TYPE
+          value: ratelimiting
+        - name: JAEGER_SAMPLER_PARAM
+          value: '7'
         ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.ingester.server_http_listen_port }}
         - name: http
-          containerPort: 80
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.ingester.server_http_listen_port }}
           protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.ingester.server_grpc_listen_port }}
         - name: grpc
-          containerPort: 9095
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.ingester.server_grpc_listen_port }}
           protocol: TCP
-        {{/*livenessProbe:*/}}
-          {{/*httpGet:*/}}
-            {{/*path: /ready*/}}
-            {{/*port: http*/}}
+        {{- end }}
         readinessProbe:
           httpGet:
             path: /ready

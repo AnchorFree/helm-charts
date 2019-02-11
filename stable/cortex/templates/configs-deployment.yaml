@@ -33,14 +33,53 @@ spec:
         image: "{{ .Values.configs.image.repository }}:{{ .Values.configs.image.tag }}"
         imagePullPolicy: {{ .Values.configs.image.pullPolicy }}
         args:
-        - -log.level=info
-        - -server.http-listen-port=80
-        - -database.uri={{ .Values.global.cortex.databaseURI }}
-        - -database.migrations=/migrations
+        {{- if default .Values.cortex.database_migrations .Values.configs.database_migrations }}
+        - -database.migrations={{ default .Values.cortex.database_migrations .Values.configs.database_migrations }}
+        {{- end }}
+        {{- if default .Values.cortex.database_password_file .Values.configs.database_password_file }}
+        - -database.password-file={{ default .Values.cortex.database_password_file .Values.configs.database_password_file }}
+        {{- end }}
+        {{- if default .Values.cortex.database_uri .Values.configs.database_uri }}
+        - -database.uri={{ default .Values.cortex.database_uri .Values.configs.database_uri }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.configs.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.configs.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.configs.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.configs.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.configs.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.configs.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.configs.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.configs.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.configs.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.configs.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.configs.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.configs.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.configs.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.configs.server_register_instrumentation }}
+        {{- end }}
         ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
         - name: http
-          containerPort: 80
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
           protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+        - name: grpc
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+          protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /

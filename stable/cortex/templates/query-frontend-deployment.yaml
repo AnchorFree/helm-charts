@@ -33,37 +33,127 @@ spec:
         image: "{{ .Values.query_frontend.image.repository }}:{{ .Values.query_frontend.image.tag }}"
         imagePullPolicy: {{ .Values.query_frontend.image.pullPolicy }}
         args:
-        - -log.level=info
-        - -server.http-listen-port=80
-        - -server.grpc-listen-port=9095
-        - -querier.max-outstanding-requests-per-tenant=10000
-        - -querier.align-querier-with-step=true
-        - -querier.cache-results=true
-        - -memcached.hostname={{ .Values.global.memcached.hostname }}
-        - -memcached.service={{ .Values.global.memcached.service }}
-        - -memcached.expiration=24h
-        - -cache.enable-fifocache=true
+        {{- if default .Values.cortex.cache_enable_diskcache .Values.query_frontend.cache_enable_diskcache }}
+        - -cache.enable-diskcache={{ default .Values.cortex.cache_enable_diskcache .Values.query_frontend.cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.cache_enable_fifocache .Values.query_frontend.cache_enable_fifocache }}
+        - -cache.enable-fifocache={{ default .Values.cortex.cache_enable_fifocache .Values.query_frontend.cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.default_validity .Values.query_frontend.default_validity }}
+        - -default-validity={{ default .Values.cortex.default_validity .Values.query_frontend.default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.diskcache_path .Values.query_frontend.diskcache_path }}
+        - -diskcache.path={{ default .Values.cortex.diskcache_path .Values.query_frontend.diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.diskcache_size .Values.query_frontend.diskcache_size }}
+        - -diskcache.size={{ default .Values.cortex.diskcache_size .Values.query_frontend.diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.fifocache_duration .Values.query_frontend.fifocache_duration }}
+        - -fifocache.duration={{ default .Values.cortex.fifocache_duration .Values.query_frontend.fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.fifocache_size .Values.query_frontend.fifocache_size }}
+        - -fifocache.size={{ default .Values.cortex.fifocache_size .Values.query_frontend.fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.frontend_max_cache_freshness .Values.query_frontend.frontend_max_cache_freshness }}
+        - -frontend.max-cache-freshness={{ default .Values.cortex.frontend_max_cache_freshness .Values.query_frontend.frontend_max_cache_freshness }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.query_frontend.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.query_frontend.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.query_frontend.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.query_frontend.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.memcache_write_back_buffer .Values.query_frontend.memcache_write_back_buffer }}
+        - -memcache.write-back-buffer={{ default .Values.cortex.memcache_write_back_buffer .Values.query_frontend.memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.memcache_write_back_goroutines .Values.query_frontend.memcache_write_back_goroutines }}
+        - -memcache.write-back-goroutines={{ default .Values.cortex.memcache_write_back_goroutines .Values.query_frontend.memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_batchsize .Values.query_frontend.memcached_batchsize }}
+        - -memcached.batchsize={{ default .Values.cortex.memcached_batchsize .Values.query_frontend.memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_expiration .Values.query_frontend.memcached_expiration }}
+        - -memcached.expiration={{ default .Values.cortex.memcached_expiration .Values.query_frontend.memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_hostname .Values.query_frontend.memcached_hostname }}
+        - -memcached.hostname={{ default .Values.cortex.memcached_hostname .Values.query_frontend.memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_max_idle_conns .Values.query_frontend.memcached_max_idle_conns }}
+        - -memcached.max-idle-conns={{ default .Values.cortex.memcached_max_idle_conns .Values.query_frontend.memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_parallelism .Values.query_frontend.memcached_parallelism }}
+        - -memcached.parallelism={{ default .Values.cortex.memcached_parallelism .Values.query_frontend.memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_service .Values.query_frontend.memcached_service }}
+        - -memcached.service={{ default .Values.cortex.memcached_service .Values.query_frontend.memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_timeout .Values.query_frontend.memcached_timeout }}
+        - -memcached.timeout={{ default .Values.cortex.memcached_timeout .Values.query_frontend.memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_update_interval .Values.query_frontend.memcached_update_interval }}
+        - -memcached.update-interval={{ default .Values.cortex.memcached_update_interval .Values.query_frontend.memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_align_querier_with_step .Values.query_frontend.querier_align_querier_with_step }}
+        - -querier.align-querier-with-step={{ default .Values.cortex.querier_align_querier_with_step .Values.query_frontend.querier_align_querier_with_step }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_cache_results .Values.query_frontend.querier_cache_results }}
+        - -querier.cache-results={{ default .Values.cortex.querier_cache_results .Values.query_frontend.querier_cache_results }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_max_outstanding_requests_per_tenant .Values.query_frontend.querier_max_outstanding_requests_per_tenant }}
+        - -querier.max-outstanding-requests-per-tenant={{ default .Values.cortex.querier_max_outstanding_requests_per_tenant .Values.query_frontend.querier_max_outstanding_requests_per_tenant }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_max_retries_per_request .Values.query_frontend.querier_max_retries_per_request }}
+        - -querier.max-retries-per-request={{ default .Values.cortex.querier_max_retries_per_request .Values.query_frontend.querier_max_retries_per_request }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_split_queries_by_day .Values.query_frontend.querier_split_queries_by_day }}
+        - -querier.split-queries-by-day={{ default .Values.cortex.querier_split_queries_by_day .Values.query_frontend.querier_split_queries_by_day }}
+        {{- end }}
+        {{- if default .Values.cortex.query_frontend_max_recv_message_size_bytes .Values.query_frontend.query_frontend_max_recv_message_size_bytes }}
+        - -query-frontend.max-recv-message-size-bytes={{ default .Values.cortex.query_frontend_max_recv_message_size_bytes .Values.query_frontend.query_frontend_max_recv_message_size_bytes }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.query_frontend.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.query_frontend.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.query_frontend.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.query_frontend.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.query_frontend.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.query_frontend.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.query_frontend.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.query_frontend.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.query_frontend.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.query_frontend.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.query_frontend.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.query_frontend.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.query_frontend.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.query_frontend.server_register_instrumentation }}
+        {{- end }}
         ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.query_frontend.server_http_listen_port }}
         - name: http
-          containerPort: 80
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.query_frontend.server_http_listen_port }}
           protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.query_frontend.server_grpc_listen_port }}
         - name: grpc
-          containerPort: 9095
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.query_frontend.server_grpc_listen_port }}
           protocol: TCP
-        {{/*livenessProbe:*/}}
-          {{/*httpGet:*/}}
-            {{/*path: /api/prom*/}}
-            {{/*port: http*/}}
-            {{/*httpHeaders:*/}}
-            {{/*- name: X-Scope-OrgID*/}}
-              {{/*value: 0*/}}
-        {{/*readinessProbe:*/}}
-          {{/*httpGet:*/}}
-            {{/*path: /api/prom*/}}
-            {{/*port: http*/}}
-            {{/*httpHeaders:*/}}
-            {{/*- name: X-Scope-OrgID*/}}
-              {{/*value: 0*/}}
+        {{- end }}
+        env:
+        - name: GOGC
+          value: "60"
+        - name: JAEGER_SERVICE_NAME
+          value: {{ include "cortex.fullname" . }}-querier
+        - name: JAEGER_AGENT_HOST
+          value: jaegertracing-agent.cortex.svc.cluster.local
+        - name: JAEGER_SAMPLER_TYPE
+          value: ratelimiting
+        - name: JAEGER_SAMPLER_PARAM
+          value: '7'
         resources:
           {{- toYaml .Values.query_frontend.resources | nindent 10 }}
       {{- with .Values.query_frontend.nodeSelector }}

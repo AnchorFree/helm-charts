@@ -29,14 +29,90 @@ spec:
         image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
         imagePullPolicy: {{ .Values.alertmanager.image.pullPolicy }}
         args:
-        - -log.level=info
-        - -server.http-listen-port=80
         - -alertmanager.configs.url=http://{{ include "cortex.fullname" . }}-configs.{{ .Release.Namespace }}.svc.cluster.local:80
-        - -alertmanager.web.external-url=/api/prom/alertmanager
+        {{- if default .Values.cortex.alertmanager_configs_auto_slack_root .Values.alertmanager.alertmanager_configs_auto_slack_root }}
+        - -alertmanager.configs.auto-slack-root={{ default .Values.cortex.alertmanager_configs_auto_slack_root .Values.alertmanager.alertmanager_configs_auto_slack_root }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_configs_auto_webhook_root .Values.alertmanager.alertmanager_configs_auto_webhook_root }}
+        - -alertmanager.configs.auto-webhook-root={{ default .Values.cortex.alertmanager_configs_auto_webhook_root .Values.alertmanager.alertmanager_configs_auto_webhook_root }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_configs_client_timeout .Values.alertmanager.alertmanager_configs_client_timeout }}
+        - -alertmanager.configs.client-timeout={{ default .Values.cortex.alertmanager_configs_client_timeout .Values.alertmanager.alertmanager_configs_client_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_configs_fallback .Values.alertmanager.alertmanager_configs_fallback }}
+        - -alertmanager.configs.fallback={{ default .Values.cortex.alertmanager_configs_fallback .Values.alertmanager.alertmanager_configs_fallback }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_configs_poll_interval .Values.alertmanager.alertmanager_configs_poll_interval }}
+        - -alertmanager.configs.poll-interval={{ default .Values.cortex.alertmanager_configs_poll_interval .Values.alertmanager.alertmanager_configs_poll_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_hardware_address .Values.alertmanager.alertmanager_mesh_hardware_address }}
+        - -alertmanager.mesh.hardware-address={{ default .Values.cortex.alertmanager_mesh_hardware_address .Values.alertmanager.alertmanager_mesh_hardware_address }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_listen_address .Values.alertmanager.alertmanager_mesh_listen_address }}
+        - -alertmanager.mesh.listen-address={{ default .Values.cortex.alertmanager_mesh_listen_address .Values.alertmanager.alertmanager_mesh_listen_address }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_nickname .Values.alertmanager.alertmanager_mesh_nickname }}
+        - -alertmanager.mesh.nickname={{ default .Values.cortex.alertmanager_mesh_nickname .Values.alertmanager.alertmanager_mesh_nickname }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_password .Values.alertmanager.alertmanager_mesh_password }}
+        - -alertmanager.mesh.password={{ default .Values.cortex.alertmanager_mesh_password .Values.alertmanager.alertmanager_mesh_password }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_peer_host .Values.alertmanager.alertmanager_mesh_peer_host }}
+        - -alertmanager.mesh.peer.host={{ default .Values.cortex.alertmanager_mesh_peer_host .Values.alertmanager.alertmanager_mesh_peer_host }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_peer_refresh_interval .Values.alertmanager.alertmanager_mesh_peer_refresh_interval }}
+        - -alertmanager.mesh.peer.refresh-interval={{ default .Values.cortex.alertmanager_mesh_peer_refresh_interval .Values.alertmanager.alertmanager_mesh_peer_refresh_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_mesh_peer_service .Values.alertmanager.alertmanager_mesh_peer_service }}
+        - -alertmanager.mesh.peer.service={{ default .Values.cortex.alertmanager_mesh_peer_service .Values.alertmanager.alertmanager_mesh_peer_service }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_storage_path .Values.alertmanager.alertmanager_storage_path }}
+        - -alertmanager.storage.path={{ default .Values.cortex.alertmanager_storage_path .Values.alertmanager.alertmanager_storage_path }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_storage_retention .Values.alertmanager.alertmanager_storage_retention }}
+        - -alertmanager.storage.retention={{ default .Values.cortex.alertmanager_storage_retention .Values.alertmanager.alertmanager_storage_retention }}
+        {{- end }}
+        {{- if default .Values.cortex.alertmanager_web_external_url .Values.alertmanager.alertmanager_web_external_url }}
+        - -alertmanager.web.external-url={{ default .Values.cortex.alertmanager_web_external_url .Values.alertmanager.alertmanager_web_external_url }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.alertmanager.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.alertmanager.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.alertmanager.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.alertmanager.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.alertmanager.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.alertmanager.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.alertmanager.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.alertmanager.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.alertmanager.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.alertmanager.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.alertmanager.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.alertmanager.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.alertmanager.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.alertmanager.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.alertmanager.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.alertmanager.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.alertmanager.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.alertmanager.server_register_instrumentation }}
+        {{- end }}
         ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.alertmanager.server_http_listen_port }}
         - name: http
-          containerPort: 80
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.alertmanager.server_http_listen_port }}
           protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.alertmanager.server_grpc_listen_port }}
+        - name: grpc
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.alertmanager.server_grpc_listen_port }}
+          protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /status

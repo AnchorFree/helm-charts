@@ -12,11 +12,22 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
   type: {{ .Values.alertmanager.service.type }}
+  {{- if and .Values.alertmanager.service.clusterIP ( eq .Values.alertmanager.service.type "ClusterIP" ) }}
+  clusterIP: {{ .Values.alertmanager.service.clusterIP }}
+  {{- end }}
   ports:
-  - port: {{ .Values.alertmanager.service.port }}
+  {{- if default .Values.cortex.server_http_listen_port .Values.alertmanager.server_http_listen_port }}
+  - port: {{ .Values.alertmanager.service.httpPort }}
     targetPort: http
     protocol: TCP
     name: http
+  {{- end }}
+  {{- if default .Values.cortex.server_grpc_listen_port .Values.alertmanager.server_grpc_listen_port }}
+  - port: {{ .Values.alertmanager.service.grpcPort }}
+    targetPort: grpc
+    protocol: TCP
+    name: http
+  {{- end }}
   {{- if .Values.alertmanager.servicemonitor.enabled }}
   - port: {{ .Values.alertmanager.servicemonitor.port }}
     targetPort: http

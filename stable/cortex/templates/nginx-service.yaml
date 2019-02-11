@@ -10,8 +10,15 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/component: nginx
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.nginx.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.nginx.service.type }}
+  {{- if and .Values.nginx.service.clusterIP ( eq .Values.nginx.service.type "ClusterIP" ) }}
+  clusterIP: {{ .Values.nginx.service.clusterIP }}
+  {{- end }}
   ports:
   - port: {{ .Values.nginx.service.port }}
     targetPort: http
