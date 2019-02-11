@@ -1,6 +1,6 @@
 name: elasticsearch
-home: https://www.elastic.co/products/elasticsearch
-version: 1.19.1
+home: https://github.com/AnchorFree/helm-charts
+version: 1.0.0
 appVersion: 6.6.0
 description: Flexible and powerful open source, distributed real-time search and analytics
   engine.
@@ -12,12 +12,3 @@ sources:
 - https://github.com/GoogleCloudPlatform/elasticsearch-docker
 - https://github.com/clockworksoul/helm-elasticsearch
 - https://github.com/pires/kubernetes-elasticsearch-cluster
-maintainers:
-- name: simonswine
-  email: christian@jetstack.io
-- name: icereval
-  email: michael.haselton@gmail.com
-- name: rendhalver
-  email: pete.brown@powerhrg.com
-- name: desaintmartin
-  email: cedric@desaintmartin.fr
