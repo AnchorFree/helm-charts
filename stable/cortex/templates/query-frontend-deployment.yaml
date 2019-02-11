@@ -143,17 +143,11 @@ spec:
           containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.query_frontend.server_grpc_listen_port }}
           protocol: TCP
         {{- end }}
+        {{- $env := default .Values.cortex.env .Values.query_frontend.env -}}
+        {{- if $env }}
         env:
-        - name: GOGC
-          value: "60"
-        - name: JAEGER_SERVICE_NAME
-          value: {{ include "cortex.fullname" . }}-querier
-        - name: JAEGER_AGENT_HOST
-          value: jaegertracing-agent.cortex.svc.cluster.local
-        - name: JAEGER_SAMPLER_TYPE
-          value: ratelimiting
-        - name: JAEGER_SAMPLER_PARAM
-          value: '7'
+        {{- toYaml $env | nindent 8 }}
+        {{- end }}
         resources:
           {{- toYaml .Values.query_frontend.resources | nindent 10 }}
       {{- with .Values.query_frontend.nodeSelector }}

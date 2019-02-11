@@ -6,6 +6,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 cortex:
+  env: []
+
   # Root of URL to generate if config is internal://monitor
   # cortex cli: -alertmanager.configs.auto-slack-root
   #alertmanager_configs_auto_slack_root:

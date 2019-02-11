@@ -113,6 +113,11 @@ spec:
           containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.alertmanager.server_grpc_listen_port }}
           protocol: TCP
         {{- end }}
+        {{- $env := default .Values.cortex.env .Values.alertmanager.env -}}
+        {{- if $env }}
+        env:
+        {{- toYaml $env | nindent 8 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /status

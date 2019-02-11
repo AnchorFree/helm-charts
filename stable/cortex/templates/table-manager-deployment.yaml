@@ -608,6 +608,11 @@ spec:
           containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.table_manager.server_grpc_listen_port }}
           protocol: TCP
         {{- end }}
+        {{- $env := default .Values.cortex.env .Values.table_manager.env -}}
+        {{- if $env }}
+        env:
+        {{- toYaml $env | nindent 8 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /debug/pprof/

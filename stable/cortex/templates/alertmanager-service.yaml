@@ -26,7 +26,7 @@ spec:
   - port: {{ .Values.alertmanager.service.grpcPort }}
     targetPort: grpc
     protocol: TCP
-    name: http
+    name: grpc
   {{- end }}
   {{- if .Values.alertmanager.servicemonitor.enabled }}
   - port: {{ .Values.alertmanager.servicemonitor.port }}

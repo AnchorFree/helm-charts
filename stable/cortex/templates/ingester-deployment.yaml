@@ -566,15 +566,6 @@ spec:
         {{- if default .Values.cortex.validation_reject_old_samples_max_age .Values.ingester.validation_reject_old_samples_max_age }}
         - -validation.reject-old-samples.max-age={{ default .Values.cortex.validation_reject_old_samples_max_age .Values.ingester.validation_reject_old_samples_max_age }}
         {{- end }}
-        env:
-        - name: GOGC
-          value: "60"
-        - name: JAEGER_AGENT_HOST
-          value: jaegertracing-agent.cortex.svc.cluster.local
-        - name: JAEGER_SAMPLER_TYPE
-          value: ratelimiting
-        - name: JAEGER_SAMPLER_PARAM
-          value: '7'
         ports:
         {{- if default .Values.cortex.server_http_listen_port .Values.ingester.server_http_listen_port }}
         - name: http
@@ -585,6 +576,11 @@ spec:
         - name: grpc
           containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.ingester.server_grpc_listen_port }}
           protocol: TCP
+        {{- end }}
+        {{- $env := default .Values.cortex.env .Values.ingester.env -}}
+        {{- if $env }}
+        env:
+        {{- toYaml $env | nindent 8 }}
         {{- end }}
         readinessProbe:
           httpGet:
