@@ -1,5 +1,6 @@
 apiVersion: v1
-appVersion: "master-a24424c2"
+appVersion: "master-89de3b07"
 description: A multitenant, horizontally scalable Prometheus as a Service
 name: cortex
-version: 0.1.0
+version: 1.0.0
+home: https://github.com/cortexproject/cortex

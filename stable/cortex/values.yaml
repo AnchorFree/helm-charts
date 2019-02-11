@@ -1504,7 +1504,7 @@ alertmanager:
 
   image:
     repository: quay.io/cortexproject/alertmanager
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -1590,7 +1590,7 @@ configs:
 
   image:
     repository: quay.io/cortexproject/configs
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -1833,7 +1833,7 @@ distributor:
 
   image:
     repository: quay.io/cortexproject/distributor
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -2639,7 +2639,7 @@ ingester:
 
   image:
     repository: quay.io/cortexproject/ingester
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -3512,7 +3512,7 @@ querier:
 
   image:
     repository: quay.io/cortexproject/querier
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -3684,7 +3684,7 @@ query_frontend:
 
   image:
     repository: quay.io/cortexproject/query-frontend
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -4535,7 +4535,7 @@ ruler:
 
   image:
     repository: quay.io/cortexproject/ruler
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
@@ -5371,7 +5371,7 @@ table_manager:
 
   image:
     repository: quay.io/cortexproject/table-manager
-    tag: master-9267500e
+    tag: master-89de3b07
     pullPolicy: IfNotPresent
 
   service:
