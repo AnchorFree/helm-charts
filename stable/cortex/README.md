@@ -51,9 +51,9 @@ cortex:
   s3_url: "s3://<aws-region>/example-cortex"
 ```
 
-The command deploys cortex on the Kubernetes cluster. The [configuration](configuration) section lists the parameters that can be configured during installation.
+The command deploys Cortex on the Kubernetes cluster. The [configuration](configuration) section lists the parameters that can be configured during installation.
 
-## Uninstall the Chart
+## Uninstalling the Chart
 To uninstall/delete the my-release deployment:
 
 ```bash
@@ -63,9 +63,19 @@ $ helm delete my-release
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
-### Cortex Arguments
+The following tables lists the configurable parameters of the prometheus-operator chart and their default values.
+
+### Cortex
+Global parameters for cortex, any of those parameters can be overridden on service level.
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| cortex.env | List of global environment variables for all services | `[]` |  
+ 
+#### Application parameters
 | Parameter                                                                     | Description                                                                                                                                                                                                                                                                                                                                                                | Default |
-|-------------------------------------------------------------------------------|------------|---------|
+|-------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `cortex.alertmanager_configs_auto_slack_root`                                 | Root of URL to generate if config is internal://monitor                                                                                                                                                                                                                                                                                                                    | `NA`    |
 | `cortex.alertmanager_configs_auto_webhook_root`                               | Root of URL to generate if config is http://internal.monitor                                                                                                                                                                                                                                                                                                               | `NA`    |
 | `cortex.alertmanager_configs_client_timeout`                                  | Timeout for requests to Weave Cloud configs service. (default 5s)                                                                                                                                                                                                                                                                                                          | `NA`    |
@@ -81,7 +91,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.alertmanager_mesh_peer_service`                                       | SRV service used to discover peers. (default "mesh")                                                                                                                                                                                                                                                                                                                       | `NA`    |
 | `cortex.alertmanager_storage_path`                                            | Base path for data storage. (default "data/")                                                                                                                                                                                                                                                                                                                              | `NA`    |
 | `cortex.alertmanager_storage_retention`                                       | How long to keep data for. (default 120h0m0s)                                                                                                                                                                                                                                                                                                                              | `NA`    |
-| `cortex.alertmanager_web_external_url`                                        | The URL under which Alertmanager is externally reachable (for example, if Alertmanager is served via a reverse proxy). Used for generating relative and absolute links back to Alertmanager itself. If the URL has a path portion, it will be used to prefix all HTTP endpoints served by Alertmanager. If omitted, relevant URL components will be derived automatically. | `NA`    |
+| `cortex.alertmanager_web_external_url`                                        | The URL under which Alertmanager is externally reachable (for example, if Alertmanager is served via a reverse proxy). Used for generating relative and absolute links back to Alertmanager itself. If the URL has a path portion, it will be used to prefix all HTTP endpoints served by Alertmanager. If omitted, relevant URL components will be derived automatically. | `/api/prom/alertmanager`    |
 | `cortex.alsologtostderr`                                                      | log to standard error as well as files                                                                                                                                                                                                                                                                                                                                     | `NA`    |
 | `cortex.applicationautoscaling_url`                                           | ApplicationAutoscaling endpoint URL with escaped Key and Secret encoded.                                                                                                                                                                                                                                                                                                   | `NA`    |
 | `cortex.bigtable_column_key_from`                                             | The date (in the format YYYY-MM-DD) after which we use bigtable column keys.                                                                                                                                                                                                                                                                                               | `NA`    |
@@ -116,7 +126,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.consul_consistent_reads`                                              | Enable consistent reads to consul. (default true)                                                                                                                                                                                                                                                                                                                          | `NA`    |
 | `cortex.consul_hostname`                                                      | Hostname and port of Consul. (default "localhost:8500")                                                                                                                                                                                                                                                                                                                    | `NA`    |
 | `cortex.consul_prefix`                                                        | Prefix for keys in Consul. (default "collectors/")                                                                                                                                                                                                                                                                                                                         | `NA`    |
-| `cortex.database_migrations`                                                  | Path where the database migration files can be found                                                                                                                                                                                                                                                                                                                       | `NA`    |
+| `cortex.database_migrations`                                                  | Path where the database migration files can be found                                                                                                                                                                                                                                                                                                                       | `/migrations` |
 | `cortex.database_password_file`                                               | File containing password (username goes in URI)                                                                                                                                                                                                                                                                                                                            | `NA`    |
 | `cortex.database_uri`                                                         | URI where the database can be found (for dev you can use memory://) (default "postgres://postgres@configs-db.weave.local/configs?sslmode=disable")                                                                                                                                                                                                                         | `NA`    |
 | `cortex.default_validity`                                                     | Cache config for chunks. The default validity of entries for caches unless overridden.                                                                                                                                                                                                                                                                                     | `NA`    |
@@ -130,7 +140,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.distributor_ingestion_rate_limit`                                     | Per-user ingestion rate limit in samples per second. (default 25000)                                                                                                                                                                                                                                                                                                       | `NA`    |
 | `cortex.distributor_limiter_reload_period`                                    | Period at which to reload user ingestion limits. (default 5m0s)                                                                                                                                                                                                                                                                                                            | `NA`    |
 | `cortex.distributor_remote_timeout`                                           | Timeout for downstream ingesters. (default 2s)                                                                                                                                                                                                                                                                                                                             | `NA`    |
-| `cortex.distributor_replication_factor`                                       | The number of ingesters to write to and read from. (default 3)                                                                                                                                                                                                                                                                                                             | `NA`    |
+| `cortex.distributor_replication_factor`                                       | The number of ingesters to write to and read from. (default 3)                                                                                                                                                                                                                                                                                                             | `1`     |
 | `cortex.distributor_shard_by_all_labels`                                      | Distribute samples based on all labels, as opposed to solely by user and metric name.                                                                                                                                                                                                                                                                                      | `NA`    |
 | `cortex.dynamodb_api_limit`                                                   | DynamoDB table management requests per second limit. (default 2)                                                                                                                                                                                                                                                                                                           | `NA`    |
 | `cortex.dynamodb_base64_buckets_from`                                         | The date (in the format YYYY-MM-DD) after which we will stop querying to non-base64 encoded values.                                                                                                                                                                                                                                                                        | `NA`    |
@@ -242,7 +252,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.ingester_addr`                                                        | IP address to advertise in consul.                                                                                                                                                                                                                                                                                                                                         | `NA`    |
 | `cortex.ingester_chunk_age_jitter`                                            | Range of time to subtract from MaxChunkAge to spread out flushes (default 20m0s)                                                                                                                                                                                                                                                                                           | `NA`    |
 | `cortex.ingester_chunk_encoding`                                              | Encoding version to use for chunks. (default 1)                                                                                                                                                                                                                                                                                                                            | `NA`    |
-| `cortex.ingester_claim_on_rollout`                                            | Send chunks to PENDING ingesters on exit.                                                                                                                                                                                                                                                                                                                                  | `NA`    |
+| `cortex.ingester_claim_on_rollout`                                            | Send chunks to PENDING ingesters on exit.                                                                                                                                                                                                                                                                                                                                  | `false`    |
 | `cortex.ingester_client_grpc_max_recv_msg_size`                               | gRPC client max receive message size (bytes). (default 104857600)                                                                                                                                                                                                                                                                                                          | `NA`    |
 | `cortex.ingester_client_grpc_max_send_msg_size`                               | gRPC client max send message size (bytes). (default 16777216)                                                                                                                                                                                                                                                                                                              | `NA`    |
 | `cortex.ingester_client_grpc_use_gzip_compression`                            | Use compression when sending messages.                                                                                                                                                                                                                                                                                                                                     | `NA`    |
@@ -251,7 +261,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.ingester_flush_period`                                                | Period with which to attempt to flush chunks. (default 1m0s)                                                                                                                                                                                                                                                                                                               | `NA`    |
 | `cortex.ingester_heartbeat_period`                                            | Period at which to heartbeat to consul. (default 5s)                                                                                                                                                                                                                                                                                                                       | `NA`    |
 | `cortex.ingester_interface`                                                   | Name of network interface to read address from. (default [eth0 en0])                                                                                                                                                                                                                                                                                                       | `NA`    |
-| `cortex.ingester_join_after`                                                  | Period to wait for a claim from another ingester; will join automatically after this.                                                                                                                                                                                                                                                                                      | `NA`    |
+| `cortex.ingester_join_after`                                                  | Period to wait for a claim from another ingester; will join automatically after this.                                                                                                                                                                                                                                                                                      | `30s`    |
 | `cortex.ingester_max_chunk_age`                                               | Maximum chunk age before flushing. (default 12h0m0s)                                                                                                                                                                                                                                                                                                                       | `NA`    |
 | `cortex.ingester_max_chunk_idle`                                              | Maximum chunk idle time before flushing. (default 5m0s)                                                                                                                                                                                                                                                                                                                    | `NA`    |
 | `cortex.ingester_max_concurrent_streams`                                      | Limit on the number of concurrent streams for gRPC calls (0 = unlimited) (default 1000)                                                                                                                                                                                                                                                                                    | `NA`    |
@@ -269,7 +279,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.limits_per_user_override_config`                                      | File name of per-user overrides.                                                                                                                                                                                                                                                                                                                                           | `NA`    |
 | `cortex.limits_per_user_override_period`                                      | Period with this to reload the overrides. (default 10s)                                                                                                                                                                                                                                                                                                                    | `NA`    |
 | `cortex.local_chunk_directory`                                                | Directory to store chunks in.                                                                                                                                                                                                                                                                                                                                              | `NA`    |
-| `cortex.log_level`                                                            | Only log messages with the given severity or above. Valid levels: [debug, info, warn, error] (default info)                                                                                                                                                                                                                                                                | `NA`    |
+| `cortex.log_level`                                                            | Only log messages with the given severity or above. Valid levels: [debug, info, warn, error] (default info)                                                                                                                                                                                                                                                                | `"info"`    |
 | `cortex.log_backtrace_at`                                                     | when logging hits line file:N, emit a stack trace                                                                                                                                                                                                                                                                                                                          | `NA`    |
 | `cortex.log_dir`                                                              | If non-empty, write log files in this directory                                                                                                                                                                                                                                                                                                                            | `NA`    |
 | `cortex.logtostderr`                                                          | log to standard error instead of files                                                                                                                                                                                                                                                                                                                                     | `NA`    |
@@ -327,7 +337,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.server_graceful_shutdown_timeout`                                     | Timeout for graceful shutdowns (default 30s)                                                                                                                                                                                                                                                                                                                               | `NA`    |
 | `cortex.server_grpc_listen_port`                                              | gRPC server listen port. (default 9095)                                                                                                                                                                                                                                                                                                                                    | `NA`    |
 | `cortex.server_http_idle_timeout`                                             | Idle timeout for HTTP server (default 2m0s)                                                                                                                                                                                                                                                                                                                                | `NA`    |
-| `cortex.server_http_listen_port`                                              | HTTP server listen port. (default 80)                                                                                                                                                                                                                                                                                                                                      | `NA`    |
+| `cortex.server_http_listen_port`                                              | HTTP server listen port. (default 80)                                                                                                                                                                                                                                                                                                                                      | `80`    |
 | `cortex.server_http_read_timeout`                                             | Read timeout for HTTP server (default 30s)                                                                                                                                                                                                                                                                                                                                 | `NA`    |
 | `cortex.server_http_write_timeout`                                            | Write timeout for HTTP server (default 30s)                                                                                                                                                                                                                                                                                                                                | `NA`    |
 | `cortex.server_register_instrumentation`                                      | Register the intrumentation handlers (/metrics etc). (default true)                                                                                                                                                                                                                                                                                                        | `NA`    |
@@ -388,7 +398,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `cortex.validation_reject_old_samples_max_age`                                | Maximum accepted sample age before rejecting. (default 336h0m0s)                                                                                                                                                                                                                                                                                                           | `NA`    |
 | `cortex.vmodule`                                                              | comma-separated list of pattern=N settings for file-filtered logging                                                                                                                                                                                                                                                                                                       | `NA`    |
 
-### Alertmanager Arguments
+### Alertmanager
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `alertmanager.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `alertmanager.affinity` | Assign the service to run on specific nodes | `{}` |
+| `alertmanager.enabled` | Deploy service | `true` |
+| `alertmanager.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/alertmanager` |
+| `alertmanager.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `alertmanager.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `alertmanager.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `alertmanager.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `alertmanager.service.annotations` | Kubernetes service annotations | `{}` |  
+| `alertmanager.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `alertmanager.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `alertmanager.service.type` | Service type | `ClusterIP` |  
+| `alertmanager.service.clusterIP` | Cluster IP for service | `` |
+| `alertmanager.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `alertmanager.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `alertmanager.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `alertmanager.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `alertmanager.tolerations` | Tolerations for use with node taints | `[]` |
+| `alertmanager.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                              | Description                                                                                                                                                                                                                                                                                                                                                                | Default |
 |--------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `alertmanager.alertmanager_configs_auto_slack_root`    | Root of URL to generate if config is internal://monitor                                                                                                                                                                                                                                                                                                                    | `NA`    |
@@ -417,7 +454,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `alertmanager.server_http_write_timeout`               | Write timeout for HTTP server (default 30s)                                                                                                                                                                                                                                                                                                                                | `NA`    |
 | `alertmanager.server_register_instrumentation`         | Register the intrumentation handlers (/metrics etc). (default true)                                                                                                                                                                                                                                                                                                        | `NA`    |
 
-### Configs Arguments
+### Configs
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `configs.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `configs.affinity` | Assign the service to run on specific nodes | `{}` |
+| `configs.enabled` | Deploy service | `true` |
+| `configs.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/configs` |
+| `configs.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `configs.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `configs.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `configs.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `configs.service.annotations` | Kubernetes service annotations | `{}` |  
+| `configs.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `configs.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `configs.service.type` | Service type | `ClusterIP` |  
+| `configs.service.clusterIP` | Cluster IP for service | `` |
+| `configs.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `configs.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `configs.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `configs.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `configs.tolerations` | Tolerations for use with node taints | `[]` |
+| `configs.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                  | Description                                                                                                                                        | Default |
 |--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `configs.database_migrations`              | Path where the database migration files can be found                                                                                               | `NA`    |
@@ -433,7 +497,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `configs.server_http_write_timeout`        | Write timeout for HTTP server (default 30s)                                                                                                        | `NA`    |
 | `configs.server_register_instrumentation`  | Register the intrumentation handlers (/metrics etc). (default true)                                                                                | `NA`    |
 
-### Distributor Arguments
+### Distributor
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `distributor.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `distributor.affinity` | Assign the service to run on specific nodes | `{}` |
+| `distributor.enabled` | Deploy service | `true` |
+| `distributor.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/distributor` |
+| `distributor.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `distributor.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `distributor.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `distributor.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `distributor.service.annotations` | Kubernetes service annotations | `{}` |  
+| `distributor.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `distributor.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `distributor.service.type` | Service type | `ClusterIP` |  
+| `distributor.service.clusterIP` | Cluster IP for service | `` |
+| `distributor.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `distributor.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `distributor.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `distributor.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `distributor.tolerations` | Tolerations for use with node taints | `[]` |
+| `distributor.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                                 | Description                                                                                                                                                     | Default |
 |-----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `distributor.billing_ingester`                            | points to the billing ingester sidecar (should be on localhost) (default "localhost:24225")                                                                     | `NA`    |
@@ -486,7 +577,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `distributor.validation_reject_old_samples`               | Reject old samples.                                                                                                                                             | `NA`    |
 | `distributor.validation_reject_old_samples_max_age`       | Maximum accepted sample age before rejecting. (default 336h0m0s)                                                                                                | `NA`    |
 
-### Ingester Arguments
+### Ingester
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `ingester.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `ingester.affinity` | Assign the service to run on specific nodes | `{}` |
+| `ingester.enabled` | Deploy service | `true` |
+| `ingester.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/distributor` |
+| `ingester.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `ingester.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `ingester.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `ingester.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `ingester.service.annotations` | Kubernetes service annotations | `{}` |  
+| `ingester.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `ingester.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `ingester.service.type` | Service type | `ClusterIP` |  
+| `ingester.service.clusterIP` | Cluster IP for service | `` |
+| `ingester.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `ingester.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `ingester.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `ingester.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `ingester.tolerations` | Tolerations for use with node taints | `[]` |
+| `ingester.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                                         | Description                                                                                                                                                                                             | Default |
 |-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `ingester.applicationautoscaling_url`                             | ApplicationAutoscaling endpoint URL with escaped Key and Secret encoded.                                                                                                                                | `NA`    |
@@ -610,7 +728,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingester.ring_store`                                             | Backend storage to use for the ring (consul, inmemory). (default "consul")                                                                                                                              | `NA`    |
 | `ingester.s3_url`                                                 | S3 endpoint URL with escaped Key and Secret encoded. If only region is specified as a host, proper endpoint will be deduced. Use inmemory:///<bucket-name> to use a mock in-memory implementation.      | `NA`    |
 | `ingester.server_graceful_shutdown_timeout`                       | Timeout for graceful shutdowns (default 30s)                                                                                                                                                            | `NA`    |
-| `ingester.server_grpc_listen_port`                                | gRPC server listen port. (default 9095)                                                                                                                                                                 | `NA`    |
+| `ingester.server_grpc_listen_port`                                | gRPC server listen port. (default 9095)                                                                                                                                                                 | `9095`    |
 | `ingester.server_http_idle_timeout`                               | Idle timeout for HTTP server (default 2m0s)                                                                                                                                                             | `NA`    |
 | `ingester.server_http_listen_port`                                | HTTP server listen port. (default 80)                                                                                                                                                                   | `NA`    |
 | `ingester.server_http_read_timeout`                               | Read timeout for HTTP server (default 30s)                                                                                                                                                              | `NA`    |
@@ -667,7 +785,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ingester.validation_reject_old_samples`                          | Reject old samples.                                                                                                                                                                                     | `NA`    |
 | `ingester.validation_reject_old_samples_max_age`                  | Maximum accepted sample age before rejecting. (default 336h0m0s)                                                                                                                                        | `NA`    |
 
-### Querier Arguments
+### Querier
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `querier.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `querier.affinity` | Assign the service to run on specific nodes | `{}` |
+| `querier.enabled` | Deploy service | `true` |
+| `querier.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/querier` |
+| `querier.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `querier.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `querier.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `querier.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `querier.service.annotations` | Kubernetes service annotations | `{}` |  
+| `querier.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `querier.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `querier.service.type` | Service type | `ClusterIP` |  
+| `querier.service.clusterIP` | Cluster IP for service | `` |
+| `querier.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `querier.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `querier.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `querier.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `querier.tolerations` | Tolerations for use with node taints | `[]` |
+| `querier.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                                        | Description                                                                                                                                                                                             | Default |
 |------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `querier.alsologtostderr`                                        | log to standard error as well as files                                                                                                                                                                  | `NA`    |
@@ -853,7 +998,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `querier.validation_reject_old_samples_max_age`                  | Maximum accepted sample age before rejecting. (default 336h0m0s)                                                                                                                                        | `NA`    |
 | `querier.vmodule`                                                | comma-separated list of pattern=N settings for file-filtered logging                                                                                                                                    | `NA`    |
 
-### Query Frontend Arguments
+### Query Frontend
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `query_frontend.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `query_frontend.affinity` | Assign the service to run on specific nodes | `{}` |
+| `query_frontend.enabled` | Deploy service | `true` |
+| `query_frontend.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/query-frontend` |
+| `query_frontend.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `query_frontend.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `query_frontend.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `query_frontend.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `query_frontend.service.annotations` | Kubernetes service annotations | `{}` |  
+| `query_frontend.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `query_frontend.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `query_frontend.service.type` | Service type | `ClusterIP` |  
+| `query_frontend.service.clusterIP` | Cluster IP for service | `None` |
+| `query_frontend.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `query_frontend.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `query_frontend.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `query_frontend.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `query_frontend.tolerations` | Tolerations for use with node taints | `[]` |
+| `query_frontend.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                                    | Description                                                                                                              | Default |
 |--------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|---------|
 | `query_frontend.cache_enable_diskcache`                      | Enable on-disk cache.                                                                                                    | `NA`    |
@@ -883,14 +1055,41 @@ The command removes all the Kubernetes components associated with the chart and 
 | `query_frontend.querier_split_queries_by_day`                | Split queries by day and execute in parallel.                                                                            | `NA`    |
 | `query_frontend.query_frontend_max_recv_message_size_bytes`  | Limit on the size of a grpc message this server can receive. (default 67108864)                                          | `NA`    |
 | `query_frontend.server_graceful_shutdown_timeout`            | Timeout for graceful shutdowns (default 30s)                                                                             | `NA`    |
-| `query_frontend.server_grpc_listen_port`                     | gRPC server listen port. (default 9095)                                                                                  | `NA`    |
+| `query_frontend.server_grpc_listen_port`                     | gRPC server listen port. (default 9095)                                                                                  | `9095`    |
 | `query_frontend.server_http_idle_timeout`                    | Idle timeout for HTTP server (default 2m0s)                                                                              | `NA`    |
 | `query_frontend.server_http_listen_port`                     | HTTP server listen port. (default 80)                                                                                    | `NA`    |
 | `query_frontend.server_http_read_timeout`                    | Read timeout for HTTP server (default 30s)                                                                               | `NA`    |
 | `query_frontend.server_http_write_timeout`                   | Write timeout for HTTP server (default 30s)                                                                              | `NA`    |
 | `query_frontend.server_register_instrumentation`             | Register the intrumentation handlers (/metrics etc). (default true)                                                      | `NA`    |
 
-### Ruler Arguments
+### Ruler
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `ruler.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `ruler.affinity` | Assign the service to run on specific nodes | `{}` |
+| `ruler.enabled` | Deploy service | `true` |
+| `ruler.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/ruler` |
+| `ruler.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `ruler.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `ruler.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `ruler.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `ruler.service.annotations` | Kubernetes service annotations | `{}` |  
+| `ruler.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `ruler.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `ruler.service.type` | Service type | `ClusterIP` |  
+| `ruler.service.clusterIP` | Cluster IP for service | `` |
+| `ruler.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `ruler.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `ruler.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `ruler.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `ruler.tolerations` | Tolerations for use with node taints | `[]` |
+| `ruler.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                                      | Description                                                                                                                                                                                             | Default |
 |----------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `ruler.alsologtostderr`                                        | log to standard error as well as files                                                                                                                                                                  | `NA`    |
@@ -1081,7 +1280,34 @@ The command removes all the Kubernetes components associated with the chart and 
 | `ruler.validation_reject_old_samples_max_age`                  | Maximum accepted sample age before rejecting. (default 336h0m0s)                                                                                                                                        | `NA`    |
 | `ruler.vmodule`                                                | comma-separated list of pattern=N settings for file-filtered logging                                                                                                                                    | `NA`    |
 
-### Table_manager Arguments
+### Table Manager
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `table_manager.env` | List of service level environment variables, overrides `cortex.env` | `[]` |
+| `table_manager.affinity` | Assign the service to run on specific nodes | `{}` |
+| `table_manager.enabled` | Deploy service | `true` |
+| `table_manager.image.repository` | Base image to use for a service deployment | `quay.io/cortexproject/table-manager` |
+| `table_manager.image.tag` | Tag of service container image to be deployed | `master-89de3b07` |
+| `table_manager.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `table_manager.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `table_manager.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `table_manager.service.annotations` | Kubernetes service annotations | `{}` |  
+| `table_manager.service.grcpPort` | gRCP port for the service runs on | `9095` |  
+| `table_manager.service.httpPort` | gRCP port for the service runs on | `80` |  
+| `table_manager.service.type` | Service type | `ClusterIP` |  
+| `table_manager.service.clusterIP` | Cluster IP for service | `` |
+| `table_manager.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `table_manager.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `table_manager.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `table_manager.servicemonitor.port` | Port for servicemonitor | `9090` |  
+| `table_manager.tolerations` | Tolerations for use with node taints | `[]` |
+| `table_manager.resources` | Define resources requests and limits for single Pods | `{}` |  
+
+#### Application parameters
+All parameters here override parameters from `cortex.` on service level
+
 | Parameter                                                                            | Description                                                                                                                                                                                             | Default |
 |--------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
 | `table_manager.applicationautoscaling_url`                                           | ApplicationAutoscaling endpoint URL with escaped Key and Secret encoded.                                                                                                                                | `NA`    |
@@ -1272,3 +1498,30 @@ The command removes all the Kubernetes components associated with the chart and 
 | `table_manager.table_manager_retention_deletes_enabled`                              | If true, enables retention deletes of DB tables                                                                                                                                                         | `NA`    |
 | `table_manager.table_manager_retention_period`                                       | Tables older than this retention period are deleted. Note: This setting is destructive to data!(default: 0, which disables deletion)                                                                    | `NA`    |
 | `table_manager.table_manager_throughput_updates_disabled`                            | If true, disable all changes to DB capacity                                                                                                                                                             | `NA`    |
+
+### Nginx
+
+#### Chart parameters
+| Parameter | Description  | Default |
+|-----------|--------------|---------|
+| `nginx.affinity` | Assign the service to run on specific nodes | `{}` |
+| `nginx.enabled` | Deploy service | `true` |
+| `nginx.image.repository` | Base image to use for a service deployment | `nginx` |
+| `nginx.image.tag` | Tag of service container image to be deployed | `1.14.2` |
+| `nginx.image.pullPolicy` | Pull policy for service image | `IfNotPresent` |
+| `nginx.nodeSelector` | Define which Nodes the Pods are scheduled on. | `{}` |  
+| `nginx.replicaCount` | Size is the expected size of the service cluster. | `1` |  
+| `nginx.service.annotations` | Kubernetes service annotations | `{}` |  
+| `nginx.service.nodePort` | Node port for the nginx service runs on | `30080` |
+| `nginx.service.port` | Port for the nginx service runs on | `80` |    
+| `nginx.service.type` | Service type | `ClusterIP` |  
+| `nginx.servicemonitor.enabled` | Enable monitoring of service using prometheus operator | `false` |  
+| `nginx.servicemonitor.labels` | Servicemonitor labels | `{}` |  
+| `nginx.servicemonitor.namespace` | Namespace to deploy servicemonitor to | `"{{ .Release.Namespace }}"` |  
+| `nginx.servicemonitor.port` | Port for servicemonitor | `9090` |
+| `nginx.servicemonitor.exporter.pullPolicy` | Pull policy for metric exporter image | `IfNotPresent` |  
+| `nginx.servicemonitor.exporter.repository` | Repository for metric exporter image | `nginx/nginx-prometheus-exporter` |  
+| `nginx.servicemonitor.exporter.resources` | Resources for metric exporter container | `{}` |  
+| `nginx.servicemonitor.exporter.tag` | Tag for metric exporter image | `0.2.0` |  
+| `nginx.tolerations` | Tolerations for use with node taints | `[]` |
+| `nginx.resources` | Define resources requests and limits for single Pods | `{}` |  
