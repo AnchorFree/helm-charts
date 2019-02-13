@@ -1,0 +1,31 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    k8s-app: {{ .Release.Name }}
+spec:
+  jobLabel: {{ .Values.jobLabel }}
+  endpoints:
+  - port: {{ .Values.portName }}
+    scheme: {{ .Values.scheme }}
+    path: {{ .Values.path }}
+    interval: {{ .Values.scrapeInterval }}
+    scrapeTimeout: {{ .Values.scrapeTimeout }}
+    honorLabels: {{ .Values.honorLabels }}
+  selector:
+    matchLabels:
+{{ toYaml .Values.selector.matchLabels | indent 6 }}
+  namespaceSelector:
+{{- if .Values.selector.namespace }}
+    matchNames:
+    - {{ .Values.selector.namespace }}
+{{- else }}
+    any: true
+{{- end }}
