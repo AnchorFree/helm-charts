@@ -3,20 +3,32 @@ entries:
   cert-issuer:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.951598366Z
+    created: 2019-02-13T16:24:39.481303659Z
     description: Chart to create Issuer or ClusterIssuer for cert-manager
-    digest: 3a4d781b700195555f24bbc07597665d004545079bcc61cffa0977bfd01b8f50
+    digest: b82f0a89ec8b68bf693b27658869b3929ba2fbd3f22e8346a954eb688cf48dbb
     home: none
     name: cert-issuer
     urls:
     - https://anchorfree.github.io/helm-charts/packages/cert-issuer-1.0.0.tgz
     version: 1.0.0
+  customizable-servicemonitor:
+  - apiVersion: v1
+    appVersion: "0"
+    created: 2019-02-13T16:24:39.481478525Z
+    description: customizable servicemonitor resource dor monitoring with prometheus
+      needed services
+    digest: a6eae20c9030e087800873f0c21b34d7bae4d04629b8f1bda58fd388863866c4
+    home: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md
+    name: customizable-servicemonitor
+    urls:
+    - https://anchorfree.github.io/helm-charts/packages/customizable-servicemonitor-0.1.0.tgz
+    version: 0.1.0
   dex-k8s-authenticator:
   - apiVersion: v1
     appVersion: v1.5.0
-    created: 2019-02-13T08:54:22.951937953Z
+    created: 2019-02-13T16:24:39.481780428Z
     description: Authenticator for using Dex with Kubernetes
-    digest: 2669701693fcced717501b23e4780885284ee38463f51039048e17914340c48b
+    digest: 2beb3163958639a9ee6b0b050aabdbe272c48d7046de8daaceb10ec3721f8bf8
     home: https://github.com/mintel/dex-k8s-authenticator
     name: dex-k8s-authenticator
     urls:
@@ -24,10 +36,10 @@ entries:
     version: 1.2.0
   elasticsearch:
   - appVersion: 6.6.0
-    created: 2019-02-13T08:54:22.953425885Z
+    created: 2019-02-13T16:24:39.483193382Z
     description: Flexible and powerful open source, distributed real-time search and
       analytics engine.
-    digest: d85e2d3e67250ced7e779e507e4caad7e36cc2ed4e33571cb2ac3f03731f502e
+    digest: 6f8cab0160aa15cd1b7384641220f70791eda08fd40d91c56c9309a640dfa7c4
     home: https://github.com/AnchorFree/helm-charts
     icon: https://static-www.elastic.co/assets/blteb1c97719574938d/logo-elastic-elasticsearch-lt.svg
     name: elasticsearch
@@ -42,7 +54,7 @@ entries:
     - https://anchorfree.github.io/helm-charts/packages/elasticsearch-1.1.0.tgz
     version: 1.1.0
   - appVersion: 6.6.0
-    created: 2019-02-13T08:54:22.952707589Z
+    created: 2019-02-13T16:24:39.482471284Z
     description: Flexible and powerful open source, distributed real-time search and
       analytics engine.
     digest: 4d47e647e6960120452181f00dacbcbace3f091ed078ff0c53b049555a4551fd
@@ -61,8 +73,8 @@ entries:
     version: 1.0.0
   k8s-rumors:
   - apiVersion: v1
-    created: 2019-02-13T08:54:22.953611354Z
-    digest: c35351120aa4b855e5cdb9c74abc9766fc486b35fcf7d3f91203efe79ee766e3
+    created: 2019-02-13T16:24:39.483321184Z
+    digest: 8b628a8c516cecb47a3b81920a9d670d0b0fe9e395002eaa8a7ee64d41e5e5a3
     name: k8s-rumors
     urls:
     - https://anchorfree.github.io/helm-charts/packages/k8s-rumors-0.1.tgz
@@ -70,9 +82,9 @@ entries:
   legacy-cert-manager:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.954489877Z
+    created: 2019-02-13T16:24:39.48408991Z
     description: Chart to create a deployment of legacy cert-manager for non k8s-projects
-    digest: 0d1e23eeb056d8a4fc9ace069d9db82a65bf868a6f9e7b404e063b160c6dfb84
+    digest: 919abe42275f245382f44406a8c1030a694c700303a60da19d7f9f64d96a620c
     home: https://github.com/AnchorFree/docker-cert-manager/
     name: legacy-cert-manager
     urls:
@@ -80,7 +92,7 @@ entries:
     version: 1.0.6
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.954324708Z
+    created: 2019-02-13T16:24:39.483899487Z
     description: Chart to create a deployment of legacy cert-manager for non k8s-projects
     digest: f5f57f3e57cc9446be75579906c9feaf03dceba2e9e0561c9fd9aa79bd4b7b8d
     home: https://github.com/AnchorFree/docker-cert-manager/
@@ -90,7 +102,7 @@ entries:
     version: 1.0.5
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.954154227Z
+    created: 2019-02-13T16:24:39.4837629Z
     description: Chart to create a deployment of legacy cert-manager for non k8s-projects
     digest: 5032231224a20983c5ea3de67752062e1126fcf673eb679506666323e5578d80
     home: https://github.com/AnchorFree/docker-cert-manager/
@@ -100,7 +112,7 @@ entries:
     version: 1.0.4
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.953985773Z
+    created: 2019-02-13T16:24:39.483615518Z
     description: Chart to create a deployment of legacy cert-manager for non k8s-projects
     digest: 159d90c1847e8249ea2114d5fa176f8eb0e697c62214d5c8a597352c74b4ae0f
     home: https://github.com/AnchorFree/docker-cert-manager/
@@ -110,7 +122,7 @@ entries:
     version: 1.0.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.953787535Z
+    created: 2019-02-13T16:24:39.483478375Z
     description: Chart to create a deployment of legacy cert-manager for non k8s-projects
     digest: ac617fba80738aa17123e83aac5d87ce1c4d9e1c0a4111a8975fef4cd8d10bb8
     home: https://github.com/AnchorFree/docker-cert-manager/
@@ -121,9 +133,9 @@ entries:
   oidc-starter:
   - apiVersion: v1
     appVersion: v1.1.0
-    created: 2019-02-13T08:54:22.954782725Z
+    created: 2019-02-13T16:24:39.484392702Z
     description: Authenticator for using Dex with Hashicorp Vault
-    digest: f6ee2b510f903f48648ac4694c662f3c448b08e1624ad84fbacc5cd781e5bfae
+    digest: e78c15a235aa7340810c5c5ac09ee3cc6dd386901ed4e1de7c69e045fe01fdc7
     home: https://github.com/AnchorFree/oidc-starter
     name: oidc-starter
     urls:
@@ -132,9 +144,9 @@ entries:
   oidc-static:
   - apiVersion: v1
     appVersion: 1.0.0
-    created: 2019-02-13T08:54:22.955050848Z
+    created: 2019-02-13T16:24:39.484641248Z
     description: Title page for OIDC Authenticators
-    digest: 2544337fe8672e12ff070cca09c03e913de189a4751e45fb3d6b509eb7cae63d
+    digest: ac82ddcce71950f0852ba0d7989507e78f2f1086ac2ae2c5eb5842a4cc3bc66c
     home: https://github.com/AnchorFree/oidc-static
     name: oidc-static
     urls:
@@ -143,9 +155,9 @@ entries:
   ssl-watch:
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.955795834Z
+    created: 2019-02-13T16:24:39.485273919Z
     description: Chart to create a deployment of ssl-watch service
-    digest: 2d5ae35b977d27ec037d83d150635b637c46b002b2a9af0ade18353aabddd408
+    digest: a969f5996dce0df8c2fc9d510873124bba0687a3bd2672a10d38fd079338732b
     home: https://github.com/AnchorFree/ssl-watch/
     name: ssl-watch
     urls:
@@ -153,7 +165,7 @@ entries:
     version: 1.0.3
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.955603644Z
+    created: 2019-02-13T16:24:39.485119125Z
     description: Chart to create a deployment of ssl-watch service
     digest: a9e17d7e1c676038b32b11b38efd742e8e6d846113b40138e7532740910c2aab
     home: https://github.com/AnchorFree/ssl-watch/
@@ -163,7 +175,7 @@ entries:
     version: 1.0.2
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.955409664Z
+    created: 2019-02-13T16:24:39.484970112Z
     description: Chart to create a deployment of ssl-watch service
     digest: 3b973e48b94b6d88647a83a57d8de371746788f5d777d82a884b186140637f2e
     home: https://github.com/AnchorFree/ssl-watch/
@@ -173,7 +185,7 @@ entries:
     version: 1.0.1
   - apiVersion: v1
     appVersion: "1.0"
-    created: 2019-02-13T08:54:22.955230335Z
+    created: 2019-02-13T16:24:39.484788678Z
     description: Chart to create a deployment of ssl-watch service
     digest: ac69a6c7b5e6df0bb1c3dc52b52a04eba7dc678b57d1c455dcf5b54b689d3cd5
     home: https://github.com/AnchorFree/ssl-watch/
@@ -181,4 +193,4 @@ entries:
     urls:
     - https://anchorfree.github.io/helm-charts/packages/ssl-watch-1.0.0.tgz
     version: 1.0.0
-generated: 2019-02-13T08:54:22.951300554Z
+generated: 2019-02-13T16:24:39.481051658Z
