@@ -1,0 +1,11 @@
+scrapeInterval: 60s
+scrapeTimeout: 59s
+namespace: monitoring
+jobLabel: app
+portName: metrics
+scheme: http
+honorLabels: false
+path: /metrics
+selector:
+  matchLabels: {}
+  namespace: ""
