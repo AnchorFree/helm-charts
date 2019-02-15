@@ -1,0 +1,38 @@
+{{- if .Values.nginx.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-nginx
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: nginx
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.nginx.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.nginx.service.type }}
+  {{- if and .Values.nginx.service.clusterIP ( eq .Values.nginx.service.type "ClusterIP" ) }}
+  clusterIP: {{ .Values.nginx.service.clusterIP }}
+  {{- end }}
+  ports:
+  - port: {{ .Values.nginx.service.port }}
+    targetPort: http
+    protocol: TCP
+    name: http
+    nodePort: {{ .Values.nginx.service.nodePort }}
+  {{- if .Values.nginx.servicemonitor.enabled }}
+  - port: {{ .Values.nginx.servicemonitor.port }}
+    targetPort: metrics
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: nginx
+{{- end }}

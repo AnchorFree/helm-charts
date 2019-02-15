@@ -1,0 +1,222 @@
+{{- if .Values.distributor.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-distributor
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: distributor
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.distributor.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: distributor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: distributor
+    spec:
+      terminationGracePeriodSeconds: 2400
+      containers:
+      - name: distributor
+        image: "{{ .Values.distributor.image.repository }}:{{ .Values.distributor.image.tag }}"
+        imagePullPolicy: {{ .Values.distributor.image.pullPolicy }}
+        args:
+        {{- if default .Values.cortex.billing_ingester .Values.distributor.billing_ingester }}
+        - -billing.ingester={{ default .Values.cortex.billing_ingester .Values.distributor.billing_ingester }}
+        {{- end }}
+        {{- if default .Values.cortex.billing_max_buffered_events .Values.distributor.billing_max_buffered_events }}
+        - -billing.max-buffered-events={{ default .Values.cortex.billing_max_buffered_events .Values.distributor.billing_max_buffered_events }}
+        {{- end }}
+        {{- if default .Values.cortex.billing_retry_delay .Values.distributor.billing_retry_delay }}
+        - -billing.retry-delay={{ default .Values.cortex.billing_retry_delay .Values.distributor.billing_retry_delay }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_acltoken .Values.distributor.consul_acltoken }}
+        - -consul.acltoken={{ default .Values.cortex.consul_acltoken .Values.distributor.consul_acltoken }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_client_timeout .Values.distributor.consul_client_timeout }}
+        - -consul.client-timeout={{ default .Values.cortex.consul_client_timeout .Values.distributor.consul_client_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_consistent_reads .Values.distributor.consul_consistent_reads }}
+        - -consul.consistent-reads={{ default .Values.cortex.consul_consistent_reads .Values.distributor.consul_consistent_reads }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_hostname .Values.distributor.consul_hostname }}
+        - -consul.hostname={{ default .Values.cortex.consul_hostname .Values.distributor.consul_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_prefix .Values.distributor.consul_prefix }}
+        - -consul.prefix={{ default .Values.cortex.consul_prefix .Values.distributor.consul_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_client_cleanup_period .Values.distributor.distributor_client_cleanup_period }}
+        - -distributor.client-cleanup-period={{ default .Values.cortex.distributor_client_cleanup_period .Values.distributor.distributor_client_cleanup_period }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_enable_billing .Values.distributor.distributor_enable_billing }}
+        - -distributor.enable-billing={{ default .Values.cortex.distributor_enable_billing .Values.distributor.distributor_enable_billing }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_extra_query_delay .Values.distributor.distributor_extra_query_delay }}
+        - -distributor.extra-query-delay={{ default .Values.cortex.distributor_extra_query_delay .Values.distributor.distributor_extra_query_delay }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_health_check_ingesters .Values.distributor.distributor_health_check_ingesters }}
+        - -distributor.health-check-ingesters={{ default .Values.cortex.distributor_health_check_ingesters .Values.distributor.distributor_health_check_ingesters }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_ingestion_burst_size .Values.distributor.distributor_ingestion_burst_size }}
+        - -distributor.ingestion-burst-size={{ default .Values.cortex.distributor_ingestion_burst_size .Values.distributor.distributor_ingestion_burst_size }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_ingestion_rate_limit .Values.distributor.distributor_ingestion_rate_limit }}
+        - -distributor.ingestion-rate-limit={{ default .Values.cortex.distributor_ingestion_rate_limit .Values.distributor.distributor_ingestion_rate_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_limiter_reload_period .Values.distributor.distributor_limiter_reload_period }}
+        - -distributor.limiter-reload-period={{ default .Values.cortex.distributor_limiter_reload_period .Values.distributor.distributor_limiter_reload_period }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_remote_timeout .Values.distributor.distributor_remote_timeout }}
+        - -distributor.remote-timeout={{ default .Values.cortex.distributor_remote_timeout .Values.distributor.distributor_remote_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_replication_factor .Values.distributor.distributor_replication_factor }}
+        - -distributor.replication-factor={{ default .Values.cortex.distributor_replication_factor .Values.distributor.distributor_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_shard_by_all_labels .Values.distributor.distributor_shard_by_all_labels }}
+        - -distributor.shard-by-all-labels={{ default .Values.cortex.distributor_shard_by_all_labels .Values.distributor.distributor_shard_by_all_labels }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.distributor.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.distributor.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_expected_labels .Values.distributor.ingester_client_expected_labels }}
+        - -ingester-client.expected-labels={{ default .Values.cortex.ingester_client_expected_labels .Values.distributor.ingester_client_expected_labels }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_expected_samples_per_series .Values.distributor.ingester_client_expected_samples_per_series }}
+        - -ingester-client.expected-samples-per-series={{ default .Values.cortex.ingester_client_expected_samples_per_series .Values.distributor.ingester_client_expected_samples_per_series }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_expected_timeseries .Values.distributor.ingester_client_expected_timeseries }}
+        - -ingester-client.expected-timeseries={{ default .Values.cortex.ingester_client_expected_timeseries .Values.distributor.ingester_client_expected_timeseries }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_max_recv_msg_size .Values.distributor.ingester_client_grpc_max_recv_msg_size }}
+        - -ingester.client.grpc-max-recv-msg-size={{ default .Values.cortex.ingester_client_grpc_max_recv_msg_size .Values.distributor.ingester_client_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_max_send_msg_size .Values.distributor.ingester_client_grpc_max_send_msg_size }}
+        - -ingester.client.grpc-max-send-msg-size={{ default .Values.cortex.ingester_client_grpc_max_send_msg_size .Values.distributor.ingester_client_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_use_gzip_compression .Values.distributor.ingester_client_grpc_use_gzip_compression }}
+        - -ingester.client.grpc-use-gzip-compression={{ default .Values.cortex.ingester_client_grpc_use_gzip_compression .Values.distributor.ingester_client_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_samples_per_query .Values.distributor.ingester_max_samples_per_query }}
+        - -ingester.max-samples-per-query={{ default .Values.cortex.ingester_max_samples_per_query .Values.distributor.ingester_max_samples_per_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_metric .Values.distributor.ingester_max_series_per_metric }}
+        - -ingester.max-series-per-metric={{ default .Values.cortex.ingester_max_series_per_metric .Values.distributor.ingester_max_series_per_metric }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_query .Values.distributor.ingester_max_series_per_query }}
+        - -ingester.max-series-per-query={{ default .Values.cortex.ingester_max_series_per_query .Values.distributor.ingester_max_series_per_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_user .Values.distributor.ingester_max_series_per_user }}
+        - -ingester.max-series-per-user={{ default .Values.cortex.ingester_max_series_per_user .Values.distributor.ingester_max_series_per_user }}
+        {{- end }}
+        {{- if default .Values.cortex.limits_per_user_override_config .Values.distributor.limits_per_user_override_config }}
+        - -limits.per-user-override-config={{ default .Values.cortex.limits_per_user_override_config .Values.distributor.limits_per_user_override_config }}
+        {{- end }}
+        {{- if default .Values.cortex.limits_per_user_override_period .Values.distributor.limits_per_user_override_period }}
+        - -limits.per-user-override-period={{ default .Values.cortex.limits_per_user_override_period .Values.distributor.limits_per_user_override_period }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.distributor.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.distributor.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_heartbeat_timeout .Values.distributor.ring_heartbeat_timeout }}
+        - -ring.heartbeat-timeout={{ default .Values.cortex.ring_heartbeat_timeout .Values.distributor.ring_heartbeat_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_store .Values.distributor.ring_store }}
+        - -ring.store={{ default .Values.cortex.ring_store .Values.distributor.ring_store }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.distributor.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.distributor.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.distributor.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.distributor.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.distributor.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.distributor.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.distributor.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.distributor.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.distributor.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.distributor.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.distributor.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.distributor.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.distributor.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.distributor.server_register_instrumentation }}
+        {{- end }}
+        {{- if default .Values.cortex.store_max_query_length .Values.distributor.store_max_query_length }}
+        - -store.max-query-length={{ default .Values.cortex.store_max_query_length .Values.distributor.store_max_query_length }}
+        {{- end }}
+        {{- if default .Values.cortex.store_query_chunk_limit .Values.distributor.store_query_chunk_limit }}
+        - -store.query-chunk-limit={{ default .Values.cortex.store_query_chunk_limit .Values.distributor.store_query_chunk_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_create_grace_period .Values.distributor.validation_create_grace_period }}
+        - -validation.create-grace-period={{ default .Values.cortex.validation_create_grace_period .Values.distributor.validation_create_grace_period }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_label_names_per_series .Values.distributor.validation_max_label_names_per_series }}
+        - -validation.max-label-names-per-series={{ default .Values.cortex.validation_max_label_names_per_series .Values.distributor.validation_max_label_names_per_series }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_length_label_name .Values.distributor.validation_max_length_label_name }}
+        - -validation.max-length-label-name={{ default .Values.cortex.validation_max_length_label_name .Values.distributor.validation_max_length_label_name }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_length_label_value .Values.distributor.validation_max_length_label_value }}
+        - -validation.max-length-label-value={{ default .Values.cortex.validation_max_length_label_value .Values.distributor.validation_max_length_label_value }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_reject_old_samples .Values.distributor.validation_reject_old_samples }}
+        - -validation.reject-old-samples={{ default .Values.cortex.validation_reject_old_samples .Values.distributor.validation_reject_old_samples }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_reject_old_samples_max_age .Values.distributor.validation_reject_old_samples_max_age }}
+        - -validation.reject-old-samples.max-age={{ default .Values.cortex.validation_reject_old_samples_max_age .Values.distributor.validation_reject_old_samples_max_age }}
+        {{- end }}
+        ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.distributor.server_http_listen_port }}
+        - name: http
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.distributor.server_http_listen_port }}
+          protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.distributor.server_grpc_listen_port }}
+        - name: grpc
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.distributor.server_grpc_listen_port }}
+          protocol: TCP
+        {{- end }}
+        {{- $env := default .Values.cortex.env .Values.distributor.env -}}
+        {{- if $env }}
+        env:
+        {{- toYaml $env | nindent 8 }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        resources:
+          {{- toYaml .Values.distributor.resources | nindent 10 }}
+      {{- with .Values.distributor.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.distributor.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.distributor.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

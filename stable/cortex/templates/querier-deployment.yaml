@@ -1,0 +1,618 @@
+{{- if .Values.querier.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-querier
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: querier
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.querier.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: querier
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: querier
+    spec:
+      containers:
+      - name: querier
+        image: "{{ .Values.querier.image.repository }}:{{ .Values.querier.image.tag }}"
+        imagePullPolicy: {{ .Values.querier.image.pullPolicy }}
+        args:
+        - -querier.frontend-address={{ include "cortex.fullname" . }}-query-frontend.{{ .Release.Namespace }}.svc.cluster.local:9095
+        {{- if default .Values.cortex.alsologtostderr .Values.querier.alsologtostderr }}
+        - -alsologtostderr={{ default .Values.cortex.alsologtostderr .Values.querier.alsologtostderr }}
+        {{- end }}
+        {{- if default .Values.cortex.applicationautoscaling_url .Values.querier.applicationautoscaling_url }}
+        - -applicationautoscaling.url={{ default .Values.cortex.applicationautoscaling_url .Values.querier.applicationautoscaling_url }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_column_key_from .Values.querier.bigtable_column_key_from }}
+        - -bigtable.column-key-from={{ default .Values.cortex.bigtable_column_key_from .Values.querier.bigtable_column_key_from }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_max_recv_msg_size .Values.querier.bigtable_grpc_max_recv_msg_size }}
+        - -bigtable.grpc-max-recv-msg-size={{ default .Values.cortex.bigtable_grpc_max_recv_msg_size .Values.querier.bigtable_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_max_send_msg_size .Values.querier.bigtable_grpc_max_send_msg_size }}
+        - -bigtable.grpc-max-send-msg-size={{ default .Values.cortex.bigtable_grpc_max_send_msg_size .Values.querier.bigtable_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_grpc_use_gzip_compression .Values.querier.bigtable_grpc_use_gzip_compression }}
+        - -bigtable.grpc-use-gzip-compression={{ default .Values.cortex.bigtable_grpc_use_gzip_compression .Values.querier.bigtable_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_instance .Values.querier.bigtable_instance }}
+        - -bigtable.instance={{ default .Values.cortex.bigtable_instance .Values.querier.bigtable_instance }}
+        {{- end }}
+        {{- if default .Values.cortex.bigtable_project .Values.querier.bigtable_project }}
+        - -bigtable.project={{ default .Values.cortex.bigtable_project .Values.querier.bigtable_project }}
+        {{- end }}
+        {{- if default .Values.cortex.billing_ingester .Values.querier.billing_ingester }}
+        - -billing.ingester={{ default .Values.cortex.billing_ingester .Values.querier.billing_ingester }}
+        {{- end }}
+        {{- if default .Values.cortex.billing_max_buffered_events .Values.querier.billing_max_buffered_events }}
+        - -billing.max-buffered-events={{ default .Values.cortex.billing_max_buffered_events .Values.querier.billing_max_buffered_events }}
+        {{- end }}
+        {{- if default .Values.cortex.billing_retry_delay .Values.querier.billing_retry_delay }}
+        - -billing.retry-delay={{ default .Values.cortex.billing_retry_delay .Values.querier.billing_retry_delay }}
+        {{- end }}
+        {{- if default .Values.cortex.boltdb_dir .Values.querier.boltdb_dir }}
+        - -boltdb.dir={{ default .Values.cortex.boltdb_dir .Values.querier.boltdb_dir }}
+        {{- end }}
+        {{- if default .Values.cortex.cache_enable_diskcache .Values.querier.cache_enable_diskcache }}
+        - -cache.enable-diskcache={{ default .Values.cortex.cache_enable_diskcache .Values.querier.cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.cache_enable_fifocache .Values.querier.cache_enable_fifocache }}
+        - -cache.enable-fifocache={{ default .Values.cortex.cache_enable_fifocache .Values.querier.cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_addresses .Values.querier.cassandra_addresses }}
+        - -cassandra.addresses={{ default .Values.cortex.cassandra_addresses .Values.querier.cassandra_addresses }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_auth .Values.querier.cassandra_auth }}
+        - -cassandra.auth={{ default .Values.cortex.cassandra_auth .Values.querier.cassandra_auth }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_ca_path .Values.querier.cassandra_ca_path }}
+        - -cassandra.ca-path={{ default .Values.cortex.cassandra_ca_path .Values.querier.cassandra_ca_path }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_consistency .Values.querier.cassandra_consistency }}
+        - -cassandra.consistency={{ default .Values.cortex.cassandra_consistency .Values.querier.cassandra_consistency }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_disable_initial_host_lookup .Values.querier.cassandra_disable_initial_host_lookup }}
+        - -cassandra.disable-initial-host-lookup={{ default .Values.cortex.cassandra_disable_initial_host_lookup .Values.querier.cassandra_disable_initial_host_lookup }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_host_verification .Values.querier.cassandra_host_verification }}
+        - -cassandra.host-verification={{ default .Values.cortex.cassandra_host_verification .Values.querier.cassandra_host_verification }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_keyspace .Values.querier.cassandra_keyspace }}
+        - -cassandra.keyspace={{ default .Values.cortex.cassandra_keyspace .Values.querier.cassandra_keyspace }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_password .Values.querier.cassandra_password }}
+        - -cassandra.password={{ default .Values.cortex.cassandra_password .Values.querier.cassandra_password }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_port .Values.querier.cassandra_port }}
+        - -cassandra.port={{ default .Values.cortex.cassandra_port .Values.querier.cassandra_port }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_replication_factor .Values.querier.cassandra_replication_factor }}
+        - -cassandra.replication-factor={{ default .Values.cortex.cassandra_replication_factor .Values.querier.cassandra_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_ssl .Values.querier.cassandra_ssl }}
+        - -cassandra.ssl={{ default .Values.cortex.cassandra_ssl .Values.querier.cassandra_ssl }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_timeout .Values.querier.cassandra_timeout }}
+        - -cassandra.timeout={{ default .Values.cortex.cassandra_timeout .Values.querier.cassandra_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.cassandra_username .Values.querier.cassandra_username }}
+        - -cassandra.username={{ default .Values.cortex.cassandra_username .Values.querier.cassandra_username }}
+        {{- end }}
+        {{- if default .Values.cortex.chunk_storage_client .Values.querier.chunk_storage_client }}
+        - -chunk.storage-client={{ default .Values.cortex.chunk_storage_client .Values.querier.chunk_storage_client }}
+        {{- end }}
+        {{- if default .Values.cortex.config_yaml .Values.querier.config_yaml }}
+        - -config-yaml={{ default .Values.cortex.config_yaml .Values.querier.config_yaml }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_acltoken .Values.querier.consul_acltoken }}
+        - -consul.acltoken={{ default .Values.cortex.consul_acltoken .Values.querier.consul_acltoken }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_client_timeout .Values.querier.consul_client_timeout }}
+        - -consul.client-timeout={{ default .Values.cortex.consul_client_timeout .Values.querier.consul_client_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_consistent_reads .Values.querier.consul_consistent_reads }}
+        - -consul.consistent-reads={{ default .Values.cortex.consul_consistent_reads .Values.querier.consul_consistent_reads }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_hostname .Values.querier.consul_hostname }}
+        - -consul.hostname={{ default .Values.cortex.consul_hostname .Values.querier.consul_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.consul_prefix .Values.querier.consul_prefix }}
+        - -consul.prefix={{ default .Values.cortex.consul_prefix .Values.querier.consul_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.default_validity .Values.querier.default_validity }}
+        - -default-validity={{ default .Values.cortex.default_validity .Values.querier.default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.diskcache_path .Values.querier.diskcache_path }}
+        - -diskcache.path={{ default .Values.cortex.diskcache_path .Values.querier.diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.diskcache_size .Values.querier.diskcache_size }}
+        - -diskcache.size={{ default .Values.cortex.diskcache_size .Values.querier.diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_client_cleanup_period .Values.querier.distributor_client_cleanup_period }}
+        - -distributor.client-cleanup-period={{ default .Values.cortex.distributor_client_cleanup_period .Values.querier.distributor_client_cleanup_period }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_enable_billing .Values.querier.distributor_enable_billing }}
+        - -distributor.enable-billing={{ default .Values.cortex.distributor_enable_billing .Values.querier.distributor_enable_billing }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_extra_query_delay .Values.querier.distributor_extra_query_delay }}
+        - -distributor.extra-query-delay={{ default .Values.cortex.distributor_extra_query_delay .Values.querier.distributor_extra_query_delay }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_health_check_ingesters .Values.querier.distributor_health_check_ingesters }}
+        - -distributor.health-check-ingesters={{ default .Values.cortex.distributor_health_check_ingesters .Values.querier.distributor_health_check_ingesters }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_ingestion_burst_size .Values.querier.distributor_ingestion_burst_size }}
+        - -distributor.ingestion-burst-size={{ default .Values.cortex.distributor_ingestion_burst_size .Values.querier.distributor_ingestion_burst_size }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_ingestion_rate_limit .Values.querier.distributor_ingestion_rate_limit }}
+        - -distributor.ingestion-rate-limit={{ default .Values.cortex.distributor_ingestion_rate_limit .Values.querier.distributor_ingestion_rate_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_limiter_reload_period .Values.querier.distributor_limiter_reload_period }}
+        - -distributor.limiter-reload-period={{ default .Values.cortex.distributor_limiter_reload_period .Values.querier.distributor_limiter_reload_period }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_remote_timeout .Values.querier.distributor_remote_timeout }}
+        - -distributor.remote-timeout={{ default .Values.cortex.distributor_remote_timeout .Values.querier.distributor_remote_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_replication_factor .Values.querier.distributor_replication_factor }}
+        - -distributor.replication-factor={{ default .Values.cortex.distributor_replication_factor .Values.querier.distributor_replication_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.distributor_shard_by_all_labels .Values.querier.distributor_shard_by_all_labels }}
+        - -distributor.shard-by-all-labels={{ default .Values.cortex.distributor_shard_by_all_labels .Values.querier.distributor_shard_by_all_labels }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_api_limit .Values.querier.dynamodb_api_limit }}
+        - -dynamodb.api-limit={{ default .Values.cortex.dynamodb_api_limit .Values.querier.dynamodb_api_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_base64_buckets_from .Values.querier.dynamodb_base64_buckets_from }}
+        - -dynamodb.base64-buckets-from={{ default .Values.cortex.dynamodb_base64_buckets_from .Values.querier.dynamodb_base64_buckets_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_from .Values.querier.dynamodb_chunk_table_from }}
+        - -dynamodb.chunk-table.from={{ default .Values.cortex.dynamodb_chunk_table_from .Values.querier.dynamodb_chunk_table_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_period .Values.querier.dynamodb_chunk_table_period }}
+        - -dynamodb.chunk-table.period={{ default .Values.cortex.dynamodb_chunk_table_period .Values.querier.dynamodb_chunk_table_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_prefix .Values.querier.dynamodb_chunk_table_prefix }}
+        - -dynamodb.chunk-table.prefix={{ default .Values.cortex.dynamodb_chunk_table_prefix .Values.querier.dynamodb_chunk_table_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_table_tag .Values.querier.dynamodb_chunk_table_tag }}
+        - -dynamodb.chunk-table.tag={{ default .Values.cortex.dynamodb_chunk_table_tag .Values.querier.dynamodb_chunk_table_tag }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_gang_size .Values.querier.dynamodb_chunk_gang_size }}
+        - -dynamodb.chunk.gang.size={{ default .Values.cortex.dynamodb_chunk_gang_size .Values.querier.dynamodb_chunk_gang_size }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_chunk_get_max_parallelism .Values.querier.dynamodb_chunk_get_max_parallelism }}
+        - -dynamodb.chunk.get.max.parallelism={{ default .Values.cortex.dynamodb_chunk_get_max_parallelism .Values.querier.dynamodb_chunk_get_max_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_daily_buckets_from .Values.querier.dynamodb_daily_buckets_from }}
+        - -dynamodb.daily-buckets-from={{ default .Values.cortex.dynamodb_daily_buckets_from .Values.querier.dynamodb_daily_buckets_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_max_backoff .Values.querier.dynamodb_max_backoff }}
+        - -dynamodb.max-backoff={{ default .Values.cortex.dynamodb_max_backoff .Values.querier.dynamodb_max_backoff }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_max_retries .Values.querier.dynamodb_max_retries }}
+        - -dynamodb.max-retries={{ default .Values.cortex.dynamodb_max_retries .Values.querier.dynamodb_max_retries }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_min_backoff .Values.querier.dynamodb_min_backoff }}
+        - -dynamodb.min-backoff={{ default .Values.cortex.dynamodb_min_backoff .Values.querier.dynamodb_min_backoff }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_original_table_name .Values.querier.dynamodb_original_table_name }}
+        - -dynamodb.original-table-name={{ default .Values.cortex.dynamodb_original_table_name .Values.querier.dynamodb_original_table_name }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_from .Values.querier.dynamodb_periodic_table_from }}
+        - -dynamodb.periodic-table.from={{ default .Values.cortex.dynamodb_periodic_table_from .Values.querier.dynamodb_periodic_table_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_period .Values.querier.dynamodb_periodic_table_period }}
+        - -dynamodb.periodic-table.period={{ default .Values.cortex.dynamodb_periodic_table_period .Values.querier.dynamodb_periodic_table_period }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_prefix .Values.querier.dynamodb_periodic_table_prefix }}
+        - -dynamodb.periodic-table.prefix={{ default .Values.cortex.dynamodb_periodic_table_prefix .Values.querier.dynamodb_periodic_table_prefix }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_periodic_table_tag .Values.querier.dynamodb_periodic_table_tag }}
+        - -dynamodb.periodic-table.tag={{ default .Values.cortex.dynamodb_periodic_table_tag .Values.querier.dynamodb_periodic_table_tag }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_url .Values.querier.dynamodb_url }}
+        - -dynamodb.url={{ default .Values.cortex.dynamodb_url .Values.querier.dynamodb_url }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_use_periodic_tables .Values.querier.dynamodb_use_periodic_tables }}
+        - -dynamodb.use-periodic-tables={{ default .Values.cortex.dynamodb_use_periodic_tables .Values.querier.dynamodb_use_periodic_tables }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v4_schema_from .Values.querier.dynamodb_v4_schema_from }}
+        - -dynamodb.v4-schema-from={{ default .Values.cortex.dynamodb_v4_schema_from .Values.querier.dynamodb_v4_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v5_schema_from .Values.querier.dynamodb_v5_schema_from }}
+        - -dynamodb.v5-schema-from={{ default .Values.cortex.dynamodb_v5_schema_from .Values.querier.dynamodb_v5_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v6_schema_from .Values.querier.dynamodb_v6_schema_from }}
+        - -dynamodb.v6-schema-from={{ default .Values.cortex.dynamodb_v6_schema_from .Values.querier.dynamodb_v6_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.dynamodb_v9_schema_from .Values.querier.dynamodb_v9_schema_from }}
+        - -dynamodb.v9-schema-from={{ default .Values.cortex.dynamodb_v9_schema_from .Values.querier.dynamodb_v9_schema_from }}
+        {{- end }}
+        {{- if default .Values.cortex.fifocache_duration .Values.querier.fifocache_duration }}
+        - -fifocache.duration={{ default .Values.cortex.fifocache_duration .Values.querier.fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.fifocache_size .Values.querier.fifocache_size }}
+        - -fifocache.size={{ default .Values.cortex.fifocache_size .Values.querier.fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.gcs_bucketname .Values.querier.gcs_bucketname }}
+        - -gcs.bucketname={{ default .Values.cortex.gcs_bucketname .Values.querier.gcs_bucketname }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.querier.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.querier.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_max_recv_msg_size .Values.querier.ingester_client_grpc_max_recv_msg_size }}
+        - -ingester.client.grpc-max-recv-msg-size={{ default .Values.cortex.ingester_client_grpc_max_recv_msg_size .Values.querier.ingester_client_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_max_send_msg_size .Values.querier.ingester_client_grpc_max_send_msg_size }}
+        - -ingester.client.grpc-max-send-msg-size={{ default .Values.cortex.ingester_client_grpc_max_send_msg_size .Values.querier.ingester_client_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_client_grpc_use_gzip_compression .Values.querier.ingester_client_grpc_use_gzip_compression }}
+        - -ingester.client.grpc-use-gzip-compression={{ default .Values.cortex.ingester_client_grpc_use_gzip_compression .Values.querier.ingester_client_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_samples_per_query .Values.querier.ingester_max_samples_per_query }}
+        - -ingester.max-samples-per-query={{ default .Values.cortex.ingester_max_samples_per_query .Values.querier.ingester_max_samples_per_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_metric .Values.querier.ingester_max_series_per_metric }}
+        - -ingester.max-series-per-metric={{ default .Values.cortex.ingester_max_series_per_metric .Values.querier.ingester_max_series_per_metric }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_query .Values.querier.ingester_max_series_per_query }}
+        - -ingester.max-series-per-query={{ default .Values.cortex.ingester_max_series_per_query .Values.querier.ingester_max_series_per_query }}
+        {{- end }}
+        {{- if default .Values.cortex.ingester_max_series_per_user .Values.querier.ingester_max_series_per_user }}
+        - -ingester.max-series-per-user={{ default .Values.cortex.ingester_max_series_per_user .Values.querier.ingester_max_series_per_user }}
+        {{- end }}
+        {{- if default .Values.cortex.limits_per_user_override_config .Values.querier.limits_per_user_override_config }}
+        - -limits.per-user-override-config={{ default .Values.cortex.limits_per_user_override_config .Values.querier.limits_per_user_override_config }}
+        {{- end }}
+        {{- if default .Values.cortex.limits_per_user_override_period .Values.querier.limits_per_user_override_period }}
+        - -limits.per-user-override-period={{ default .Values.cortex.limits_per_user_override_period .Values.querier.limits_per_user_override_period }}
+        {{- end }}
+        {{- if default .Values.cortex.local_chunk_directory .Values.querier.local_chunk_directory }}
+        - -local.chunk-directory={{ default .Values.cortex.local_chunk_directory .Values.querier.local_chunk_directory }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.querier.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.querier.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.log_backtrace_at .Values.querier.log_backtrace_at }}
+        - -log_backtrace_at={{ default .Values.cortex.log_backtrace_at .Values.querier.log_backtrace_at }}
+        {{- end }}
+        {{- if default .Values.cortex.log_dir .Values.querier.log_dir }}
+        - -log_dir={{ default .Values.cortex.log_dir .Values.querier.log_dir }}
+        {{- end }}
+        {{- if default .Values.cortex.logtostderr .Values.querier.logtostderr }}
+        - -logtostderr={{ default .Values.cortex.logtostderr .Values.querier.logtostderr }}
+        {{- end }}
+        {{- if default .Values.cortex.memcache_write_back_buffer .Values.querier.memcache_write_back_buffer }}
+        - -memcache.write-back-buffer={{ default .Values.cortex.memcache_write_back_buffer .Values.querier.memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.memcache_write_back_goroutines .Values.querier.memcache_write_back_goroutines }}
+        - -memcache.write-back-goroutines={{ default .Values.cortex.memcache_write_back_goroutines .Values.querier.memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_batchsize .Values.querier.memcached_batchsize }}
+        - -memcached.batchsize={{ default .Values.cortex.memcached_batchsize .Values.querier.memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_expiration .Values.querier.memcached_expiration }}
+        - -memcached.expiration={{ default .Values.cortex.memcached_expiration .Values.querier.memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_hostname .Values.querier.memcached_hostname }}
+        - -memcached.hostname={{ default .Values.cortex.memcached_hostname .Values.querier.memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_max_idle_conns .Values.querier.memcached_max_idle_conns }}
+        - -memcached.max-idle-conns={{ default .Values.cortex.memcached_max_idle_conns .Values.querier.memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_parallelism .Values.querier.memcached_parallelism }}
+        - -memcached.parallelism={{ default .Values.cortex.memcached_parallelism .Values.querier.memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_service .Values.querier.memcached_service }}
+        - -memcached.service={{ default .Values.cortex.memcached_service .Values.querier.memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_timeout .Values.querier.memcached_timeout }}
+        - -memcached.timeout={{ default .Values.cortex.memcached_timeout .Values.querier.memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.memcached_update_interval .Values.querier.memcached_update_interval }}
+        - -memcached.update-interval={{ default .Values.cortex.memcached_update_interval .Values.querier.memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_error_rate_query .Values.querier.metrics_error_rate_query }}
+        - -metrics.error-rate-query={{ default .Values.cortex.metrics_error_rate_query .Values.querier.metrics_error_rate_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_queue_length_query .Values.querier.metrics_queue_length_query }}
+        - -metrics.queue-length-query={{ default .Values.cortex.metrics_queue_length_query .Values.querier.metrics_queue_length_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_read_error_query .Values.querier.metrics_read_error_query }}
+        - -metrics.read-error-query={{ default .Values.cortex.metrics_read_error_query .Values.querier.metrics_read_error_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_read_usage_query .Values.querier.metrics_read_usage_query }}
+        - -metrics.read-usage-query={{ default .Values.cortex.metrics_read_usage_query .Values.querier.metrics_read_usage_query }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_scale_up_factor .Values.querier.metrics_scale_up_factor }}
+        - -metrics.scale-up-factor={{ default .Values.cortex.metrics_scale_up_factor .Values.querier.metrics_scale_up_factor }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_target_queue_length .Values.querier.metrics_target_queue_length }}
+        - -metrics.target-queue-length={{ default .Values.cortex.metrics_target_queue_length .Values.querier.metrics_target_queue_length }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_url .Values.querier.metrics_url }}
+        - -metrics.url={{ default .Values.cortex.metrics_url .Values.querier.metrics_url }}
+        {{- end }}
+        {{- if default .Values.cortex.metrics_usage_query .Values.querier.metrics_usage_query }}
+        - -metrics.usage-query={{ default .Values.cortex.metrics_usage_query .Values.querier.metrics_usage_query }}
+        {{- end }}
+        {{- if default .Values.cortex.promql_lookback_delta .Values.querier.promql_lookback_delta }}
+        - -promql.lookback-delta={{ default .Values.cortex.promql_lookback_delta .Values.querier.promql_lookback_delta }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_batch_iterators .Values.querier.querier_batch_iterators }}
+        - -querier.batch-iterators={{ default .Values.cortex.querier_batch_iterators .Values.querier.querier_batch_iterators }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_dns_lookup_period .Values.querier.querier_dns_lookup_period }}
+        - -querier.dns-lookup-period={{ default .Values.cortex.querier_dns_lookup_period .Values.querier.querier_dns_lookup_period }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_frontend_client_grpc_max_recv_msg_size .Values.querier.querier_frontend_client_grpc_max_recv_msg_size }}
+        - -querier.frontend-client.grpc-max-recv-msg-size={{ default .Values.cortex.querier_frontend_client_grpc_max_recv_msg_size .Values.querier.querier_frontend_client_grpc_max_recv_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_frontend_client_grpc_max_send_msg_size .Values.querier.querier_frontend_client_grpc_max_send_msg_size }}
+        - -querier.frontend-client.grpc-max-send-msg-size={{ default .Values.cortex.querier_frontend_client_grpc_max_send_msg_size .Values.querier.querier_frontend_client_grpc_max_send_msg_size }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_frontend_client_grpc_use_gzip_compression .Values.querier.querier_frontend_client_grpc_use_gzip_compression }}
+        - -querier.frontend-client.grpc-use-gzip-compression={{ default .Values.cortex.querier_frontend_client_grpc_use_gzip_compression .Values.querier.querier_frontend_client_grpc_use_gzip_compression }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_ingester_streaming .Values.querier.querier_ingester_streaming }}
+        - -querier.ingester-streaming={{ default .Values.cortex.querier_ingester_streaming .Values.querier.querier_ingester_streaming }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_iterators .Values.querier.querier_iterators }}
+        - -querier.iterators={{ default .Values.cortex.querier_iterators .Values.querier.querier_iterators }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_max_concurrent .Values.querier.querier_max_concurrent }}
+        - -querier.max-concurrent={{ default .Values.cortex.querier_max_concurrent .Values.querier.querier_max_concurrent }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_max_samples .Values.querier.querier_max_samples }}
+        - -querier.max-samples={{ default .Values.cortex.querier_max_samples .Values.querier.querier_max_samples }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_query_ingesters_within .Values.querier.querier_query_ingesters_within }}
+        - -querier.query-ingesters-within={{ default .Values.cortex.querier_query_ingesters_within .Values.querier.querier_query_ingesters_within }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_query_parallelism .Values.querier.querier_query_parallelism }}
+        - -querier.query-parallelism={{ default .Values.cortex.querier_query_parallelism .Values.querier.querier_query_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_timeout .Values.querier.querier_timeout }}
+        - -querier.timeout={{ default .Values.cortex.querier_timeout .Values.querier.querier_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.querier_worker_parallelism .Values.querier.querier_worker_parallelism }}
+        - -querier.worker-parallelism={{ default .Values.cortex.querier_worker_parallelism .Values.querier.querier_worker_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_heartbeat_timeout .Values.querier.ring_heartbeat_timeout }}
+        - -ring.heartbeat-timeout={{ default .Values.cortex.ring_heartbeat_timeout .Values.querier.ring_heartbeat_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.ring_store .Values.querier.ring_store }}
+        - -ring.store={{ default .Values.cortex.ring_store .Values.querier.ring_store }}
+        {{- end }}
+        {{- if default .Values.cortex.s3_url .Values.querier.s3_url }}
+        - -s3.url={{ default .Values.cortex.s3_url .Values.querier.s3_url }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.querier.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.querier.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.querier.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.querier.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.querier.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.querier.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.querier.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.querier.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.querier.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.querier.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.querier.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.querier.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.querier.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.querier.server_register_instrumentation }}
+        {{- end }}
+        {{- if default .Values.cortex.stderrthreshold .Values.querier.stderrthreshold }}
+        - -stderrthreshold={{ default .Values.cortex.stderrthreshold .Values.querier.stderrthreshold }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cache_lookups_older_than .Values.querier.store_cache_lookups_older_than }}
+        - -store.cache-lookups-older-than={{ default .Values.cortex.store_cache_lookups_older_than .Values.querier.store_cache_lookups_older_than }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cardinality_cache_size .Values.querier.store_cardinality_cache_size }}
+        - -store.cardinality-cache-size={{ default .Values.cortex.store_cardinality_cache_size .Values.querier.store_cardinality_cache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cardinality_cache_validity .Values.querier.store_cardinality_cache_validity }}
+        - -store.cardinality-cache-validity={{ default .Values.cortex.store_cardinality_cache_validity .Values.querier.store_cardinality_cache_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_cardinality_limit .Values.querier.store_cardinality_limit }}
+        - -store.cardinality-limit={{ default .Values.cortex.store_cardinality_limit .Values.querier.store_cardinality_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_cache_enable_diskcache .Values.querier.store_index_cache_read_cache_enable_diskcache }}
+        - -store.index-cache-read.cache.enable-diskcache={{ default .Values.cortex.store_index_cache_read_cache_enable_diskcache .Values.querier.store_index_cache_read_cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_cache_enable_fifocache .Values.querier.store_index_cache_read_cache_enable_fifocache }}
+        - -store.index-cache-read.cache.enable-fifocache={{ default .Values.cortex.store_index_cache_read_cache_enable_fifocache .Values.querier.store_index_cache_read_cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_default_validity .Values.querier.store_index_cache_read_default_validity }}
+        - -store.index-cache-read.default-validity={{ default .Values.cortex.store_index_cache_read_default_validity .Values.querier.store_index_cache_read_default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_diskcache_path .Values.querier.store_index_cache_read_diskcache_path }}
+        - -store.index-cache-read.diskcache.path={{ default .Values.cortex.store_index_cache_read_diskcache_path .Values.querier.store_index_cache_read_diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_diskcache_size .Values.querier.store_index_cache_read_diskcache_size }}
+        - -store.index-cache-read.diskcache.size={{ default .Values.cortex.store_index_cache_read_diskcache_size .Values.querier.store_index_cache_read_diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_fifocache_duration .Values.querier.store_index_cache_read_fifocache_duration }}
+        - -store.index-cache-read.fifocache.duration={{ default .Values.cortex.store_index_cache_read_fifocache_duration .Values.querier.store_index_cache_read_fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_fifocache_size .Values.querier.store_index_cache_read_fifocache_size }}
+        - -store.index-cache-read.fifocache.size={{ default .Values.cortex.store_index_cache_read_fifocache_size .Values.querier.store_index_cache_read_fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcache_write_back_buffer .Values.querier.store_index_cache_read_memcache_write_back_buffer }}
+        - -store.index-cache-read.memcache.write-back-buffer={{ default .Values.cortex.store_index_cache_read_memcache_write_back_buffer .Values.querier.store_index_cache_read_memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcache_write_back_goroutines .Values.querier.store_index_cache_read_memcache_write_back_goroutines }}
+        - -store.index-cache-read.memcache.write-back-goroutines={{ default .Values.cortex.store_index_cache_read_memcache_write_back_goroutines .Values.querier.store_index_cache_read_memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_batchsize .Values.querier.store_index_cache_read_memcached_batchsize }}
+        - -store.index-cache-read.memcached.batchsize={{ default .Values.cortex.store_index_cache_read_memcached_batchsize .Values.querier.store_index_cache_read_memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_expiration .Values.querier.store_index_cache_read_memcached_expiration }}
+        - -store.index-cache-read.memcached.expiration={{ default .Values.cortex.store_index_cache_read_memcached_expiration .Values.querier.store_index_cache_read_memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_hostname .Values.querier.store_index_cache_read_memcached_hostname }}
+        - -store.index-cache-read.memcached.hostname={{ default .Values.cortex.store_index_cache_read_memcached_hostname .Values.querier.store_index_cache_read_memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_max_idle_conns .Values.querier.store_index_cache_read_memcached_max_idle_conns }}
+        - -store.index-cache-read.memcached.max-idle-conns={{ default .Values.cortex.store_index_cache_read_memcached_max_idle_conns .Values.querier.store_index_cache_read_memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_parallelism .Values.querier.store_index_cache_read_memcached_parallelism }}
+        - -store.index-cache-read.memcached.parallelism={{ default .Values.cortex.store_index_cache_read_memcached_parallelism .Values.querier.store_index_cache_read_memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_service .Values.querier.store_index_cache_read_memcached_service }}
+        - -store.index-cache-read.memcached.service={{ default .Values.cortex.store_index_cache_read_memcached_service .Values.querier.store_index_cache_read_memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_timeout .Values.querier.store_index_cache_read_memcached_timeout }}
+        - -store.index-cache-read.memcached.timeout={{ default .Values.cortex.store_index_cache_read_memcached_timeout .Values.querier.store_index_cache_read_memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_read_memcached_update_interval .Values.querier.store_index_cache_read_memcached_update_interval }}
+        - -store.index-cache-read.memcached.update-interval={{ default .Values.cortex.store_index_cache_read_memcached_update_interval .Values.querier.store_index_cache_read_memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_validity .Values.querier.store_index_cache_validity }}
+        - -store.index-cache-validity={{ default .Values.cortex.store_index_cache_validity .Values.querier.store_index_cache_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_cache_enable_diskcache .Values.querier.store_index_cache_write_cache_enable_diskcache }}
+        - -store.index-cache-write.cache.enable-diskcache={{ default .Values.cortex.store_index_cache_write_cache_enable_diskcache .Values.querier.store_index_cache_write_cache_enable_diskcache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_cache_enable_fifocache .Values.querier.store_index_cache_write_cache_enable_fifocache }}
+        - -store.index-cache-write.cache.enable-fifocache={{ default .Values.cortex.store_index_cache_write_cache_enable_fifocache .Values.querier.store_index_cache_write_cache_enable_fifocache }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_default_validity .Values.querier.store_index_cache_write_default_validity }}
+        - -store.index-cache-write.default-validity={{ default .Values.cortex.store_index_cache_write_default_validity .Values.querier.store_index_cache_write_default_validity }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_diskcache_path .Values.querier.store_index_cache_write_diskcache_path }}
+        - -store.index-cache-write.diskcache.path={{ default .Values.cortex.store_index_cache_write_diskcache_path .Values.querier.store_index_cache_write_diskcache_path }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_diskcache_size .Values.querier.store_index_cache_write_diskcache_size }}
+        - -store.index-cache-write.diskcache.size={{ default .Values.cortex.store_index_cache_write_diskcache_size .Values.querier.store_index_cache_write_diskcache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_fifocache_duration .Values.querier.store_index_cache_write_fifocache_duration }}
+        - -store.index-cache-write.fifocache.duration={{ default .Values.cortex.store_index_cache_write_fifocache_duration .Values.querier.store_index_cache_write_fifocache_duration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_fifocache_size .Values.querier.store_index_cache_write_fifocache_size }}
+        - -store.index-cache-write.fifocache.size={{ default .Values.cortex.store_index_cache_write_fifocache_size .Values.querier.store_index_cache_write_fifocache_size }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcache_write_back_buffer .Values.querier.store_index_cache_write_memcache_write_back_buffer }}
+        - -store.index-cache-write.memcache.write-back-buffer={{ default .Values.cortex.store_index_cache_write_memcache_write_back_buffer .Values.querier.store_index_cache_write_memcache_write_back_buffer }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcache_write_back_goroutines .Values.querier.store_index_cache_write_memcache_write_back_goroutines }}
+        - -store.index-cache-write.memcache.write-back-goroutines={{ default .Values.cortex.store_index_cache_write_memcache_write_back_goroutines .Values.querier.store_index_cache_write_memcache_write_back_goroutines }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_batchsize .Values.querier.store_index_cache_write_memcached_batchsize }}
+        - -store.index-cache-write.memcached.batchsize={{ default .Values.cortex.store_index_cache_write_memcached_batchsize .Values.querier.store_index_cache_write_memcached_batchsize }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_expiration .Values.querier.store_index_cache_write_memcached_expiration }}
+        - -store.index-cache-write.memcached.expiration={{ default .Values.cortex.store_index_cache_write_memcached_expiration .Values.querier.store_index_cache_write_memcached_expiration }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_hostname .Values.querier.store_index_cache_write_memcached_hostname }}
+        - -store.index-cache-write.memcached.hostname={{ default .Values.cortex.store_index_cache_write_memcached_hostname .Values.querier.store_index_cache_write_memcached_hostname }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_max_idle_conns .Values.querier.store_index_cache_write_memcached_max_idle_conns }}
+        - -store.index-cache-write.memcached.max-idle-conns={{ default .Values.cortex.store_index_cache_write_memcached_max_idle_conns .Values.querier.store_index_cache_write_memcached_max_idle_conns }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_parallelism .Values.querier.store_index_cache_write_memcached_parallelism }}
+        - -store.index-cache-write.memcached.parallelism={{ default .Values.cortex.store_index_cache_write_memcached_parallelism .Values.querier.store_index_cache_write_memcached_parallelism }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_service .Values.querier.store_index_cache_write_memcached_service }}
+        - -store.index-cache-write.memcached.service={{ default .Values.cortex.store_index_cache_write_memcached_service .Values.querier.store_index_cache_write_memcached_service }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_timeout .Values.querier.store_index_cache_write_memcached_timeout }}
+        - -store.index-cache-write.memcached.timeout={{ default .Values.cortex.store_index_cache_write_memcached_timeout .Values.querier.store_index_cache_write_memcached_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.store_index_cache_write_memcached_update_interval .Values.querier.store_index_cache_write_memcached_update_interval }}
+        - -store.index-cache-write.memcached.update-interval={{ default .Values.cortex.store_index_cache_write_memcached_update_interval .Values.querier.store_index_cache_write_memcached_update_interval }}
+        {{- end }}
+        {{- if default .Values.cortex.store_max_query_length .Values.querier.store_max_query_length }}
+        - -store.max-query-length={{ default .Values.cortex.store_max_query_length .Values.querier.store_max_query_length }}
+        {{- end }}
+        {{- if default .Values.cortex.store_min_chunk_age .Values.querier.store_min_chunk_age }}
+        - -store.min-chunk-age={{ default .Values.cortex.store_min_chunk_age .Values.querier.store_min_chunk_age }}
+        {{- end }}
+        {{- if default .Values.cortex.store_query_chunk_limit .Values.querier.store_query_chunk_limit }}
+        - -store.query-chunk-limit={{ default .Values.cortex.store_query_chunk_limit .Values.querier.store_query_chunk_limit }}
+        {{- end }}
+        {{- if default .Values.cortex.v .Values.querier.v }}
+        - -v={{ default .Values.cortex.v .Values.querier.v }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_create_grace_period .Values.querier.validation_create_grace_period }}
+        - -validation.create-grace-period={{ default .Values.cortex.validation_create_grace_period .Values.querier.validation_create_grace_period }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_label_names_per_series .Values.querier.validation_max_label_names_per_series }}
+        - -validation.max-label-names-per-series={{ default .Values.cortex.validation_max_label_names_per_series .Values.querier.validation_max_label_names_per_series }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_length_label_name .Values.querier.validation_max_length_label_name }}
+        - -validation.max-length-label-name={{ default .Values.cortex.validation_max_length_label_name .Values.querier.validation_max_length_label_name }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_max_length_label_value .Values.querier.validation_max_length_label_value }}
+        - -validation.max-length-label-value={{ default .Values.cortex.validation_max_length_label_value .Values.querier.validation_max_length_label_value }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_reject_old_samples .Values.querier.validation_reject_old_samples }}
+        - -validation.reject-old-samples={{ default .Values.cortex.validation_reject_old_samples .Values.querier.validation_reject_old_samples }}
+        {{- end }}
+        {{- if default .Values.cortex.validation_reject_old_samples_max_age .Values.querier.validation_reject_old_samples_max_age }}
+        - -validation.reject-old-samples.max-age={{ default .Values.cortex.validation_reject_old_samples_max_age .Values.querier.validation_reject_old_samples_max_age }}
+        {{- end }}
+        {{- if default .Values.cortex.vmodule .Values.querier.vmodule }}
+        - -vmodule={{ default .Values.cortex.vmodule .Values.querier.vmodule }}
+        {{- end }}
+        ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.querier.server_http_listen_port }}
+        - name: http
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.querier.server_http_listen_port }}
+          protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.querier.server_grpc_listen_port }}
+        - name: grpc
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.querier.server_grpc_listen_port }}
+          protocol: TCP
+        {{- end }}
+        {{- $env := default .Values.cortex.env .Values.querier.env -}}
+        {{- if $env }}
+        env:
+        {{- toYaml $env | nindent 8 }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /ring
+            port: http
+        resources:
+          {{- toYaml .Values.querier.resources | nindent 10 }}
+      {{- with .Values.querier.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.querier.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.querier.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

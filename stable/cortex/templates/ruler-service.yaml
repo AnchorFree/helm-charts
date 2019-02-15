@@ -1,0 +1,41 @@
+{{- if .Values.ruler.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-ruler
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ruler
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.ruler.service.type }}
+  {{- if and .Values.ruler.service.clusterIP ( eq .Values.ruler.service.type "ClusterIP" ) }}
+  clusterIP: {{ .Values.ruler.service.clusterIP }}
+  {{- end }}
+  ports:
+  {{- if default .Values.cortex.server_http_listen_port .Values.ruler.server_http_listen_port }}
+  - port: {{ .Values.ruler.service.httpPort }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  {{- end }}
+  {{- if default .Values.cortex.server_grpc_listen_port .Values.ruler.server_grpc_listen_port }}
+  - port: {{ .Values.ruler.service.grpcPort }}
+    targetPort: grpc
+    protocol: TCP
+    name: grpc
+  {{- end }}
+  {{- if .Values.ruler.servicemonitor.enabled }}
+  - port: {{ .Values.ruler.servicemonitor.port }}
+    targetPort: http
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: ruler
+{{- end }}

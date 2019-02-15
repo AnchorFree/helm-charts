@@ -1,0 +1,41 @@
+{{- if .Values.query_frontend.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cortex.fullname" . }}-query-frontend
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: query-frontend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  type: {{ .Values.query_frontend.service.type }}
+  {{- if and .Values.query_frontend.service.clusterIP ( eq .Values.query_frontend.service.type "ClusterIP" ) }}
+  clusterIP: {{ .Values.query_frontend.service.clusterIP }}
+  {{- end }}
+  ports:
+  {{- if default .Values.cortex.server_http_listen_port .Values.query_frontend.server_http_listen_port }}
+  - port: {{ .Values.query_frontend.service.httpPort }}
+    targetPort: http
+    protocol: TCP
+    name: http
+  {{- end }}
+  {{- if default .Values.cortex.server_grpc_listen_port .Values.query_frontend.server_grpc_listen_port }}
+  - port: {{ .Values.query_frontend.service.grpcPort }}
+    targetPort: grpc
+    protocol: TCP
+    name: grpc
+  {{- end }}
+  {{- if .Values.query_frontend.servicemonitor.enabled }}
+  - port: {{ .Values.query_frontend.servicemonitor.port }}
+    targetPort: http
+    protocol: TCP
+    name: metrics
+  {{- end }}
+  selector:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: query-frontend
+{{- end }}

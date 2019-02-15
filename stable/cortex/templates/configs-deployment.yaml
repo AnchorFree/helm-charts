@@ -1,0 +1,110 @@
+{{- if .Values.configs.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cortex.fullname" . }}-configs
+  labels:
+    app.kubernetes.io/name: {{ include "cortex.name" . }}
+    helm.sh/chart: {{ include "cortex.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: configs
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.configs.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "cortex.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: configs
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "cortex.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: configs
+    spec:
+      containers:
+      - name: configs
+        image: "{{ .Values.configs.image.repository }}:{{ .Values.configs.image.tag }}"
+        imagePullPolicy: {{ .Values.configs.image.pullPolicy }}
+        args:
+        {{- if default .Values.cortex.database_migrations .Values.configs.database_migrations }}
+        - -database.migrations={{ default .Values.cortex.database_migrations .Values.configs.database_migrations }}
+        {{- end }}
+        {{- if default .Values.cortex.database_password_file .Values.configs.database_password_file }}
+        - -database.password-file={{ default .Values.cortex.database_password_file .Values.configs.database_password_file }}
+        {{- end }}
+        {{- if default .Values.cortex.database_uri .Values.configs.database_uri }}
+        - -database.uri={{ default .Values.cortex.database_uri .Values.configs.database_uri }}
+        {{- end }}
+        {{- if default .Values.cortex.httptest_serve .Values.configs.httptest_serve }}
+        - -httptest.serve={{ default .Values.cortex.httptest_serve .Values.configs.httptest_serve }}
+        {{- end }}
+        {{- if default .Values.cortex.log_level .Values.configs.log_level }}
+        - -log.level={{ default .Values.cortex.log_level .Values.configs.log_level }}
+        {{- end }}
+        {{- if default .Values.cortex.server_graceful_shutdown_timeout .Values.configs.server_graceful_shutdown_timeout }}
+        - -server.graceful-shutdown-timeout={{ default .Values.cortex.server_graceful_shutdown_timeout .Values.configs.server_graceful_shutdown_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+        - -server.grpc-listen-port={{ default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_idle_timeout .Values.configs.server_http_idle_timeout }}
+        - -server.http-idle-timeout={{ default .Values.cortex.server_http_idle_timeout .Values.configs.server_http_idle_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
+        - -server.http-listen-port={{ default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_read_timeout .Values.configs.server_http_read_timeout }}
+        - -server.http-read-timeout={{ default .Values.cortex.server_http_read_timeout .Values.configs.server_http_read_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_http_write_timeout .Values.configs.server_http_write_timeout }}
+        - -server.http-write-timeout={{ default .Values.cortex.server_http_write_timeout .Values.configs.server_http_write_timeout }}
+        {{- end }}
+        {{- if default .Values.cortex.server_register_instrumentation .Values.configs.server_register_instrumentation }}
+        - -server.register-instrumentation={{ default .Values.cortex.server_register_instrumentation .Values.configs.server_register_instrumentation }}
+        {{- end }}
+        ports:
+        {{- if default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
+        - name: http
+          containerPort: {{ default .Values.cortex.server_http_listen_port .Values.configs.server_http_listen_port }}
+          protocol: TCP
+        {{- end }}
+        {{- if default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+        - name: grpc
+          containerPort: {{ default .Values.cortex.server_grpc_listen_port .Values.configs.server_grpc_listen_port }}
+          protocol: TCP
+        {{- end }}
+        {{- $env := default .Values.cortex.env .Values.configs.env -}}
+        {{- if $env }}
+        env:
+        {{- toYaml $env | nindent 8 }}
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+          {{- toYaml .Values.configs.resources | nindent 10 }}
+      {{- with .Values.configs.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.configs.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.configs.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}
