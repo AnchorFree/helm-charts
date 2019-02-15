@@ -1,0 +1,31 @@
+{{- $root := . -}}
+{{- range $region, $options := .Values.config }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $root.Release.Name }}-{{ $region }}
+  annotations:
+{{ toYaml $root.Values.service.annotations | indent 4 }}
+  labels:
+    app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+    chart: {{ template "prometheus-cloudwatch-exporter.chart" $root }}
+    release: {{ $root.Release.Name }}
+    heritage: {{ $root.Release.Service }}
+    region: {{ $region }}
+{{- if $root.Values.service.labels }}
+{{ toYaml $root.Values.service.labels | indent 4 }}
+{{- end }}
+spec:
+  type: {{ $root.Values.service.type }}
+  ports:
+    - port: {{ $root.Values.service.port }}
+      targetPort: {{ $root.Values.service.targetPort }}
+      protocol: TCP
+      name: {{ $root.Values.service.portName }}
+  selector:
+    app: {{ template "prometheus-cloudwatch-exporter.name" $root }}
+    release: {{ $root.Release.Name }}
+    region: {{ $region }}
+
+{{- end }}

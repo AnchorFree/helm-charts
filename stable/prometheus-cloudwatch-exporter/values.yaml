@@ -1,0 +1,456 @@
+# Default values for prometheus-cloudwatch-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: prom/cloudwatch-exporter
+  tag: cloudwatch_exporter-0.5.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9106
+  targetPort: 9106
+  portName: http
+  annotations: {}
+  labels: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #    memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+aws:
+  role:
+
+  # The name of a pre-created secret in which AWS credentials are stored. When
+  # set, aws_access_key_id is assumed to be in a field called access_key,
+  # aws_secret_access_key is assumed to be in a field called secret_key, and the
+  # session token, if it exists, is assumed to be in a field called
+  # security_token
+  secret:
+    name:
+    includesSessionToken: false
+
+  # Note: Do not specify the aws_access_key_id and aws_secret_access_key if you specified role or secret.name before
+  aws_access_key_id:
+  aws_secret_access_key:
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Configurable health checks against the /healthy and /ready endpoints
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+serviceMonitor:
+  enable: false
+  scrapeInterval: 60s
+  scrapeTimeout: 59s
+  namespace: monitoring
+
+config: {}
+#  us-west-2:
+#    customMetrics: |-
+#      - aws_namespace: AWS/S3
+#        aws_metric_name: BucketSizeBytes
+#        aws_dimensions: [BucketName, StorageType]
+#        aws_statistics: [Average]
+#        range_seconds: 172800
+#        period_seconds: 86400
+#        set_timestamp: false
+#
+#    globalOptions:
+#      period_seconds: 300
+#    metricTypes:
+#    - s3
+#  us-west-1:
+#    globalOptions:
+#      period_seconds: 60
+#    metricTypes:
+#    - s3
+
+predefinedMetrics:
+  s3: |-
+    # s3
+    - aws_namespace: AWS/S3
+      aws_metric_name: BucketSizeBytes
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      range_seconds: 172800
+      period_seconds: 86400
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: NumberOfObjects
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      range_seconds: 172800
+      period_seconds: 86400
+      set_timestamp: false
+
+      # s3 paid metrics
+    - aws_namespace: AWS/S3
+      aws_metric_name: AllRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: GetRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: PutRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: DeleteRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: HeadRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: PostRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: SelectRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: SelectScannedBytes
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: SelectReturnedBytes
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: ListRequests
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Sum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: BytesDownloaded
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: BytesUploaded
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: 4xxErrors
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: 5xxErrors
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: FirstByteLatency
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/S3
+      aws_metric_name: TotalRequestLatency
+      aws_dimensions: [BucketName, StorageType]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+  emr: |-
+    # EMR
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: IsIdle
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: ContainerAllocated
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: ContainerReserved
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: ContainerPending
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: AppsCompleted
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: AppsFailed
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: AppsKilled
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: AppsPending
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: AppsRunning
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: AppsSubmitted
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: CoreNodesRunning
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: CoreNodesPending
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: LiveDataNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MRTotalNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MRActiveNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MRLostNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MRUnhealthyNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MRDecommissionedNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MRRebootedNodes
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: S3BytesWritten
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: S3BytesRead
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: HDFSUtilization
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: HDFSBytesRead
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: HDFSBytesWritten
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MissingBlocks
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: CorruptBlocks
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: TotalLoad
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MemoryTotalMB
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MemoryReservedMB
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MemoryAvailableMB
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: YARNMemoryAvailablePercentage
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MemoryAllocatedMB
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: PendingDeletionBlocks
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: UnderReplicatedBlocks
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: DfsPendingReplicationBlocks
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: CapacityRemainingGB
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: HbaseBackupFailed
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: MostRecentBackupDuration
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
+
+    - aws_namespace: AWS/ElasticMapReduce
+      aws_metric_name: TimeSinceLastSuccessfulBackup
+      aws_dimensions: [JobFlowId]
+      aws_statistics: [Average]
+      set_timestamp: false
