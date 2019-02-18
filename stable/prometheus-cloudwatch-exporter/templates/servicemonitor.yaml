@@ -15,8 +15,12 @@ spec:
   jobLabel: name
   endpoints:
   - port: {{ .Values.service.portName }}
+{{- if .Values.serviceMonitor.scrapeInterval }}
     interval: {{ .Values.serviceMonitor.scrapeInterval }}
+{{- end }}
+{{- if .Values.serviceMonitor.scrapeTimeout }}
     scrapeTimeout: {{ .Values.serviceMonitor.scrapeTimeout }}
+{{- end }}
   selector:
     matchLabels:
       release: {{ .Release.Name }}
