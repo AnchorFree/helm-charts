@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.env`                        | Cluster environment variables                                       | `{MINIMUM_MASTER_NODES: "2"}`                       |
 | `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
-| `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                              |
+| `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
@@ -93,6 +93,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.initResources`               | Client initContainer resources requests & limits                    | `{}`                                                |
 | `client.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for client | `""`                                           |
 | `client.ingress.enabled`             | Enable Client Ingress                                               | `false`                                             |
+| `client.ingress.user`                | If this & password are set, enable basic-auth on ingress            | `nil`                                               |
+| `client.ingress.password`            | If this & user are set, enable basic-auth on ingress                | `nil`                                               |
 | `client.ingress.annotations`         | Client Ingress annotations                                          | `{}`                                                |
 | `client.ingress.hosts`               | Client Ingress Hostnames                                            | `[]`                                                |
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
@@ -121,7 +123,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
-| `data.masterEligible`                | Data node master eligibility                                        | `false`                                             |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                                             |
@@ -132,9 +133,6 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                               |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                                     |
 | `data.readinessProbe`                | Readiness probes for data-containers                                | see `values.yaml` for defaults                      |
-| `data.volumeHostPath.enabled`        | Non-persistent volume of type `hostPath` enabled/disabled           | `false`                                             |
-| `data.volumeHostPath.path`           | Location of the `hostPath` volume on host                           | `/data`                                             |
-| `data.volumeHostPath.type`           | Type of the `hostPath` volume                                       | `""`                                                |
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                                |
 | `data.nodeSelector`                  | Node labels for data pod assignment                                 | `{}`                                                |
 | `data.tolerations`                   | Data tolerations                                                    | `[]`                                                |

@@ -79,6 +79,7 @@ Create the name of the service account to use for the master component
     {{ default "default" .Values.serviceAccounts.master.name }}
 {{- end -}}
 {{- end -}}
+
 {{/*
 plugin installer template
 */}}
@@ -96,7 +97,7 @@ plugin installer template
     - "-c"
     - |
       {{- range .Values.cluster.plugins }}
-      elasticsearch-plugin install -b {{ . }}
+      /usr/share/elasticsearch/bin/elasticsearch-plugin install -b {{ . }}
       {{- end }}
   volumeMounts:
   - mountPath: /usr/share/elasticsearch/plugins/
