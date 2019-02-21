@@ -64,7 +64,8 @@ cluster:
     MINIMUM_MASTER_NODES: "2"
   # List of plugins to install via dedicated init container
   plugins: []
-
+    # - ingest-attachment
+    # - mapper-size
 
 client:
   name: client
@@ -105,6 +106,8 @@ client:
     # maxUnavailable: 1
   ingress:
     enabled: false
+    # user: NAME
+    # password: PASSWORD
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
