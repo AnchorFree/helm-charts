@@ -71,6 +71,7 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+  serviceName: ""
   loadBalancerIP: {}
   loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
