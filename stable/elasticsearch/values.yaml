@@ -169,6 +169,7 @@ master:
 data:
   name: data
   exposeHttp: false
+  serviceType: ClusterIP
   replicas: 2
   masterEligible: false
   heapSize: "1536m"
