@@ -1,3 +1,4 @@
+{{- if .Values.client.service.create }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,8 +8,8 @@ metadata:
     component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- if .Values.client.serviceName }}
-  name: {{ .Values.client.serviceName }}
+{{- if .Values.client.service.name }}
+  name: {{ .Values.client.service.name }}
 {{- else }}
   name: {{ template "elasticsearch.client.fullname" . }}
 {{- end }}
@@ -26,7 +27,7 @@ spec:
     app: {{ template "elasticsearch.name" . }}
     component: "{{ .Values.client.name }}"
     release: {{ .Release.Name }}
-  type: {{ .Values.client.serviceType }}
+  type: {{ .Values.client.service.type }}
 {{- if .Values.client.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.client.loadBalancerIP }}"
 {{- end }}
@@ -36,3 +37,4 @@ spec:
     - {{ $rangeList }}
     {{end}}
   {{end}}
+{{- end }}

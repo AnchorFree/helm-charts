@@ -70,8 +70,10 @@ cluster:
 client:
   name: client
   replicas: 2
-  serviceType: ClusterIP
-  serviceName: ""
+  service:
+    create: true
+    type: ClusterIP
+    name: ""
   loadBalancerIP: {}
   loadBalancerSourceRanges: {}
 ## (dict) If specified, apply these annotations to the client service
@@ -122,7 +124,9 @@ client:
 
 master:
   name: master
-  exposeHttp: false
+  service:
+    create: true
+    exposeHttp: false
   replicas: 3
   heapSize: "512m"
   # additionalJavaOpts: "-XX:MaxRAM=512m"
