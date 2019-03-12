@@ -85,8 +85,9 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.nodeSelector`                | Node labels for client pod assignment                               | `{}`                                                |
 | `client.tolerations`                 | Client tolerations                                                  | `[]`                                                |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                                |
-| `client.serviceType`                 | Client service type                                                 | `ClusterIP`                                         |
-| `client.serviceName`                 | Client service name                                                 | `""`                                                |
+| `client.service.create`              | Client service on\off                                               | `true`                                              |
+| `client.service.type`                | Client service type                                                 | `ClusterIP`                                         |
+| `client.service.name`                | Client service name                                                 | `""`                                                |
 | `client.loadBalancerIP`              | Client loadBalancerIP                                               | `{}`                                                |
 | `client.loadBalancerSourceRanges`    | Client loadBalancerSourceRanges                                     | `{}`                                                |
 | `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                                              |
@@ -101,7 +102,8 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
 | `master.initResources`               | Master initContainer resources requests & limits                    | `{}`                                                |
 | `master.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for master | `""`                                           |
-| `master.exposeHttp`                  | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
+| `master.service.create`              | Master service on\off                                               | `true`                                             |
+| `master.service.exposeHttp`          | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
