@@ -15,9 +15,14 @@ spec:
     metadata:
       labels:
         app: {{ template "elasticsearch.name" . }}
-        component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
         role: data
+{{- if not .Values.data.podLabels.component }}
+        component: "{{ .Values.data.name }}"
+{{- end }}
+{{- if .Values.data.podLabels }}
+{{ toYaml .Values.data.podLabels | indent 8 }}
+{{- end }}
         {{- if .Values.data.podAnnotations }}
       annotations:
 {{ toYaml .Values.data.podAnnotations | indent 8 }}
