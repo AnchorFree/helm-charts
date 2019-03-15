@@ -43,7 +43,9 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
+                {{- if not .Values.client.podLabels.component }}
                   component: "{{ .Values.client.name }}"
+                {{- end }}
       {{- else if eq .Values.client.antiAffinity "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -54,8 +56,13 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
+                {{- if not .Values.client.podLabels.component }}
                   component: "{{ .Values.client.name }}"
+                {{- end }}
       {{- end }}
+{{- if .Values.client.podLabels }}
+{{ toYaml .Values.client.podLabels | indent 18 }}
+{{- end }}
       {{- with .Values.client.nodeAffinity }}
         nodeAffinity:
 {{ toYaml . | indent 10 }}
