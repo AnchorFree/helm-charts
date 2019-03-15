@@ -16,7 +16,6 @@ spec:
       labels:
         app: {{ template "elasticsearch.name" . }}
         release: {{ .Release.Name }}
-        role: data
 {{- if not .Values.data.podLabels.component }}
         component: "{{ .Values.data.name }}"
 {{- end }}
@@ -45,7 +44,9 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
+                {{- if not .Values.data.podLabels.component }}
                   component: "{{ .Values.data.name }}"
+                {{- end }}
       {{- else if eq .Values.data.antiAffinity "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -56,8 +57,13 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
+                {{- if not .Values.data.podLabels.component }}
                   component: "{{ .Values.data.name }}"
+                {{- end }}
       {{- end }}
+{{- if .Values.data.podLabels }}
+{{ toYaml .Values.data.podLabels | indent 18 }}
+{{- end }}
       {{- with .Values.data.nodeAffinity }}
         nodeAffinity:
 {{ toYaml . | indent 10 }}
