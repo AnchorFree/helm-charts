@@ -132,10 +132,9 @@ spec:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
           value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }} {{ .Values.cluster.additionalJavaOpts }} {{ .Values.data.additionalJavaOpts }}"
-        {{- range $key, $value :=  .Values.cluster.env }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
-        {{- end }}
+{{- if .Values.cluster.env }}
+{{ tpl .Values.cluster.env . | indent 8 }}
+{{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
 {{- if .Values.data.command }}
