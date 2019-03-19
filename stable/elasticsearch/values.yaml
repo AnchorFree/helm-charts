@@ -122,6 +122,7 @@ client:
     #    hosts:
     #      - chart-example.local
   podLabels: {}
+  command: ""
 
 master:
   name: master
@@ -170,6 +171,7 @@ master:
     # maxUnavailable: 1
   updateStrategy:
     type: OnDelete
+  command: ""
 
 data:
   name: data
@@ -227,6 +229,7 @@ data:
     drain:  # drain the node before stopping it and re-integrate it into the cluster after start
       enabled: true
   podLabels: {}
+  command: ""
 
 ## Sysctl init container to setup vm.max_map_count
 # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html

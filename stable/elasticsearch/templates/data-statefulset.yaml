@@ -138,6 +138,10 @@ spec:
         {{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+{{- if .Values.data.command }}
+        command:
+{{ tpl .Values.data.command . | indent 10 }}
+{{- end }}
         ports:
         - containerPort: 9300
           name: transport

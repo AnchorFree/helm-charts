@@ -133,6 +133,10 @@ spec:
           initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+{{- if .Values.client.command }}
+        command:
+{{ tpl .Values.client.command . | indent 10 }}
+{{- end }}
         ports:
         - containerPort: 9200
           name: http
