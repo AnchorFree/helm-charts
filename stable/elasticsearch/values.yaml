@@ -67,6 +67,9 @@ cluster:
   plugins: []
     # - ingest-attachment
     # - mapper-size
+  # jvm.options
+  jvmOptions:
+    enabled: false
 
 client:
   name: client
