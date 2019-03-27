@@ -90,6 +90,10 @@ data:
 {{- with .Values.cluster.config }}
 {{ toYaml . | indent 4 }}
 {{- end }}
+{{- if .Values.cluster.jvmOptions.enabled }}
+  jvm.options: |-
+{{ tpl (.Files.Get "conf/jvm.options") . | indent 4 }}
+{{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
   logging.yml: |-
     # you can override this using by setting a system property, for example -Des.logger.level=DEBUG
