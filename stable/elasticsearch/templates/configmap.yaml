@@ -90,9 +90,9 @@ data:
 {{- with .Values.cluster.config }}
 {{ toYaml . | indent 4 }}
 {{- end }}
-{{- if .Values.cluster.jvmOptions.enabled }}
+{{- if .Values.cluster.jvmOptions }}
   jvm.options: |-
-{{ tpl (.Files.Get "conf/jvm.options") . | indent 4 }}
+{{ tpl .Values.cluster.jvmOptions . | indent 4 }}
 {{- end }}
 {{- if hasPrefix "2." .Values.appVersion }}
   logging.yml: |-

@@ -151,7 +151,7 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
-{{- if .Values.cluster.jvmOptions.enabled }}
+{{- if .Values.cluster.jvmOptions }}
         - mountPath: /usr/share/elasticsearch/config/jvm.options
           name: config
           subPath: jvm.options

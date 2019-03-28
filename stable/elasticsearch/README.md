@@ -76,7 +76,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.bootstrapShellCommand`      | Post-init command to run in separate Job                            | `""`                                                |
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
-| `cluster.jvmOptions.enabled`         | Enable loading JVM options from jvm.options file                    | `false`                                             |
+| `cluster.jvmOptions`                 | Rewrite jvm.options file                                            | `""`                                                |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |

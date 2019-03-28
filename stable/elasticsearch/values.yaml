@@ -68,8 +68,7 @@ cluster:
     # - ingest-attachment
     # - mapper-size
   # jvm.options
-  jvmOptions:
-    enabled: false
+  jvmOptions: |
 
 client:
   name: client
