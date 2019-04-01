@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.jvmOptions`                 | Rewrite jvm.options file                                            | `""`                                                |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
+| `client.env`                         | Client node environment variables                                   | `""`                                                |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
 | `client.priorityClassName`           | Client priorityClass                                                | `nil`                                               |
 | `client.heapSize`                    | Client node heap size                                               | `512m`                                              |
@@ -108,6 +109,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.service.create`              | Master service on\off                                               | `true`                                             |
 | `master.service.exposeHttp`          | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
+| `master.env`                         | Master node environment variables                                   | `""`                                                |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                                 |
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`                 |
 | `master.priorityClassName`           | Master priorityClass                                                | `nil`                                               |
@@ -131,6 +133,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
 | `data.serviceType`                   | Data node service type                                              | `ClusterIP`                                         |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
+| `data.env`                           | Data node environment variables                                     | `""`                                                |
 | `data.masterEligible`                | Data node master eligibility                                        | `false`                                             |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`                 |
 | `data.priorityClassName`             | Data priorityClass                                                  | `nil`                                               |

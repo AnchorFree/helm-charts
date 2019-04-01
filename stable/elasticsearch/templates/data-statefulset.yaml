@@ -135,6 +135,9 @@ spec:
 {{- if .Values.cluster.env }}
 {{ tpl .Values.cluster.env . | indent 8 }}
 {{- end }}
+{{- if .Values.data.env }}
+{{ tpl .Values.data.env . | indent 8 }}
+{{- end }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
 {{- if .Values.data.command }}

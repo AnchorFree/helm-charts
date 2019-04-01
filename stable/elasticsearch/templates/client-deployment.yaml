@@ -118,6 +118,9 @@ spec:
 {{- if .Values.cluster.env }}
 {{ tpl .Values.cluster.env . | indent 8 }}
 {{- end }}
+{{- if .Values.client.env }}
+{{ tpl .Values.client.env . | indent 8 }}
+{{- end }}
         resources:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
