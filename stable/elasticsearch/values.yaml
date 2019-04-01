@@ -73,6 +73,7 @@ cluster:
 client:
   name: client
   replicas: 2
+  env: |
   service:
     create: true
     type: ClusterIP
@@ -129,6 +130,7 @@ client:
 
 master:
   name: master
+  env: |
   service:
     create: true
     exposeHttp: false
@@ -178,6 +180,7 @@ master:
 
 data:
   name: data
+  env: |
   exposeHttp: false
   serviceType: ClusterIP
   replicas: 2
