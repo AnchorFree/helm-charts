@@ -25,8 +25,13 @@ spec:
       targetPort: http
   selector:
     app: {{ template "elasticsearch.name" . }}
-    component: "{{ .Values.client.name }}"
     release: {{ .Release.Name }}
+{{- if not .Values.client.podLabels.component }}
+    component: "{{ .Values.client.name }}"
+{{- end }}
+{{- if .Values.client.podLabels }}
+{{ toYaml .Values.client.podLabels | indent 4 }}
+{{- end }}
   type: {{ .Values.client.service.type }}
 {{- if .Values.client.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.client.loadBalancerIP }}"

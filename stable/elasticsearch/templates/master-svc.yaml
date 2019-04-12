@@ -16,10 +16,16 @@ spec:
       targetPort: transport
   selector:
     app: {{ template "elasticsearch.name" . }}
+    release: {{ .Release.Name }}
+{{- if not .Values.data.podLabels.component }}
   {{- if and ( eq .Values.master.replicas 0.0 ) ( .Values.data.masterEligible ) }}
     component: "{{ .Values.data.name }}"
   {{- else }}
     component: "{{ .Values.master.name }}"
   {{- end }}
-    release: {{ .Release.Name }}
+{{- end }}
+{{- if and ( eq .Values.master.replicas 0.0 ) ( .Values.data.masterEligible ) ( .Values.data.podLabels ) }}
+{{ toYaml .Values.data.podLabels | indent 4 }}
+{{- end }}
+
 {{- end }}
