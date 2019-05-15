@@ -19,7 +19,7 @@ spec:
     - name: transport
       port: 9300
       targetPort: transport
-{{- if and ( eq .Values.master.replicas 0.0 ) ( .Values.data.masterEligible ) ( .Values.data.exposeHttp ) }}
+{{- if or ( .Values.master.service.exposeHttp ) ( .Values.data.exposeHttp ) }}
     - name: http
       port: 9200
       targetPort: http
