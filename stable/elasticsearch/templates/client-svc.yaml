@@ -1,4 +1,4 @@
-{{- if .Values.client.service.create }}
+{{- if and ( .Values.client.enabled ) ( .Values.client.service.create ) }}
 apiVersion: v1
 kind: Service
 metadata:

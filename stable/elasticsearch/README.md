@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `cluster.additionalJavaOpts`         | Cluster parameters to be added to `ES_JAVA_OPTS` environment variable | `""`                                              |
 | `cluster.plugins`                    | List of Elasticsearch plugins to install                            | `[]`                                                |
 | `cluster.jvmOptions`                 | Rewrite jvm.options file                                            | `""`                                                |
+| `client.enabled`                     | Enable\disable client components rendering                          | `true`                                              |
 | `client.name`                        | Client component name                                               | `client`                                            |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                                 |
 | `client.env`                         | Client node environment variables                                   | `""`                                                |
@@ -104,9 +105,11 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `client.ingress.tls`                 | Client Ingress TLS configuration                                    | `[]`                                                |
 | `client.podLabels`                   | Labels to add to the client pods                                    | `{}`                                                |
 | `client.command`                     | Elasticsearch container command (client pod)                        | `""`                                                |
+| `configMap.enabled`                  | Enable\disable configMap rendering                                  | `true`                                              |
+| `master.enabled`                     | Enable\disable master components rendering                          | `true`                                              |
 | `master.initResources`               | Master initContainer resources requests & limits                    | `{}`                                                |
 | `master.additionalJavaOpts`          | Parameters to be added to `ES_JAVA_OPTS` environment variable for master | `""`                                           |
-| `master.service.create`              | Master service on\off                                               | `true`                                             |
+| `master.service.create`              | Master service on\off                                               | `true`                                              |
 | `master.service.exposeHttp`          | Expose http port 9200 on master Pods for monitoring, etc            | `false`                                             |
 | `master.name`                        | Master component name                                               | `master`                                            |
 | `master.env`                         | Master node environment variables                                   | `""`                                                |
@@ -129,6 +132,7 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `master.podManagementPolicy`         | Master pod creation strategy                                        | `OrderedReady`                                      |
 | `master.updateStrategy`              | Master node update strategy policy                                  | `{type: "onDelete"}`                                |
 | `master.command`                     | Elasticsearch container command (master pod)                        | `""`                                                |
+| `data.enabled`                       | Enable\disable data components rendering                            | `true`                                              |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
 | `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |

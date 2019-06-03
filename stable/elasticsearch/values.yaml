@@ -16,6 +16,11 @@ serviceAccounts:
     create: true
     name:
 
+## Contains Elasticsearch configuration files
+##
+configMap:
+  enabled: true
+
 ## Specify if a Pod Security Policy for node-exporter must be created
 ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
 ##
@@ -71,6 +76,7 @@ cluster:
   jvmOptions: |
 
 client:
+  enabled: true
   name: client
   replicas: 2
   env: |
@@ -129,6 +135,7 @@ client:
   command: ""
 
 master:
+  enabled: true
   name: master
   env: |
   service:
@@ -180,6 +187,7 @@ master:
   command: ""
 
 data:
+  enabled: true
   name: data
   env: |
   exposeHttp: false
