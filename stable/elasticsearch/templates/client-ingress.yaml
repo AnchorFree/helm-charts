@@ -1,4 +1,4 @@
-{{- if .Values.client.ingress.enabled -}}
+{{- if and ( .Values.client.enabled ) ( .Values.client.ingress.enabled ) -}}
 {{- $fullName := include "elasticsearch.client.fullname" . -}}
 {{- $ingressPath := .Values.client.ingress.path -}}
 apiVersion: extensions/v1beta1
