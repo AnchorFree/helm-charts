@@ -135,8 +135,10 @@ The following table lists the configurable parameters of the elasticsearch chart
 | `data.enabled`                       | Enable\disable data components rendering                            | `true`                                              |
 | `data.initResources`                 | Data initContainer resources requests & limits                      | `{}`                                                |
 | `data.additionalJavaOpts`            | Parameters to be added to `ES_JAVA_OPTS` environment variable for data | `""`                                             |
-| `data.exposeHttp`                    | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
-| `data.serviceType`                   | Data node service type                                              | `ClusterIP`                                         |
+| `data.service.create`                | Data service on\off                                                 | `false`                                             |
+| `data.service.exposeHttp`            | Expose http port 9200 on data Pods for monitoring, etc              | `false`                                             |
+| `data.service.type`                  | Data node service type                                              | `ClusterIP`                                         |
+| `data.service.annotations`           | Data service annotations                                            | `{}`                                                |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `2`                                                 |
 | `data.env`                           | Data node environment variables                                     | `""`                                                |
 | `data.masterEligible`                | Data node master eligibility                                        | `false`                                             |

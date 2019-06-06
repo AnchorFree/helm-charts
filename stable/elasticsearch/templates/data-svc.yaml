@@ -1,0 +1,33 @@
+{{- if and ( .Values.data.enabled ) ( .Values.data.service.create ) }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.data.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.fullname" . }}-{{ .Values.data.name }}
+{{- if .Values.data.service.annotations }}
+  annotations:
+{{ toYaml .Values.data.service.annotations | indent 4 }}
+{{- end }}
+
+spec:
+  ports:
+    - name: http
+      port: 9200
+      targetPort: http
+  selector:
+    app: {{ template "elasticsearch.name" . }}
+    release: {{ .Release.Name }}
+{{- if not .Values.data.podLabels.component }}
+    component: "{{ .Values.data.name }}"
+{{- end }}
+{{- if .Values.data.podLabels }}
+{{ toYaml .Values.data.podLabels | indent 4 }}
+{{- end }}
+  type: {{ .Values.data.service.type }}
+
+{{- end }}

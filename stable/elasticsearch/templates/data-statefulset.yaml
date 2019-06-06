@@ -149,7 +149,7 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
-{{ if .Values.data.exposeHttp }}
+{{ if .Values.data.service.exposeHttp }}
         - containerPort: 9200
           name: http
 {{ end }}
