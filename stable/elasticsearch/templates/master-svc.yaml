@@ -10,8 +10,8 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.fullname" . }}-discovery
 spec:
-{{- if and ( eq .Values.master.replicas 0.0 ) ( .Values.data.masterEligible ) ( .Values.data.exposeHttp ) }}
-  type: {{ .Values.data.serviceType }}
+{{- if and ( eq .Values.master.replicas 0.0 ) ( .Values.data.masterEligible ) ( .Values.data.service.exposeHttp ) }}
+  type: {{ .Values.data.service.type }}
 {{- else }}
   clusterIP: None
 {{- end }}
@@ -19,7 +19,7 @@ spec:
     - name: transport
       port: 9300
       targetPort: transport
-{{- if or ( .Values.master.service.exposeHttp ) ( .Values.data.exposeHttp ) }}
+{{- if or ( .Values.master.service.exposeHttp ) ( .Values.data.service.exposeHttp ) }}
     - name: http
       port: 9200
       targetPort: http

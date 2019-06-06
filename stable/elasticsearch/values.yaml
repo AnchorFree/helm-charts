@@ -190,8 +190,11 @@ data:
   enabled: true
   name: data
   env: |
-  exposeHttp: false
-  serviceType: ClusterIP
+  service:
+    create: false
+    exposeHttp: false
+    type: ClusterIP
+    annotations: {}
   replicas: 2
   masterEligible: false
   heapSize: "1536m"
