@@ -8,4 +8,3 @@ env:
   value: patch_secret
 - name: SECRET_ANNOTATION
   value: "rumors/namespaces"
-
