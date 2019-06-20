@@ -1,8 +1,11 @@
-image: "anchorfree/k8s-rumors:v0.3"
+image: "anchorfree/k8s-rumors:v1.0.0"
 env:
-- name: SECRET
-  value: example-secret
-- name: ORIGIN_NAMESPACE
-  value: default
-- name: DEST_NAMESPACES
-  value: "project1 project2"
+- name: SECRET_NAMESPACE
+  value: secrets
+- name: SECRET_LABEL
+  value: rumored
+- name: SECRET_PATCH_LABEL
+  value: patch_secret
+- name: SECRET_ANNOTATION
+  value: "rumors/namespaces"
+
