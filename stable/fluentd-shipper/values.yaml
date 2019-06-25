@@ -1,14 +1,14 @@
 image: "anchorfree/fluentd:v3.0"
 env:
-- name:  FLUENTD_FORWARD_HOST
+- name: FLUENTD_FORWARD_HOST
   value: "fluentd.elasticsearch.afdevops.com"
-- name:  FLUENTD_FORWARD_PORT
+- name: FLUENTD_FORWARD_PORT
   value: "24007"
-- name:  FLUENT_UID
+- name: FLUENT_UID
   value: "0"
-- name:  SNI_ENABLE
+- name: SNI_ENABLE
   value: "True"
-- name:  LOGGING_TEAM_NAME
+- name: LOGGING_TEAM_NAME
   value: "sat"
 resources:
   limits:
