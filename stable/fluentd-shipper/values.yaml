@@ -1,15 +1,15 @@
 image: "anchorfree/fluentd:v3.0"
 env:
 - name:  FLUENTD_FORWARD_HOST
-  value: "input.efk.afdevops.com"
+  value: ""
 - name:  FLUENTD_FORWARD_PORT
-  value: "24007"
+  value: ""
 - name:  FLUENT_UID
   value: "0"
 - name:  SNI_ENABLE
   value: "True"
 - name:  LOGGING_TEAM_NAME
-  value: "sat"
+  value: ""
 resources:
   limits:
     memory: 400Mi
