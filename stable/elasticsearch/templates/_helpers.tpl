@@ -96,6 +96,8 @@ plugin installer template
     - "sh"
     - "-c"
     - |
+      rm -rf /usr/share/elasticsearch/plugins/  # Fixes DEVOPS-2040
+      mkdir /usr/share/elasticsearch/plugins    #
       {{- range .Values.cluster.plugins }}
       /usr/share/elasticsearch/bin/elasticsearch-plugin install -b {{ . }}
       {{- end }}
