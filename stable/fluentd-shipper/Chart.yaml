@@ -1,0 +1,6 @@
+appVersion: 3.0
+apiVersion: v1
+name: fluentd-shipper
+description: Fluentd log shipper
+home: https://github.com/AnchorFree/docker-fluentd
+version: 1.0.0

@@ -1,0 +1,246 @@
+<system>
+  log_level error
+</system>
+
+{% if SNI_ENABLE|string in "True" %}
+<source>
+  @type tail
+  path /tmp/sni*debug.log
+  pos_file /tmp/sni.log.pos
+  tag sni.*
+  format none
+</source>
+{% endif %}
+
+<source>
+  @type tail
+  path /var/log/containers/*.log
+  pos_file /tmp/fluentd-containers.log.pos
+  time_format %Y-%m-%dT%H:%M:%S.%NZ
+  tag kubernetes.*
+  format json
+  read_from_head true
+</source>
+
+<source>
+  @type systemd
+  tag systemd
+  path /var/log/journal/
+  read_from_head true
+  <storage>
+    @type local
+    persistent true
+    path /srv/fluentd/cache
+  </storage>
+  <entry>
+    field_map {"MESSAGE": "log", "_PID": ["process", "pid"], "_CMDLINE": "process", "_COMM": "cmd"}
+    fields_strip_underscores true
+    fields_lowercase true
+  </entry>
+</source>
+
+<filter kubernetes.**>
+  @type kubernetes_metadata
+</filter>
+
+<match fluent.**>
+  @type null
+</match>
+
+<filter **>
+  @type record_transformer
+  <record>
+    team_global {{ LOGGING_TEAM_NAME }}
+  </record>
+</filter>
+
+{% if SNI_ENABLE|string in "True" %}
+<filter sni.**>
+  @type record_transformer
+  <record>
+    host ${hostname}
+    team server
+  </record>
+</filter>
+{% endif %}
+
+<match systemd kubernetes.**>
+  @type rewrite_tag_filter
+  <rule>
+    key     cmd
+    pattern ^dockerd$
+    tag     docker.log
+  </rule>
+  <rule>
+    key     cmd
+    pattern ^dockerd$
+    tag     {{ LOGGING_TEAM_NAME }}.other.log
+    invert  true
+  </rule>
+</match>
+
+<filter docker.log>
+  @type parser
+  format json
+  key_name log
+  time_key nokey
+  reserve_data true
+  suppress_parse_error_log true
+  ignore_key_not_exist true
+</filter>
+
+<match docker.log>
+  @type rewrite_tag_filter
+  <rule>
+    key     team
+    pattern ^elite$
+    tag     elite.team
+  </rule>
+  <rule>
+    key     container_name
+    pattern ^elite-nginx$
+    tag     elite.team
+  </rule>
+  <rule>
+    key     team
+    pattern ^ads-revenue$
+    tag     ads-revenue.team
+  </rule>
+  <rule>
+    key     team
+    pattern .+
+    tag     {{ LOGGING_TEAM_NAME }}.team
+  </rule>
+  <rule>
+    key     team
+    pattern .+
+    tag     {{ LOGGING_TEAM_NAME }}.team
+    invert  true
+  </rule>
+</match>
+
+<match elite.**>
+  @type forward
+  send_timeout 60s
+  recover_wait 10s
+  heartbeat_interval 1s
+  phi_threshold 16
+  hard_timeout 60s
+
+  <buffer>
+    @type memory
+    flush_mode interval
+    flush_interval 5s
+    flush_thread_count 2
+    overflow_action drop_oldest_chunk
+    retry_timeout 10s
+
+    chunk_limit_size 10MB
+    total_limit_size 100MB
+    compress gzip
+  </buffer>
+
+  expire_dns_cache 10
+  dns_round_robin true
+
+  <server>
+    name prod
+    host {{ FLUENTD_FORWARD_HOST }}
+    port 24003
+  </server>
+</match>
+
+<match ads-revenue.**>
+  @type forward
+  send_timeout 60s
+  recover_wait 10s
+  heartbeat_interval 1s
+  phi_threshold 16
+  hard_timeout 60s
+
+  <buffer>
+    @type memory
+    flush_mode interval
+    flush_interval 5s
+    flush_thread_count 2
+    overflow_action drop_oldest_chunk
+    retry_timeout 10s
+
+    chunk_limit_size 10MB
+    total_limit_size 100MB
+    compress gzip
+  </buffer>
+
+  expire_dns_cache 10
+  dns_round_robin true
+
+  <server>
+    name prod
+    host {{ FLUENTD_FORWARD_HOST }}
+    port 24004
+  </server>
+</match>
+
+{% if SNI_ENABLE|string in "True" %}
+<match sni.**>
+  @type forward
+  send_timeout 60s
+  recover_wait 10s
+  heartbeat_interval 1s
+  phi_threshold 16
+  hard_timeout 60s
+
+  <buffer>
+    @type memory
+    flush_mode interval
+    flush_interval 5s
+    flush_thread_count 2
+    overflow_action drop_oldest_chunk
+    retry_timeout 10s
+
+    chunk_limit_size 10MB
+    total_limit_size 100MB
+    compress gzip
+  </buffer>
+
+  expire_dns_cache 10
+  dns_round_robin true
+
+  <server>
+    name prod
+    host {{ FLUENTD_FORWARD_HOST }}
+    port 24005
+  </server>
+</match>  
+{% endif %}
+
+<match {{ LOGGING_TEAM_NAME }}.team {{ LOGGING_TEAM_NAME }}.other.log>
+  @type forward
+  send_timeout 60s
+  recover_wait 10s
+  heartbeat_interval 1s
+  phi_threshold 16
+  hard_timeout 60s
+
+  <buffer>
+    @type memory
+    flush_mode interval
+    flush_interval 5s
+    flush_thread_count 2
+    overflow_action drop_oldest_chunk
+    retry_timeout 10s
+
+    chunk_limit_size 10MB
+    total_limit_size 100MB
+    compress gzip
+  </buffer>
+
+  expire_dns_cache 10
+  dns_round_robin true
+
+  <server>
+    name prod
+    host {{ FLUENTD_FORWARD_HOST }}
+    port {{ FLUENTD_FORWARD_PORT }}
+  </server>
+</match>

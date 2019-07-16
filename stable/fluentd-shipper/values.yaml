@@ -1,0 +1,19 @@
+image: "anchorfree/fluentd:v3.0"
+env:
+- name:  FLUENTD_FORWARD_HOST
+  value: ""
+- name:  FLUENTD_FORWARD_PORT
+  value: ""
+- name:  FLUENT_UID
+  value: "0"
+- name:  SNI_ENABLE
+  value: "True"
+- name:  LOGGING_TEAM_NAME
+  value: ""
+resources:
+  limits:
+    memory: 400Mi
+    cpu: 1000m
+  requests:
+    memory: "100Mi"
+    cpu: 250m
