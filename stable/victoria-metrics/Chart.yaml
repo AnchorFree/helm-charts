@@ -1,0 +1,5 @@
+apiVersion: v1
+appVersion: "heads-public-cluster-0-g7abb96b4"
+description: A Helm chart for VictoriaMetrics Cluster
+name: victoria-metrics
+version: 0.1.0

@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: vmstorage
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.vmstorage.service.type }}
+  ports:
+    - port: {{ .Values.vmstorage.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.vmstorage.service.vminsertPort }}
+      targetPort: vminsert
+      protocol: TCP
+      name: vminsert
+    - port: {{ .Values.vmstorage.service.vmselectPort }}
+      targetPort: vmselect
+      protocol: TCP
+      name: vmselect
+  selector:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: vmstorage

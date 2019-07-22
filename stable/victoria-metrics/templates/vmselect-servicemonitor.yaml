@@ -1,0 +1,27 @@
+{{- if .Values.vmselect.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "victoria-metrics.fullname" . }}-vmselect
+{{- if .Values.vmselect.serviceMonitor.namespace }}
+  namespace: {{ .Values.vmselect.serviceMonitor.namespace }}
+{{- end }}
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+    app.kubernetes.io/component: vmselect
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+  {{- with .Values.vmselect.serviceMonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: vmselect
+  endpoints:
+  - port: http
+{{- end }}
