@@ -71,12 +71,16 @@ spec:
 {{- if .Values.sysctlInitContainer.enabled }}
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
       # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      # see https://github.com/helm/charts/issues/8785 for net.ipv4.tcp_retries2=3
       - name: "sysctl"
         image: "{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}"
         imagePullPolicy: {{ .Values.initImage.pullPolicy | quote }}
         resources:
 {{ toYaml .Values.master.initResources | indent 12 }}
-        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        command: ["/bin/sh", "-c"]
+        args:
+          - sysctl -w vm.max_map_count=262144;
+            sysctl -w net.ipv4.tcp_retries2=3;
         securityContext:
           privileged: true
 {{- end }}
