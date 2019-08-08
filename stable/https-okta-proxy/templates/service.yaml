@@ -8,9 +8,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: http
+      targetPort: tcp
       protocol: TCP
-      name: http
+      name: tcp
   selector:
     app.kubernetes.io/name: {{ include "https-okta-proxy.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
