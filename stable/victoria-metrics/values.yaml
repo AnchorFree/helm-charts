@@ -163,7 +163,6 @@ ingress:
   # kubernetes.io/tls-acme: "true"
   hosts:
     - host: vminsert.victoria-metrics.local
-      path: /
 
   tls: []
   #  - secretName: vminsert-victoria-metrics-tls
