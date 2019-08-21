@@ -3,3 +3,4 @@ appVersion: "1.25.2-cluster"
 description: A Helm chart for VictoriaMetrics Cluster
 name: victoria-metrics
 version: 0.1.0
+home: https://victoriametrics.com/
