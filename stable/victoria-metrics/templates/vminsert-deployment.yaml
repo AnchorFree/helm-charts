@@ -47,6 +47,13 @@ spec:
               port: http
             initialDelaySeconds: 5
             periodSeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
           resources:
             {{- toYaml .Values.vminsert.resources | nindent 12 }}
       {{- with .Values.vminsert.nodeSelector }}
