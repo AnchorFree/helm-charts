@@ -8,6 +8,9 @@ metadata:
     {{ include "victoria-metrics.common-labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.vminsert.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vminsert
