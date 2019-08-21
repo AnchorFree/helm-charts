@@ -26,9 +26,9 @@ vminsert:
 
   serviceMonitor:
     enabled: false
-    namespace:
     port: http
     labels: {}
+    # namespace: ""
 
   annotations: {}
 
@@ -70,9 +70,9 @@ vmselect:
 
   serviceMonitor:
     enabled: false
-    namespace:
     port: http
     labels: {}
+    # namespace: ""
 
   persistence:
     enabled: false
@@ -125,9 +125,9 @@ vmstorage:
 
   serviceMonitor:
     enabled: false
-    namespace:
     port: http
     labels: {}
+    # namespace: ""
 
   persistence:
     enabled: false
