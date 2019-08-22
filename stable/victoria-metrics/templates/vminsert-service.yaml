@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "victoria-metrics.fullname" . }}-vminsert
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vminsert
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: vminsert
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.vminsert.service.type }}
+  ports:
+    - port: {{ .Values.vminsert.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vminsert
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: vminsert

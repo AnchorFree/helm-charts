@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "victoria-metrics.fullname" . }}-vmselect
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+    app.kubernetes.io/component: vmselect
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.vmselect.replicaCount }}
+  serviceName: {{ include "victoria-metrics.fullname" . }}-vmselect
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: vmselect
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: vmselect
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.vmstorage.terminationGracePeriodSeconds | int }}
+    {{- with .Values.vmselect.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: vmselect
+          image: "{{ .Values.vmselect.image.repository }}:{{ .Values.vmselect.image.tag }}"
+          imagePullPolicy: {{ .Values.vmselect.image.pullPolicy }}
+          args:
+            - -cacheDataPath=/vmselect-cache
+          {{- include "victoria-metrics.vmselect-pod-fqdn" . | nindent 12 }}
+          {{- include "victoria-metrics.vmselect.vmstorage-pod-fqdn" . | nindent 12 }}
+          {{- range $key, $value := .Values.vmselect.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8481
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.vmselect.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /vmselect-cache
+              {{- if .Values.vmselect.persistence.enabled }}
+              name: {{ .Values.vmselect.persistence.name }}
+              {{- else }}
+              name: vmselect-cache
+              {{- end }}
+      {{- with .Values.vmselect.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.vmselect.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.vmselect.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      {{- if not .Values.vmselect.persistence.enabled }}
+      volumes:
+        - name: vmselect-cache
+          emptyDir: {}
+      {{- end }}
+  {{- if .Values.vmselect.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.vmselect.persistence.name }}
+      spec:
+        accessModes:
+          - {{ .Values.vmselect.persistence.accessMode }}
+        {{- if hasKey .Values.vmselect.persistence "storageClass" }}
+        storageClassName: {{ .Values.vmselect.persistence.storageClass | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.vmselect.persistence.size | quote }}
+  {{- end }}

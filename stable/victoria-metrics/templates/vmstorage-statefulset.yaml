@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+    app.kubernetes.io/component: vmstorage
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.vmstorage.replicaCount }}
+  serviceName: {{ include "victoria-metrics.fullname" . }}-vmstorage
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: vmstorage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: vmstorage
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.vmstorage.terminationGracePeriodSeconds | int }}
+    {{- with .Values.vmstorage.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: vmstorage
+          image: "{{ .Values.vmstorage.image.repository }}:{{ .Values.vmstorage.image.tag }}"
+          imagePullPolicy: {{ .Values.vmstorage.image.pullPolicy }}
+          args:
+            - --storageDataPath=/vmstorage-data
+            - {{ printf "%s=%d" "--retentionPeriod" (int .Values.vmstorage.retentionPeriod) | quote }}
+          {{- range $key, $value := .Values.vmstorage.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8482
+              protocol: TCP
+            - name: vminsert
+              containerPort: 8400
+              protocol: TCP
+            - name: vmselect
+              containerPort: 8401
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.vmstorage.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /vmstorage-data
+              {{- if .Values.vmstorage.persistence.enabled }}
+              name: {{ .Values.vmstorage.persistence.name }}
+              {{- else }}
+              name: vmstorage-data
+              {{- end }}
+      {{- with .Values.vmstorage.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.vmstorage.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.vmstorage.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      {{- if not .Values.vmstorage.persistence.enabled }}
+      volumes:
+        - name: vmstorage-data
+          emptyDir: {}
+      {{- end }}
+  {{- if .Values.vmstorage.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.vmstorage.persistence.name }}
+      spec:
+        accessModes:
+          - {{ .Values.vmstorage.persistence.accessMode }}
+        {{- if hasKey .Values.vmstorage.persistence "storageClass" }}
+        storageClassName: {{ .Values.vmstorage.persistence.storageClass | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.vmstorage.persistence.size | quote }}
+  {{- end }}

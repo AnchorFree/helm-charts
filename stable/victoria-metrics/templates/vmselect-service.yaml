@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "victoria-metrics.fullname" . }}-vmselect
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: vmselect
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.vmselect.service.type }}
+  ports:
+    - port: {{ .Values.vmselect.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmselect
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: vmselect
