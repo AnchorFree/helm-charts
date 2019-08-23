@@ -1,3 +1,6 @@
 apiVersion: v1
+appVersion: "1.0"
+description: Chart to create Docker secret
 name: docker-token
-version: 1.0.0
+version: 1.0.1
+home: https://github.com/AnchorFree/docker-token/
