@@ -1,5 +1,6 @@
 replicas: 1
 image: ""
+imagePullSecretName: ""
 nodeSelector: {}
 tolerations: []
 affinity: {}

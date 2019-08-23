@@ -34,6 +34,8 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       restartPolicy: Always
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecretName }}
       containers:
       - name: monitoring
         image: {{ .Values.image }}
