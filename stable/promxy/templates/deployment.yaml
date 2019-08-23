@@ -9,11 +9,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: promxy
+      app: {{ .Chart.Name }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: promxy
+        app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
     spec:
       containers:
       - args:
