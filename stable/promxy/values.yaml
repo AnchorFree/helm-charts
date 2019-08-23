@@ -1,0 +1,15 @@
+image: "anchorfree/promxy:v0.0.47-afrev-1"
+port: 8082
+config: |
+env: {}
+args: |
+  - "--config=/etc/promxy/config.yaml"
+  - "--web.enable-lifecycle"
+  - "--log-level=trace"
+configmap:
+  reload: true
+  image: "jimmidyson/configmap-reload:v0.3.0"
+  args: |
+    - "--volume-dir=/etc/promxy"
+    - "--webhook-url=http://localhost:8082/-/reload"
+

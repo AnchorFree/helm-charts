@@ -1,0 +1,48 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: promxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: promxy
+  template:
+    metadata:
+      labels:
+        app: promxy
+    spec:
+      containers:
+        name: {{ .Release.Name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.port }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+        command:
+        - "/bin/promxy"
+      - args:
+{{ tpl .Values.args . | indent 10 }}
+        volumeMounts:
+        - mountPath: "/etc/promxy/"
+          name: promxy-config
+          readOnly: true
+{{- if .Values.configmap.reload }}
+      # container to reload configs on configmap change
+        name: {{ .Release.Name }}-configmap-reload
+        image: {{ .Values.configmap.image }}
+      - args:
+{{ tpl .Values.configmap.args . | indent 10 }}
+        volumeMounts:
+        - mountPath: "/etc/promxy/"
+          name: promxy-config
+          readOnly: true
+{{- end }}
+      volumes:
+      - configMap:
+          name: {{ .Release.Name }}-config
+        name: promxy-config
