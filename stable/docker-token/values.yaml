@@ -1,4 +1,3 @@
-gcr: false
 token: ""
 targetNamespaces: ""
 secretName: "dockercfg"
