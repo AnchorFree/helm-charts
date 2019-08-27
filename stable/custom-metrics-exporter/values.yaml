@@ -1,5 +1,6 @@
 replicas: 1
 image: ""
+createServiceMonitor: true
 imagePullSecretName: ""
 nodeSelector: {}
 tolerations: []

@@ -6,7 +6,6 @@ metadata:
   labels:
     app: {{ .Chart.Name }}
     release: {{ .Release.Name }}
-    service: metrics
 spec:
   type: ClusterIP
   selector:
