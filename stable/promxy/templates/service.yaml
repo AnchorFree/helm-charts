@@ -1,18 +1,16 @@
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "promxy.fullname" . }}
   labels:
-    app: {{ .Chart.Name }}
-    release: {{ .Release.Name }}
+{{ include "promxy.labels" . | indent 4 }}
 spec:
-  type: ClusterIP
-  selector:
-    app: {{ .Chart.Name }}
-    release: {{ .Release.Name }}
+  type: {{ .Values.service.type }}
   ports:
-    - name: http
+    - port: {{ .Values.service.port }}
+      targetPort: http
       protocol: TCP
-      port: {{ .Values.port }}
-
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "promxy.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
