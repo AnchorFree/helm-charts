@@ -68,6 +68,52 @@ spec:
               {{- else }}
               name: vmstorage-data
               {{- end }}
+        {{- if .Values.vmstorage.backupSidecar.enabled }}
+        {{- with .Values.vmstorage.backupSidecar }}
+        - name: backup-sidecar
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
+          ports:
+            - name: vmbackup
+              containerPort: {{ .containerPort }}
+              protocol: TCP
+          env:
+            {{- range $key, $value := .env }}
+            - name: {{ $key | quote }}
+              value: {{ tpl $value $ | quote }}
+            {{- end }}
+        {{- if .livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: vmbackup
+            initialDelaySeconds: {{ .livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .livenessProbe.failureThreshold}}
+        {{- end }}
+        {{- if .readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: vmbackup
+            initialDelaySeconds: {{ .readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .readinessProbe.successThreshold }}
+            failureThreshold: {{ .readinessProbe.failureThreshold}}
+        {{- end }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+        {{- end }}
+          volumeMounts:
+            - mountPath: /vmstorage-data
+              {{- if .Values.vmstorage.persistence.enabled }}
+              name: {{ .Values.vmstorage.persistence.name }}
+              {{- else }}
+              name: vmstorage-data
+              {{- end }}
+        {{- end }}
       {{- with .Values.vmstorage.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

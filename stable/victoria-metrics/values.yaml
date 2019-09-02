@@ -122,6 +122,7 @@ vmstorage:
     httpPort: 8482
     vminsertPort: 8400
     vmselectPort: 8401
+    vmbackupPort: &backupPort 8488
 
   serviceMonitor:
     enabled: false
@@ -155,6 +156,23 @@ vmstorage:
   tolerations: []
 
   affinity: {}
+
+  backupSidecar:
+    enabled: true
+
+    image:
+      repository: anchorfree/vmbackup-sidecar
+      tag: 0.3.0
+      pullPolicy: IfNotPresent
+
+    containerPort: *backupPort
+    env: {}
+    resources: {}
+
+    # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+    livenessProbe: {}
+    readinessProbe: {}
+
 
 ingress:
   enabled: false
