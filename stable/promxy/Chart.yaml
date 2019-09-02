@@ -1,6 +1,6 @@
 apiVersion: v1
+appVersion: "v0.0.48"
+description: A Helm chart for Promxy
 name: promxy
 version: 0.1.0
-appVersion: 0.0.47
-description: Promxy chart
 home: https://github.com/jacksontj/promxy

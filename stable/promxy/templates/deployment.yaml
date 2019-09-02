@@ -1,50 +1,66 @@
----
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ include "promxy.fullname" . }}
   labels:
-    app: {{ .Chart.Name }}
-    release: {{ .Release.Name }}
+{{ include "promxy.labels" . | indent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}
-      release: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "promxy.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
-        release: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "promxy.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       containers:
-      - args:
-{{ tpl .Values.args . | indent 8 }}
-        command: [ "/bin/promxy" ]
-        env:
-{{ toYaml .Values.env | indent 10 }}
-        name: {{ .Release.Name }}
-        image: {{ .Values.image }}
-        imagePullPolicy: Always
-        ports:
-        - containerPort: {{ .Values.port }}
-        volumeMounts:
-        - mountPath: "/etc/promxy/"
-          name: promxy-config
-          readOnly: true
-{{- if .Values.configmap.reload }}
-      # container to reload configs on configmap change
-        name: {{ .Release.Name }}-configmap-reload
-        image: {{ .Values.configmap.image }}
-      - args:
-{{ tpl .Values.configmap.args . | indent 8 }}
-        volumeMounts:
-        - mountPath: "/etc/promxy/"
-          name: promxy-config
-          readOnly: true
-{{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --config=/etc/promxy/config.yaml
+          {{- range $arg, $value := .Values.promxy.extra_args }}
+            - --{{ $arg }}={{ $value }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 8082
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: promxy-config
+              mountPath: /etc/promxy
       volumes:
-      - configMap:
-          name: {{ .Release.Name }}-config
-        name: promxy-config
+        - name: promxy-config
+          configMap:
+            name: {{ include "promxy.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

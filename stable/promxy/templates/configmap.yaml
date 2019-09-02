@@ -1,8 +1,9 @@
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-config
+  name: {{ include "promxy.fullname" . }}
+  labels:
+    {{- include "promxy.labels" . | nindent 4 }}
 data:
-  config.yaml: {{ .Values.config }}
-
+  config.yaml: |-
+    {{- toYaml .Values.promxy.config | nindent 4 }}
