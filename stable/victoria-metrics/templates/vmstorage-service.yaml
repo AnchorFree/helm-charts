@@ -22,6 +22,12 @@ spec:
       targetPort: vmselect
       protocol: TCP
       name: vmselect
+{{- if .Values.vmstorage.backupSidecar.enabled }}
+    - port: {{ .Values.vmstorage.service.vmbackupPort }}
+      targetPort: vmbackup
+      protocol: TCP
+      name: vmbackup
+{{- end }}
   selector:
     app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
     app.kubernetes.io/instance: {{ .Release.Name }}
