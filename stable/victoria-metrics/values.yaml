@@ -169,6 +169,8 @@ vmstorage:
     env: {}
     resources: {}
 
+    awsCredentials: {}
+
     # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
     livenessProbe: {}
     readinessProbe: {}

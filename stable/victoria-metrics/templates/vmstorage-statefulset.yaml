@@ -20,6 +20,8 @@ spec:
         app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-vmstorage
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: vmstorage
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/awscreds-secret.yaml") . | sha256sum }}
     spec:
       terminationGracePeriodSeconds: {{ .Values.vmstorage.terminationGracePeriodSeconds | int }}
     {{- with .Values.vmstorage.imagePullSecrets }}
@@ -81,6 +83,18 @@ spec:
             {{- range $key, $value := .env }}
             - name: {{ $key | quote }}
               value: {{ tpl $value $ | quote }}
+            {{- end }}
+            {{- if .awsCredentials }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-s3-credentials
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-s3-credentials
+                  key: aws-secret-access-key
             {{- end }}
         {{- if .livenessProbe.enabled }}
           livenessProbe:
