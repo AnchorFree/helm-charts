@@ -74,3 +74,15 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- printf "- --storageNode=%s-%s-%d.%s-%s.%s.svc.%s:8400\n" $pod "vmstorage" $i $svc "vmstorage" $namespace $dnsSuffix -}}
 {{- end -}}
 {{- end -}}
+
+{{/**/}}
+{{- define "victoria-metrics.vmstorage.backup-pod-fqdn" -}}
+{{- $pod := include "victoria-metrics.fullname" . -}}
+{{- $svc := include "victoria-metrics.fullname" . -}}
+{{- $namespace := .Release.Namespace -}}
+{{- $dnsSuffix := .Values.clusterDomainSuffix -}}
+{{- $port := .Values.vmstorage.service.vmbackupPort | int -}}
+{{- range $i := until (.Values.vmstorage.replicaCount | int) -}}
+{{- printf "curl -sS %s-%s-%d.%s-%s.%s.svc.%s:%d/backup/create &\n" $pod "vmstorage" $i $svc "vmstorage" $namespace $dnsSuffix $port -}}
+{{- end -}}
+{{- end -}}

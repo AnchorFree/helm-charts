@@ -165,6 +165,10 @@ vmstorage:
       tag: 0.3.0
       pullPolicy: IfNotPresent
 
+    cronjob:
+      schedule: "0 1 * * *"
+      image: "byrnedo/alpine-curl:0.1.7"
+
     containerPort: *backupPort
     env: {}
     resources: {}
