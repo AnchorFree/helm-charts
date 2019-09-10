@@ -1,0 +1,34 @@
+{{- if .Values.vmstorage.backupSidecar.enabled }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: "{{ template "victoria-metrics.fullname" . }}-backup"
+  labels:
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-backup-cronjob
+    app.kubernetes.io/component: vmstorage
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.vmstorage.backupSidecar.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-backup-cronjob
+            app.kubernetes.io/instance: {{ .Release.Name }}
+            app.kubernetes.io/component: vmstorage
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: vmstorage-backup
+            image: {{ .Values.vmstorage.backupSidecar.cronjob.image }}
+            imagePullPolicy: IfNotPresent
+            command:
+            - /bin/sh
+            args:
+            - '-c'
+            - |
+{{- include "victoria-metrics.vmstorage.backup-pod-fqdn" . | nindent 14 }}
+              wait
+{{- end }}
