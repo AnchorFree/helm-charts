@@ -137,6 +137,11 @@ vmstorage:
     accessMode: ReadWriteOnce
     size: 8Gi
 
+  nonPersistence:
+    hostPath:
+      path: /srv/vm-data
+      type: DirectoryOrCreate
+
   annotations: {}
 
   resources: {}

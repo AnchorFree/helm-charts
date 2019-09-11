@@ -143,7 +143,9 @@ spec:
       {{- if not .Values.vmstorage.persistence.enabled }}
       volumes:
         - name: vmstorage-data
-          emptyDir: {}
+          hostPath:
+            path: {{ .Values.vmstorage.nonPersistence.hostPath.path }}
+            type: {{ .Values.vmstorage.nonPersistence.hostPath.type }}
       {{- end }}
   {{- if .Values.vmstorage.persistence.enabled }}
   volumeClaimTemplates:
