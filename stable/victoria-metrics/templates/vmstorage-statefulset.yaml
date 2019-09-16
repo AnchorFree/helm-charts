@@ -75,6 +75,10 @@ spec:
         - name: backup-sidecar
           image: "{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
+          {{- if .extraArgs }}
+          args:
+          {{ toYaml .extraArgs }}
+          {{- end }}
           ports:
             - name: vmbackup
               containerPort: {{ .containerPort }}

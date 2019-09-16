@@ -176,6 +176,7 @@ vmstorage:
 
     containerPort: *backupPort
     env: {}
+    extraArgs: []
     resources: {}
 
     awsCredentials: {}
