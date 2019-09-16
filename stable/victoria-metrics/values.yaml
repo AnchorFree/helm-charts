@@ -15,7 +15,7 @@ vminsert:
 
   image:
     repository: victoriametrics/vminsert
-    tag: v1.27.2-cluster
+    tag: v1.27.3-cluster
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -59,7 +59,7 @@ vmselect:
 
   image:
     repository: victoriametrics/vmselect
-    tag: v1.27.2-cluster
+    tag: v1.27.3-cluster
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -112,7 +112,7 @@ vmstorage:
 
   image:
     repository: victoriametrics/vmstorage
-    tag: v1.27.2-cluster
+    tag: v1.27.3-cluster
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
