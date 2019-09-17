@@ -1,34 +1,45 @@
 {{- if .Values.vmstorage.backupSidecar.enabled }}
+{{- $pod := include "victoria-metrics.fullname" . -}}
+{{- $svc := include "victoria-metrics.fullname" . -}}
+{{- $namespace := .Release.Namespace -}}
+{{- $dnsSuffix := .Values.clusterDomainSuffix -}}
+{{- $port := .Values.vmstorage.service.vmbackupPort | int -}}
+
+# range creates boxed context which should be accessed via $
+# https://github.com/helm/helm/issues/1311
+{{- range $i := until ( .Values.vmstorage.replicaCount | int ) }}
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: "{{ template "victoria-metrics.fullname" . }}-backup"
+  name: "{{ template "victoria-metrics.fullname" $ }}-backup-pod-{{ $i }}"
   labels:
-    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-backup-cronjob
+    app.kubernetes.io/name: {{ include "victoria-metrics.fullname" $ }}-backup-cronjob
     app.kubernetes.io/component: vmstorage
-    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+    {{ include "victoria-metrics.common-labels" $ | nindent 4 }}
 spec:
-  schedule: {{ .Values.vmstorage.backupSidecar.cronjob.schedule | quote }}
+  schedule: {{ $.Values.vmstorage.backupSidecar.cronjob.schedule | quote }}
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         metadata:
           labels:
-            app.kubernetes.io/name: {{ include "victoria-metrics.fullname" . }}-backup-cronjob
-            app.kubernetes.io/instance: {{ .Release.Name }}
+            app.kubernetes.io/name: {{ include "victoria-metrics.fullname" $ }}-backup-cronjob
+            app.kubernetes.io/instance: {{ $.Release.Name }}
             app.kubernetes.io/component: vmstorage
         spec:
           restartPolicy: OnFailure
           containers:
           - name: vmstorage-backup
-            image: {{ .Values.vmstorage.backupSidecar.cronjob.image }}
+            image: {{ $.Values.vmstorage.backupSidecar.cronjob.image }}
             imagePullPolicy: IfNotPresent
             command:
             - /bin/sh
+            # TODO: move printf into _helpers.tpl
             args:
             - '-c'
             - |
-{{- include "victoria-metrics.vmstorage.backup-pod-fqdn" . | nindent 14 }}
-              wait
+{{- printf "curl -sS %s-%s-%d.%s-%s.%s.svc.%s:%d/backup/create" $pod "vmstorage" $i $svc "vmstorage" $namespace $dnsSuffix $port | nindent 14 }}
+{{- end }}
 {{- end }}
