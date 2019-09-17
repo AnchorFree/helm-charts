@@ -36,6 +36,7 @@ spec:
             imagePullPolicy: IfNotPresent
             command:
             - /bin/sh
+            # TODO: move printf into _helpers.tpl
             args:
             - '-c'
             - |
