@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: consul-template-configmap
+data:
+  kafka-certs.ctpl: |
+    # To be announced
+  consul-template.hcl: |
+    vault {
+      address = "http://127.0.0.1:8200"
+    }
+    template {
+      source = "/etc/consul-template/consul-template.ctpl"
+      destination = "/root/kafka-cert.crt"
+      error_on_missing_key = true
+    }

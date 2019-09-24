@@ -29,6 +29,7 @@ spec:
       {{- end }}
       {{- end }}
     spec:
+      serviceAccount: {{ .Values.serviceAccount }}
       containers:
         {{- if .Values.prometheus.jmx.enabled }}
         - name: prometheus-jmx-exporter
@@ -64,6 +65,19 @@ spec:
           volumeMounts:
             - mountPath: /etc/vault-agent/
               name: configuration
+        - name: consul-template
+          image: {{ .Values.consulTemplate.image }}:{{ .Values.consulTemplate.imageTag }}
+          args:
+            - -config
+            - /etc/consul-template/consul-template.hcl
+          env:
+            - name: VAULT_ADDR
+              value: http://127.0.0.1:8200/
+          volumeMounts:
+            - mountPath: /etc/consul-template/
+              name: consul-template-configuration
+            - mountPath: /root/
+              name: root-home
         - name: {{ template "cp-kafka-connect.name" . }}-server
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
@@ -129,6 +143,9 @@ spec:
       - name: configuration
         configMap:
           name: vault-agent-configmap
+      - name: consul-template-configuration
+        configMap:
+          name: consul-template-configmap
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
