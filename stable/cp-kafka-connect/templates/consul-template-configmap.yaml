@@ -4,14 +4,30 @@ kind: ConfigMap
 metadata:
   name: consul-template-configmap
 data:
-  kafka-certs.ctpl: |
-    # To be announced
+#  {{ '{{' }} means {{
+# {{ '}}' }} means }}
+  broker-key.ctpl: |
+    {{ '{{' }}  with secret "kafka-pki/issue/kafka-client" "common_name=efk-client-reporting" {{ '}}' }}
+    {{ '{{' }} .Data.private_key {{ '}}' }}{{ '{{' }} end {{ '}}' }}
+  broker-crt.ctpl: |
+    {{ '{{' }} with secret "kafka-pki/issue/kafka-client" "common_name=efk-client-reporting" {{ '}}' }}
+    {{ '{{' }} .Data.certificate {{ '}}' }}{{ '{{' }} end {{ '}}' }}
+  ca-crt.ctpl: |
+    {{ '{{' }} with secret "kafka-pki/issue/kafka-client" "common_name=efk-client-reporting" {{ '}}' }}
+    {{ '{{' }} .Data.issuing_ca {{ '}}' }}{{ '{{' }} end {{ '}}' }}
   consul-template.hcl: |
     vault {
       address = "http://127.0.0.1:8200"
     }
     template {
-      source = "/etc/consul-template/consul-template.ctpl"
-      destination = "/root/kafka-cert.crt"
-      error_on_missing_key = true
+      source = "/etc/consul-template/broker-key.ctpl"
+      destination = "/root/broker.key"
+    }
+    template {
+      source = "/etc/consul-template/broker-crt.ctpl"
+      destination = "/root/broker.crt"
+    }
+    template {
+      source = "/etc/consul-template/ca-crt.ctpl"
+      destination = "/root/ca.crt"
     }
