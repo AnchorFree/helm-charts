@@ -52,6 +52,18 @@ spec:
           - name: jmx-config
             mountPath: /etc/jmx-kafka-connect
         {{- end }}
+        - name: vault-agent
+          image: {{ .Values.vaultAgent.image }}:{{ .Values.vaultAgent.imageTag }}
+          args:
+            - agent
+            - -config
+            - /etc/vault-agent/vault-agent.hcl
+          env:
+            - name: VAULT_ADDR
+              value: {{ .Values.vaultAddr }}
+          volumeMounts:
+            - mountPath: /etc/vault-agent/
+              name: configuration
         - name: {{ template "cp-kafka-connect.name" . }}-server
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: "{{ .Values.imagePullPolicy }}"
@@ -108,6 +120,15 @@ spec:
         configMap:
           name: {{ template "cp-kafka-connect.fullname" . }}-jmx-configmap
       {{- end }}
+      - name: out
+        emptyDir: {}
+      - name: vault-token
+        emptyDir: {}
+      - name: root-home
+        emptyDir: {}
+      - name: configuration
+        configMap:
+          name: vault-agent-configmap
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

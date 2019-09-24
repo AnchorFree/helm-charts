@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-agent-configmap
+data:
+  vault-agent.hcl: |
+    auto_auth {
+            method {
+                    type = "kubernetes"
+                    mount_path = "{{ .Values.vaultAuth.mountPath }}"
+                    config = {
+                            role = "{{ .Values.serviceAccount }}"
+                    }
+            }
+    }
+    cache {
+            use_auto_auth_token = true
+    }
+    listener "tcp" {
+            address = "127.0.0.1:8200"
+            tls_disable = true
+    }
