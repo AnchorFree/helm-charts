@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: anchorfree/prometheus-ha-proxy
-  tag: 0.0.2
+  tag: 0.1.0-alpha.1
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
