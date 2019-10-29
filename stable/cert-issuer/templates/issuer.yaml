@@ -17,10 +17,6 @@ spec:
       {{- toYaml .Values.privateKeySecretRef | nindent 6 }}
     {{- else }}
       name: {{ $fullName }}
-    {{- end -}}
-    {{- if .Values.dns01 }}
-    dns01:
-      {{- toYaml .Values.dns01 | nindent 6 }}
-    {{- else }}
-    http01: {}
     {{- end }}
+    solvers:
+      {{- toYaml .Values.solvers | nindent 6 }}
