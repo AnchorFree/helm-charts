@@ -10,11 +10,11 @@ server: "https://acme-v02.api.letsencrypt.org/directory"
 email: "user@example.com"
 privateKeySecretRef: {}
 
-solvers:
+solvers: []
   # An empty 'selector' means that this solver matches all domains
-  dns01: {}
-    # selector: {}
-  http01: {}
-    # selector: {}
-    # ingress:
-    #   class: nginx
+  # - dns01: {}
+  #   selector: {}
+  # - http01: {}
+  #     ingress:
+  #       class: nginx
+  #   selector: {}
