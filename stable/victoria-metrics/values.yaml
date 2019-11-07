@@ -15,7 +15,7 @@ vminsert:
 
   image:
     repository: victoriametrics/vminsert
-    tag: &version v1.28.1-cluster
+    tag: &version v1.28.3-cluster
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
