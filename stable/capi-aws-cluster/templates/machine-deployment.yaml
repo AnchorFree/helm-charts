@@ -1,0 +1,67 @@
+apiVersion: cluster.x-k8s.io/v1alpha2
+kind: MachineDeployment
+metadata:
+  name: {{ include "capi-aws-cluster.fullname" . }}-worker
+  labels:
+    {{- include "capi-aws-cluster.labels" . | nindent 4 }}
+    cluster.x-k8s.io/cluster-name: {{ include "capi-aws-cluster.fullname" . }}
+    # Labels beyond this point are for example purposes,
+    # feel free to add more or change with something more meaningful.
+    # Sync these values with spec.selector.matchLabels and spec.template.metadata.labels.
+    nodepool: nodepool-0
+spec:
+  replicas: {{ .Values.worker.count }}
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: {{ include "capi-aws-cluster.fullname" . }}
+      nodepool: nodepool-0
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: {{ include "capi-aws-cluster.fullname" . }}
+        nodepool: nodepool-0
+    spec:
+      version: {{ .Values.worker.version }}
+      bootstrap:
+        configRef:
+          name: {{ include "capi-aws-cluster.fullname" . }}-worker
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha2
+          kind: KubeadmConfigTemplate
+      infrastructureRef:
+        name: {{ include "capi-aws-cluster.fullname" . }}-worker
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
+        kind: AWSMachineTemplate
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
+kind: AWSMachineTemplate
+metadata:
+  name: {{ include "capi-aws-cluster.fullname" . }}-worker
+  labels:
+    {{- include "capi-aws-cluster.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      instanceType: {{ .Values.worker.size }}
+      rootDeviceSize: {{ .Values.worker.rootDeviceSize }}
+      availabilityZone: {{ .Values.cluster.region }}a
+      # This IAM profile is part of the pre-requisites.
+      iamInstanceProfile: "nodes.cluster-api-provider-aws.sigs.k8s.io"
+      # Change this value to a valid SSH Key Pair present in your AWS Account.
+      sshKeyName: {{ .Values.worker.sshKeyName }}
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha2
+kind: KubeadmConfigTemplate
+metadata:
+  name: {{ include "capi-aws-cluster.fullname" . }}-worker
+  labels:
+    {{- include "capi-aws-cluster.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      # For more information about these values,
+      # refer to the Kubeadm Bootstrap Provider documentation.
+      joinConfiguration:
+        nodeRegistration:
+          name: {{`'{{ ds.meta_data.hostname }}'`}}
+          kubeletExtraArgs:
+            cloud-provider: aws

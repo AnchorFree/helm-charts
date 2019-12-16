@@ -1,0 +1,21 @@
+cluster:
+  network:
+    cidrBlocks:
+      - "192.168.0.0/16"
+  sshKeyName: &ssh my-key
+  region: eu-central-1
+
+master:
+  version: &ver v1.16.2
+  size: t2.medium
+  # Specifies size (in Gi) of the root storage device
+  rootDeviceSize: 8
+  sshKeyName: *ssh
+
+worker:
+  count: 1
+  version: *ver
+  size: t2.micro
+  # Specifies size (in Gi) of the root storage device
+  rootDeviceSize: 8
+  sshKeyName: *ssh
