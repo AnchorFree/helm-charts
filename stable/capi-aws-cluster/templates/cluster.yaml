@@ -1,0 +1,35 @@
+apiVersion: cluster.x-k8s.io/v1alpha2
+kind: Cluster
+metadata:
+  name: {{ include "capi-aws-cluster.fullname" . }}
+  labels:
+    {{- include "capi-aws-cluster.labels" . | nindent 4 }}
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+        {{- toYaml .Values.cluster.network.cidrBlocks | nindent 8 }}
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
+    kind: AWSCluster
+    name: {{ include "capi-aws-cluster.fullname" . }}
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha2
+kind: AWSCluster
+metadata:
+  name: {{ include "capi-aws-cluster.fullname" . }}
+  labels:
+    {{- include "capi-aws-cluster.labels" . | nindent 4 }}
+spec:
+  # Change this value to the region you want to deploy the cluster in.
+  region: {{ .Values.cluster.region }}
+  # Change this value to a valid SSH Key Pair present in your AWS Account.
+  sshKeyName: {{ .Values.cluster.sshKeyName }}
+  networkSpec:
+    subnets:
+    - availabilityZone: {{ .Values.cluster.region }}a
+      cidrBlock: 10.0.1.0/24
+      isPublic: true
+    - availabilityZone: {{ .Values.cluster.region }}a
+      cidrBlock: 10.0.2.0/24
+      isPublic: false
