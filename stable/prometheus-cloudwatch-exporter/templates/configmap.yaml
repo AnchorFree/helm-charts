@@ -14,6 +14,9 @@ metadata:
 data:
   config.yml: |-
     region: {{ $region }}
+{{- if $options.roleArn }}
+    role_arn: {{ $options.roleArn }}
+{{- end }}
 {{- range $key, $value := $options.globalOptions }}
     {{ $key }}: {{ $value }}
 {{- end }}
