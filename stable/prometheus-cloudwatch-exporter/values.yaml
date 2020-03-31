@@ -429,6 +429,6 @@ predefinedMetrics:
 
     - aws_namespace: AWS/Lambda
       aws_metric_name: UnreservedConcurrentExecutions
-      aws_dimensions: [FunctionName, Resource]
+      aws_dimensions: []
       aws_statistics: [Average,Maximum]
       set_timestamp: false
