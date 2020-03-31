@@ -63,6 +63,7 @@ The following table lists the configurable parameters of the Cloudwatch Exporter
 | `service.labels`            | Additional custom labels for the service               | `{}`                       |
 | `resources`                 |                                                        | `{}`                       |
 | `aws.role`                  | AWS IAM Role To Use                                    |                            |
+| `aws.roleArn` |             | Optional. The AWS role to assume. Useful for retrieving cross account metrics. | `{}` |
 | `aws.aws_access_key_id`     | AWS access key id                                      |                            |
 | `aws.aws_secret_access_key` | AWS secret access key                                  |                            |
 | `aws.secret.name` | The name of a pre-created secret in which AWS credentials are stored                                 |                            |

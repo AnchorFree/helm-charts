@@ -16,6 +16,8 @@ data:
     region: {{ $region }}
 {{- if $options.roleArn }}
     role_arn: {{ $options.roleArn }}
+{{- else if $root.Values.aws.roleArn }}
+    role_arn: {{ $root.Values.aws.roleArn }}
 {{- end }}
 {{- range $key, $value := $options.globalOptions }}
     {{ $key }}: {{ $value }}

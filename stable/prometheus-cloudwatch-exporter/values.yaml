@@ -31,7 +31,6 @@ resources: {}
 
 aws:
   role:
-
   # The name of a pre-created secret in which AWS credentials are stored. When
   # set, aws_access_key_id is assumed to be in a field called access_key,
   # aws_secret_access_key is assumed to be in a field called secret_key, and the
@@ -44,6 +43,8 @@ aws:
   # Note: Do not specify the aws_access_key_id and aws_secret_access_key if you specified role or secret.name before
   aws_access_key_id:
   aws_secret_access_key:
+
+  roleArn:
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
