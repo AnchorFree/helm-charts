@@ -85,6 +85,7 @@ serviceMonitor:
 
 config: {}
 #  us-west-2:
+#    roleArn: arn:aws:iam::xxxxxxxx:role/cloudwatch-metrics
 #    customMetrics: |-
 #      - aws_namespace: AWS/S3
 #        aws_metric_name: BucketSizeBytes
@@ -356,4 +357,77 @@ predefinedMetrics:
       aws_metric_name: TimeSinceLastSuccessfulBackup
       aws_dimensions: [JobFlowId]
       aws_statistics: [Average]
+      set_timestamp: false
+  lambda: |-
+    # lambda
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: Duration
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Average,Maximum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: Invocations
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: Errors
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: DeadLetterErrors
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: DestinationDeliveryFailures
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: Throttles
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: ProvisionedConcurrencyInvocations
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: ProvisionedConcurrencySpilloverInvocations
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Sum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: ConcurrentExecutions
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Average,Maximum]
+      set_timestamp: false
+   
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: ProvisionedConcurrentExecutions
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Average,Maximum]
+      set_timestamp: false
+
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: ProvisionedConcurrencyUtilization
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Average,Maximum]
+      set_timestamp: false
+ 
+    - aws_namespace: AWS/Lambda
+      aws_metric_name: UnreservedConcurrentExecutions
+      aws_dimensions: [FunctionName, Resource]
+      aws_statistics: [Average,Maximum]
       set_timestamp: false
