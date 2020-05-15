@@ -28,7 +28,7 @@ spec:
     {{- end }}
       containers:
         - name: vmselect
-          image: "{{ .Values.vmselect.image.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.vmselect.image.repository }}:{{ if not .Values.vmselect.image.tag }}{{ .Chart.AppVersion }}{{ else }}{{ .Values.vmselect.image.tag }}{{ end }}"
           imagePullPolicy: {{ .Values.vmselect.image.pullPolicy }}
           args:
             - -cacheDataPath=/vmselect-cache
