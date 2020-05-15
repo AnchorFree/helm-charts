@@ -15,7 +15,6 @@ vminsert:
 
   image:
     repository: victoriametrics/vminsert
-    tag: &version v1.35.0-cluster
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -59,7 +58,6 @@ vmselect:
 
   image:
     repository: victoriametrics/vmselect
-    tag: *version
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -112,7 +110,6 @@ vmstorage:
 
   image:
     repository: victoriametrics/vmstorage
-    tag: *version
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []

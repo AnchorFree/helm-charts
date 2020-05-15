@@ -30,7 +30,7 @@ spec:
     {{- end }}
       containers:
         - name: vmstorage
-          image: "{{ .Values.vmstorage.image.repository }}:{{ .Values.vmstorage.image.tag }}"
+          image: "{{ .Values.vmstorage.image.repository }}:v{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.vmstorage.image.pullPolicy }}
           args:
             - --storageDataPath=/vmstorage-data

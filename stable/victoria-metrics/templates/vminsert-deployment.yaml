@@ -30,7 +30,7 @@ spec:
     {{- end }}
       containers:
         - name: vminsert
-          image: "{{ .Values.vminsert.image.repository }}:{{ .Values.vminsert.image.tag }}"
+          image: "{{ .Values.vminsert.image.repository }}:v{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.vminsert.image.pullPolicy }}
           args:
           {{- include "victoria-metrics.vminsert.vmstorage-pod-fqdn" . | nindent 12 }}
