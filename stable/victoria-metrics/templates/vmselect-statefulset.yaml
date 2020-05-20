@@ -1,3 +1,4 @@
+{{- if .Values.vmselect.enabled -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -94,3 +95,4 @@ spec:
           requests:
             storage: {{ .Values.vmselect.persistence.size | quote }}
   {{- end }}
+{{- end }}

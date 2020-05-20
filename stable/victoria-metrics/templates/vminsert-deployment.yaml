@@ -1,3 +1,4 @@
+{{- if .Values.vminsert.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,7 +34,9 @@ spec:
           image: "{{ .Values.vminsert.image.repository }}:{{ if not .Values.vminsert.image.tag }}{{ .Chart.AppVersion }}{{ else }}{{ .Values.vminsert.image.tag }}{{ end }}"
           imagePullPolicy: {{ .Values.vminsert.image.pullPolicy }}
           args:
+        {{ if .Values.vmstorage.enabled }}
           {{- include "victoria-metrics.vminsert.vmstorage-pod-fqdn" . | nindent 12 }}
+        {{- end }}
           {{- range $key, $value := .Values.vminsert.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
@@ -68,3 +71,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+{{- end }}
