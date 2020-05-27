@@ -1,4 +1,4 @@
-{{- if .Values.vmstorage.backupSidecar.enabled }}
+{{- if and ( .Values.vmstorage.enabled ) ( .Values.vmstorage.backupSidecar.enabled ) }}
 {{- $pod := include "victoria-metrics.fullname" . -}}
 {{- $svc := include "victoria-metrics.fullname" . -}}
 {{- $namespace := .Release.Namespace -}}

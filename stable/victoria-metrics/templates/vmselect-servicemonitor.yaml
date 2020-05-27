@@ -1,4 +1,4 @@
-{{- if .Values.vmselect.serviceMonitor.enabled -}}
+{{- if and ( .Values.vmselect.enabled ) ( .Values.vmselect.serviceMonitor.enabled ) -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:

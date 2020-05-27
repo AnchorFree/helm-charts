@@ -7,6 +7,7 @@ fullnameOverride: ""
 clusterDomainSuffix: "cluster.local"
 
 vminsert:
+  enabled: true
   replicaCount: 1
 
   terminationGracePeriodSeconds: 60
@@ -20,6 +21,7 @@ vminsert:
   imagePullSecrets: []
 
   service:
+    enabled: true
     type: ClusterIP
     port: 80
 
@@ -50,6 +52,7 @@ vminsert:
   affinity: {}
 
 vmselect:
+  enabled: true
   replicaCount: 1
 
   terminationGracePeriodSeconds: 60
@@ -100,6 +103,7 @@ vmselect:
   affinity: {}
 
 vmstorage:
+  enabled: true
   replicaCount: 1
 
   retentionPeriod: 1
@@ -158,6 +162,22 @@ vmstorage:
   tolerations: []
 
   affinity: {}
+
+  # https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 5
+
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
 
   backupSidecar:
     enabled: true

@@ -1,3 +1,4 @@
+{{- if .Values.vmstorage.enabled -}}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -48,19 +49,26 @@ spec:
             - name: vmselect
               containerPort: 8401
               protocol: TCP
+        {{- if .Values.vmstorage.livenessProbe.enabled }}
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: {{ .Values.vmstorage.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.vmstorage.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.vmstorage.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.vmstorage.livenessProbe.failureThreshold }}
+        {{- end }}
+        {{- if .Values.vmstorage.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 5
-            periodSeconds: 15
-            timeoutSeconds: 5
-          livenessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 15
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.vmstorage.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.vmstorage.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.vmstorage.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.vmstorage.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.vmstorage.readinessProbe.failureThreshold }}
+        {{- end }}
           resources:
             {{- toYaml .Values.vmstorage.resources | nindent 12 }}
           volumeMounts:
@@ -108,7 +116,7 @@ spec:
             initialDelaySeconds: {{ .livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .livenessProbe.periodSeconds }}
             timeoutSeconds: {{ .livenessProbe.timeoutSeconds }}
-            failureThreshold: {{ .livenessProbe.failureThreshold}}
+            failureThreshold: {{ .livenessProbe.failureThreshold }}
         {{- end }}
         {{- if .readinessProbe.enabled }}
           readinessProbe:
@@ -119,7 +127,7 @@ spec:
             periodSeconds: {{ .readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .readinessProbe.timeoutSeconds }}
             successThreshold: {{ .readinessProbe.successThreshold }}
-            failureThreshold: {{ .readinessProbe.failureThreshold}}
+            failureThreshold: {{ .readinessProbe.failureThreshold }}
         {{- end }}
           resources:
             {{- toYaml .resources | nindent 12 }}
@@ -165,3 +173,4 @@ spec:
           requests:
             storage: {{ .Values.vmstorage.persistence.size | quote }}
   {{- end }}
+{{- end }}
