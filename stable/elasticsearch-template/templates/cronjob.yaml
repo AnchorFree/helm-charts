@@ -1,0 +1,74 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ include "elasticsearch-template.fullname" . }}
+  labels:
+{{ include "elasticsearch-template.labels" . | indent 4 }}
+spec:
+  schedule: "{{ .Values.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  concurrencyPolicy: {{ .Values.concurrencyPolicy}}
+  jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "elasticsearch-template.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      backoffLimit: {{ .Values.backoffLimit }}
+      template:
+        spec:
+        {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 14 }}
+        {{- end }}
+          serviceAccountName: {{ template "elasticsearch-template.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 14 }}
+          containers:
+            - name: apply-template
+              securityContext:
+                {{- toYaml .Values.securityContext | nindent 16 }}
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              env:
+                - name: ES_HOST
+                  value: {{ .Values.elasticsearch.host }}
+                - name: ES_PORT
+                  value: {{ .Values.elasticsearch.port | quote }}
+              command:
+                - "/bin/sh"
+                - "-c"
+                - |
+                  # Based on this answer: https://stackoverflow.com/a/965072
+                  # fullfile -- full path to file;       e.g. /etc/templates/foo.json
+                  # fname    -- only file name;          e.g. foo.json
+                  # tpl_name -- file name w\o extension; e.g. foo
+                  #
+                  for fullfile in $(ls -1 /etc/templates/*.json); do
+                    fname="${fullfile##*/}"
+                    tpl_name="${fname%.*}"
+                    curl -sS -XPOST -H 'Content-Type: application/json' http://${ES_HOST}:${ES_PORT}/_template/${tpl_name} -d @${fullfile}
+                  done
+              resources:
+                {{- toYaml .Values.resources | nindent 16 }}
+              volumeMounts:
+                - name: templates
+                  mountPath: /etc/templates
+          volumes:
+            - name: templates
+              configMap:
+                name: {{ include "elasticsearch-template.fullname" . }}
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 14 }}
+          {{- end }}
+        {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 14 }}
+        {{- end }}
+        {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 14 }}
+        {{- end }}
+          restartPolicy: Never
