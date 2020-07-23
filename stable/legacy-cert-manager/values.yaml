@@ -1,8 +1,15 @@
 replicas: 1
 port: "9375"
-image: "anchorfree/cert-manager:v0.0.3"
+image: anchorfree/cert-manager:v0.0.7
 aws_key: "xxx"
 aws_secret: "xxx"
+s3pull:
+  image: amazon/aws-cli
+  tag: 2.0.30
+s3push:
+  image: amazon/aws-cli
+  tag: 2.0.30
+  interval: 300
 env:
 - name: LEGO_PATH
   value: "/usr/local/bin/lego"
@@ -14,7 +21,11 @@ env:
   value: "s3://some-bucket"
 - name: DOMAINS_FILE
   value: "s3://some-bucket/domains/prod.txt"
-volumeMounts: []
-volumes: []
+volumeMounts:
+- mountPath: /certs
+  name: cert-volume
+volumes:
+- name: cert-volume
+  emptyDir: {}
 nodeAffinity: {}
 tolerations: []
