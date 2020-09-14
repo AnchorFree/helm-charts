@@ -53,11 +53,6 @@ spec:
 {{ toYaml .Values.volumeMounts | indent 8 }}
       - name: s3push
         image: {{ .Values.s3push.image }}:{{ .Values.s3push.tag }}
-        command:
-        - /bin/bash
-        args:
-        - -c
-        - while true ; do echo "[`date --rfc-3339=seconds`] sync"; aws s3 sync $(LOCAL_DIR)/ s3://$(S3_BUCKET)/; echo "[`date --rfc-3339=seconds`] sleep"; sleep {{ .Values.s3push.interval }}; done
         envFrom:
         - secretRef:
             name: {{ .Release.Name }}-aws-secret
