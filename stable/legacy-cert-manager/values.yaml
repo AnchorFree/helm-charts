@@ -7,9 +7,8 @@ s3pull:
   image: amazon/aws-cli
   tag: 2.0.30
 s3push:
-  image: amazon/aws-cli
-  tag: 2.0.30
-  interval: 300
+  image: anchorfree/s3push
+  tag: v0.1.5
 env:
 - name: LEGO_PATH
   value: "/usr/local/bin/lego"
@@ -21,6 +20,8 @@ env:
   value: "s3://some-bucket"
 - name: DOMAINS_FILE
   value: "s3://some-bucket/domains/prod.txt"
+- name: LOCAL_DIR
+  value: "/certs"
 volumeMounts:
 - mountPath: /certs
   name: cert-volume
