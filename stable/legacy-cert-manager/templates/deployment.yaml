@@ -27,8 +27,7 @@ spec:
       initContainers:
       - name: s3pull
         image: {{ .Values.s3push.image }}:{{ .Values.s3push.tag }}
-        args:
-        - /bin/s3pull.bash
+        command: ["/bin/s3pull.bash"]
         envFrom:
         - secretRef:
             name: {{ .Release.Name }}-aws-secret
