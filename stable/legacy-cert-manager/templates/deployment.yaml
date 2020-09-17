@@ -26,12 +26,9 @@ spec:
 {{ toYaml .Values.nodeAffinity | indent 10 }}
       initContainers:
       - name: s3pull
-        image: {{ .Values.s3pull.image }}:{{ .Values.s3pull.tag }}
+        image: {{ .Values.s3push.image }}:{{ .Values.s3push.tag }}
         args:
-        - s3
-        - sync
-        - s3://$(S3_BUCKET)/
-        - $(LOCAL_DIR)/
+        - /bin/s3pull.bash
         envFrom:
         - secretRef:
             name: {{ .Release.Name }}-aws-secret
