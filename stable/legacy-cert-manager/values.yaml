@@ -5,7 +5,7 @@ aws_key: "xxx"
 aws_secret: "xxx"
 s3push:
   image: anchorfree/s3push
-  tag: v0.1.7
+  tag: v0.1.8
 env:
 - name: LEGO_PATH
   value: "/usr/local/bin/lego"
