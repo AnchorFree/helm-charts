@@ -4,7 +4,6 @@ image: anchorfree/cert-manager:v0.1.0
 
 aws_key: "xxx"
 aws_secret: "xxx"
-
 env:
 - name: LEGO_PATH
   value: "/usr/local/bin/lego"
