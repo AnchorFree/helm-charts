@@ -32,7 +32,7 @@ spec:
         - secretRef:
             name: {{ .Release.Name }}-aws-secret
         env:
-{{ toYaml .Values.env | indent 8 }}
+{{ toYaml .Values.s3push.env | indent 8 }}
         volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 8 }}
       containers:
@@ -53,7 +53,7 @@ spec:
         - secretRef:
             name: {{ .Release.Name }}-aws-secret
         env:
-{{ toYaml .Values.env | indent 8 }}
+{{ toYaml .Values.s3push.env | indent 8 }}
         volumeMounts:
 {{ toYaml .Values.volumeMounts | indent 8 }}
       restartPolicy: Always

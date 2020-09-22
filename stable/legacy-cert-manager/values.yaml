@@ -34,3 +34,5 @@ s3push:
       value: "s3://some-bucket"
     - name: LOCAL_DIRS
       value: "/certs/certificates /certs/accounts"
+    - name: AWS_REGION
+      value: "us-east-1"
