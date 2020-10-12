@@ -1,0 +1,35 @@
+{{- if .Values.ingressSelect.enabled -}}
+{{- $fullName := include "victoria-metrics.fullname" . -}}
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-select
+  labels:
+    app.kubernetes.io/name: {{ $fullName }}
+    {{ include "victoria-metrics.common-labels" . | nindent 4 }}
+  {{- with .Values.ingressSelect.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+{{- if .Values.ingressSelect.tls }}
+  tls:
+  {{- range .Values.ingressSelect.tls }}
+    - hosts:
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      secretName: {{ .secretName }}
+  {{- end }}
+{{- end }}
+  rules:
+  {{- range .Values.ingressSelect.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          - path: /select
+            backend:
+              serviceName: {{ $fullName }}-vmselect
+              servicePort: http
+  {{- end }}
+{{- end }}
