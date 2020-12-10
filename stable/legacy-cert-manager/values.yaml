@@ -28,11 +28,4 @@ tolerations: []
 
 s3push:
   image: anchorfree/s3push
-  tag: v0.1.8
-  env:
-    - name: S3_BUCKET
-      value: "s3://some-bucket"
-    - name: LOCAL_DIRS
-      value: "/certs/certificates /certs/accounts"
-    - name: AWS_REGION
-      value: "us-east-1"
+  tag: v0.1.9
