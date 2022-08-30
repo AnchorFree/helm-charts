@@ -1,6 +1,0 @@
-apiVersion: v1
-appVersion: "0.1.0-alpha.1"
-description: A Helm chart for prometheus-ha-proxy
-name: prometheus-ha-proxy
-version: 0.2.0
-home: https://github.com/AnchorFree/prometheus-ha-proxy
