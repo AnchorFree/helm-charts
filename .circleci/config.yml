@@ -23,7 +23,7 @@ jobs:
             ct lint --config test/ct.yaml
   build-charts:
     docker:
-      - image: anchorfree/k8s-toolbox:v0.17.0
+      - image: us-docker.pkg.dev/aura-networking/docker-registry-public/k8s-toolbox:v0.17.0
     steps:
       - checkout
       - run:
