@@ -6,7 +6,7 @@ image:
   fluent_bit:
     repository: fluent/fluent-bit
     tag: 3.2.1
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - name: registry-secret
