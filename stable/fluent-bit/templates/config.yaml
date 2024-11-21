@@ -70,7 +70,9 @@ data:
 {{- if and ( .Values.input.forward.enabled ) ( .Values.input.forward.bufferMaxSize ) }}
         Buffer_Max_Size   {{ .Values.input.forward.bufferMaxSize }}
 {{- end }}
+{{- if and ( .Values.input.forward.enabled ) ( .Values.input.forward.threaded ) }}
         Threaded          true
+{{- end }}
 {{- end }}
 {{- .Values.extraEntries.input | indent 8 }}
 {{- if .Values.audit.enable }}

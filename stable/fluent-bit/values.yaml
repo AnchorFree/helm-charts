@@ -276,6 +276,7 @@ input:
     bufferChunkSize: 32KB
     bufferMaxSize: ""
     memBufLimit: ""
+    threaded: true
 
 audit:
   enable: false
