@@ -71,8 +71,7 @@ data:
         Buffer_Max_Size   {{ .Values.input.forward.bufferMaxSize }}
 {{- end }}
 {{- end }}
-{{ .Values.extraEntries.input | indent 8 }}
-
+{{- .Values.extraEntries.input | indent 8 }}
 {{- if .Values.audit.enable }}
     [INPUT]
         Name              tail
