@@ -74,7 +74,7 @@ data:
         Threaded          true
 {{- end }}
 {{- end }}
-{{ .Values.extraEntries.input | indent 4 -}}
+{{ .Values.extraEntries.input | indent 4 }}
 {{- if .Values.audit.enable }}
     [INPUT]
         Name              tail
@@ -89,8 +89,7 @@ data:
         Skip_Long_Lines   {{ .Values.audit.input.skipLongLines}}
         Key               {{ .Values.audit.input.key}}
 {{ .Values.extraEntries.audit | indent 4 }}
-{{- end }}
-
+{{ end }}
   fluent-bit-filter.conf: |
 {{- if .Values.filter.kubernetes.enabled }}
     [FILTER]
