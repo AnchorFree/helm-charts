@@ -5,8 +5,8 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 1.4.6
-  pullPolicy: Always
+    tag: 3.2.1
+  pullPolicy: IfNotPresent
   # If specified, use these secrets to access the image
   # pullSecrets:
   #   - name: registry-secret
@@ -276,6 +276,7 @@ input:
     bufferChunkSize: 32KB
     bufferMaxSize: ""
     memBufLimit: ""
+    threaded: true
 
 audit:
   enable: false

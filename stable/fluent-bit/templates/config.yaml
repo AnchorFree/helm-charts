@@ -70,9 +70,11 @@ data:
 {{- if and ( .Values.input.forward.enabled ) ( .Values.input.forward.bufferMaxSize ) }}
         Buffer_Max_Size   {{ .Values.input.forward.bufferMaxSize }}
 {{- end }}
+{{- if and ( .Values.input.forward.enabled ) ( .Values.input.forward.threaded ) }}
+        Threaded          true
 {{- end }}
-{{ .Values.extraEntries.input | indent 8 }}
-
+{{- end }}
+{{ .Values.extraEntries.input | indent 4 }}
 {{- if .Values.audit.enable }}
     [INPUT]
         Name              tail
@@ -86,9 +88,8 @@ data:
         Buffer_Max_Size   {{ .Values.audit.input.bufferMaxSize }}
         Skip_Long_Lines   {{ .Values.audit.input.skipLongLines}}
         Key               {{ .Values.audit.input.key}}
-{{ .Values.extraEntries.audit | indent 8 }}
-{{- end }}
-
+{{ .Values.extraEntries.audit | indent 4 }}
+{{ end }}
   fluent-bit-filter.conf: |
 {{- if .Values.filter.kubernetes.enabled }}
     [FILTER]
@@ -128,7 +129,7 @@ data:
 {{ .Values.extraEntries.filter | indent 4 }}
 
   fluent-bit-output.conf: |
-{{ if eq .Values.backend.type "test" }}
+{{- if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
         Match *
@@ -186,7 +187,7 @@ data:
         HTTP_Passwd ${HTTP_PASSWORD}
 {{- end }}
 {{- end }}
-{{if eq .Values.backend.es.tls "on" }}
+{{- if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
         tls.verify {{ .Values.backend.es.tls_verify }}
         tls.debug {{ .Values.backend.es.tls_debug }}
@@ -242,8 +243,7 @@ data:
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}
 {{- end }}
-{{ .Values.extraEntries.output | indent 8 }}
-
+{{- .Values.extraEntries.output | indent 8 }}
 
   fluent-bit.conf: |
 {{ .Values.rawConfig | indent 4 }}
@@ -281,7 +281,7 @@ data:
         Decode_Field_As {{ .decodeFieldAs }} {{ .decodeField | default "log" }}
 {{- end}}
 {{- if .extraEntries }}
-{{ .extraEntries | indent 8 }}
+{{ .extraEntries | indent 4 }}
 {{- end }}
 {{ end }}
 {{- end }}
@@ -297,9 +297,8 @@ data:
         Time_Format {{ .timeFormat }}
 {{- end }}
 {{- if .extraEntries }}
-{{ .extraEntries | indent 8 }}
+{{ .extraEntries | indent 4 }}
 {{- end }}
 {{ end }}
 {{- end }}
-
 {{- end -}}
