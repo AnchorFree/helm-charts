@@ -74,7 +74,7 @@ data:
         Threaded          true
 {{- end }}
 {{- end }}
-{{- .Values.extraEntries.input | indent 4 }}
+{{- .Values.extraEntries.input | indent 8 }}
 {{- if .Values.audit.enable }}
     [INPUT]
         Name              tail
@@ -127,10 +127,10 @@ data:
         Interval     {{ .Values.filter.throttle.interval }}
         Print_Status {{ .Values.filter.throttle.printStatus }}
 {{- end }}
-{{ .Values.extraEntries.filter | indent 4 }}
+{{- .Values.extraEntries.filter | indent 4 }}
 
   fluent-bit-output.conf: |
-{{ if eq .Values.backend.type "test" }}
+{{- if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
         Match *
@@ -188,7 +188,7 @@ data:
         HTTP_Passwd ${HTTP_PASSWORD}
 {{- end }}
 {{- end }}
-{{if eq .Values.backend.es.tls "on" }}
+{{- if eq .Values.backend.es.tls "on" }}
         tls {{ .Values.backend.es.tls }}
         tls.verify {{ .Values.backend.es.tls_verify }}
         tls.debug {{ .Values.backend.es.tls_debug }}
@@ -244,7 +244,7 @@ data:
 {{- range  .Values.backend.http.headers }}
         Header  {{ . }}
 {{- end }}
-{{ .Values.extraEntries.output | indent 4 }}
+{{- .Values.extraEntries.output | indent 8 }}
 
 
   fluent-bit.conf: |
@@ -303,5 +303,4 @@ data:
 {{- end }}
 {{ end }}
 {{- end }}
-
 {{- end -}}
