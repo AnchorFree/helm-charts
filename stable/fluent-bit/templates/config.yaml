@@ -127,7 +127,7 @@ data:
         Interval     {{ .Values.filter.throttle.interval }}
         Print_Status {{ .Values.filter.throttle.printStatus }}
 {{- end }}
-{{- .Values.extraEntries.filter | indent 4 }}
+{{ .Values.extraEntries.filter | indent 4 }}
 
   fluent-bit-output.conf: |
 {{- if eq .Values.backend.type "test" }}
